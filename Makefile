@@ -1,0 +1,541 @@
+################################################################################
+#                                                                              #
+# Project:      IPK25 Chat Client                                              #
+# University:   Faculty of Information Technology, BUT                         #
+# Subject:      IPK: Computer Communications and Networks                      #
+#                                                                              #
+# File:         Makefile                                                       #
+# Author:       Jan Kalina <xkalinj00>                                         #
+#                                                                              #
+# Created:      02.04.2025                                                     #
+# Last edit:    03.04.2025                                                     #
+#                                                                              #
+# Description:  This Makefile is used for compiling the project IPK25 Chat     #
+#               Client for the IPK course. Besides building, the Makefile      #
+#               also serves to automate other tasks such as generating         #
+#               documentation, cleaning project directories, packaging the     #
+#               project for submission, etc. This Makefile is inspired by      #
+#               Makefiles I created for previous projects at BUT FIT (e.g.,    #
+#               for the IVS, IFJ and IPK courses).                             #
+#                                                                              #
+################################################################################
+
+################################################################################
+#                                                                              #
+#                 BASIC SETTINGS AND DEFINITIONS FOR MAKEFILE                  #
+#                                                                              #
+################################################################################
+
+###                                   ###
+#  Basic configuration of the Makefile  #
+###                                   ###
+
+# Project name
+EXECUTABLE = ipk25-chat
+
+# Name of the ZIP archive for project submission
+PACK_NAME = xkalinj00
+
+# ANSI sequences for colors
+COLOR_RESET = \033[0m
+COLOR_RED = \033[0;31m
+COLOR_GREEN = \033[0;32m
+COLOR_BLUE = \033[0;36m
+COLOR_YELLOW = \033[0;33m
+COLOR_MAGENTA = \033[0;35m
+
+
+###                                        ###
+#  Switches for running the $(MAKE) command  #
+###                                        ###
+
+# Run 'make' in silent mode (without event output)
+$(VERBOSE)SILENTOPT = -s
+
+# Definition of a constant to disable selected targets (for submission)
+DISABLE_TARGETS ?= true
+
+
+###                   ###
+#  Definition of paths  #
+###                   ###
+
+# Path to the directory with source files for the compiler
+SRC_DIR = src
+
+# Directories for placing built files
+BUILD_DIR = build
+RELEASE_BUILD_DIR = build/release
+DEBUG_BUILD_DIR = build/debug
+
+# Path to the directory with tests
+TEST_DIR = test
+TEST_BIN_DIR = $(TEST_DIR)/bin
+
+# Directory for generating documentation
+DOC_DIR = doc
+
+# Directory with the prepared project for packaging
+PACK_DIR = pack
+ARCHIVE_DIR = $(PACK_DIR)/$(PACK_NAME)
+
+
+################################################################################
+#                                                                              #
+#                                BUILD SETTINGS                                #
+#                                                                              #
+################################################################################
+
+###           ###
+#  Compilation  #
+###           ###
+
+CXX = g++
+CXX_STD =-std=c++20
+WARNING_FLAGS = -Wall -Wextra -Werror -pedantic -Wshadow -Wconversion -pthread
+DEBUG_FLAGS = -g
+SANITIZE_FLAGS = -fsanitize=address -fsanitize=undefined
+
+CXXFLAGS = $(CXX_STD) -O3
+CXXFLAGS_DEBUG = $(CXX_STD) $(DEBUG_FLAGS) $(WARNING_FLAGS) $(SANITIZE_FLAGS)
+
+
+###                  ###
+#  Source & Libraries  #
+###                  ###
+
+INCLUDES = -I$(SRC_DIR)
+LIBS = -lnet
+IPK_LIB = libipk25-chat.a
+IPK_LIB_DEBUG = libipk25-chat-debug.a
+
+
+###                     ###
+#  Wildcards & Variables  #
+###                     ###
+
+# For 'ipk25-chat-lib.a'
+LIB_SRCS := $(shell find $(SRC_DIR) -type f -name "*.cpp" | grep -v "$(SRC_DIR)/App/main.cpp")
+LIB_OBJS := $(patsubst $(SRC_DIR)/%, $(RELEASE_BUILD_DIR)/%, $(LIB_SRCS:.cpp=.o))
+LIB_OBJS_DEBUG := $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(LIB_SRCS:.cpp=.o))
+
+# For 'ipk25-chat'
+MAIN_SRC = $(SRC_DIR)/App/main.cpp
+MAIN_OBJ = $(patsubst $(SRC_DIR)/%, $(RELEASE_BUILD_DIR)/%, $(MAIN_SRC:.cpp=.o))
+MAIN_OBJ_DEBUG = $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(MAIN_SRC:.cpp=.o))
+
+
+################################################################################
+#                                                                              #
+#                                MAIN COMMANDS                                 #
+#                                                                              #
+################################################################################
+
+# The '.PHONY' command indicates that the following commands are never considered as files
+.PHONY: all build clean debug doc help pack run test clean-all clean-build clean-debug-exec \
+        clean-exec clean-doc clean-pack test-argument-parser test-exception-handler \
+		test-chat-exceptions pack-prepare install-dev-dep install-help-dep \
+		install-test-dep install-doc-dep install-pack-dep update-dep
+
+### MC # all: # Builds the 'ipk25-chat'
+all: build
+
+### MC # build: # Builds the 'ipk25-chat' via CMake in developer version and Make in submission version
+ifndef DISABLE_TARGETS
+build:
+	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+	@cmake --build build --config Release --target ipk25-chat
+else
+build: $(EXECUTABLE)
+endif
+
+### MC # run: # Runs the executable with print help argument
+run:
+	@if [ ! -f "$(EXECUTABLE)" ]; then \
+		$(MAKE) build; \
+	fi
+	./$(EXECUTABLE) -h
+
+### MC # test: # Builds and runs the test executable 'ipk25-chat-test' (not allowed for submission)
+ifndef DISABLE_TARGETS
+test:
+	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
+	@cmake --build build --config Test --target ipk25-chat-test
+	./$(TEST_BIN_DIR)/ipk25-chat-test
+else
+test:
+	@echo "$(COLOR_RED)The 'test' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### MC # debug: # Builds the application in debug mode with more strict warnings
+debug: $(EXECUTABLE)-debug
+
+# Definition of shortcuts for command categories
+CATEGORIES := MC C T P DEV
+
+### MC # help: # Prints help for using the Makefile
+help:
+ifndef DISABLE_TARGETS
+	@$(MAKE) $(SILENTOPT) install-help-dep
+endif
+	@{ \
+	for CATEGORY in $(CATEGORIES); do \
+		case $$CATEGORY in \
+		"MC") FULL_CAT="Main Commands";; \
+		"T") FULL_CAT="Test";; \
+		"C") FULL_CAT="Clean (special)";; \
+		"P") FULL_CAT="Pack (special)";; \
+		"DEV") FULL_CAT="Install Dependencies";; \
+		esac; \
+		echo "$(COLOR_YELLOW)$$FULL_CAT:$(COLOR_RESET)"; \
+		grep -E "^### $$CATEGORY # [a-zA-Z0-9_\-]+:.*?# .*$$" $(MAKEFILE_LIST) | \
+		sort -f | \
+		awk 'BEGIN {FS = ":.*?# "}; \
+		{ \
+			gsub(/^### [A-Z]+ # /, "", $$1); \
+			split($$2, lines, "\\\\n"); \
+			printf "$(COLOR_BLUE)%-30s$(COLOR_RESET) %s\n", $$1, lines[1]; \
+			for (i = 2; i <= length(lines); i++) { \
+				printf "$(COLOR_BLUE)%-30s$(COLOR_RESET) %s\n", "", lines[i]; \
+			} \
+		}'; \
+		echo ""; \
+	done; \
+	} | less -R
+
+### MC # clean: # Runs 'clean-all' in developer / submission mode (different versions)
+ifndef DISABLE_TARGETS
+clean: clean-all
+else
+clean: clean-build clean-test clean-doc clean-debug-exec
+endif
+
+### MC # doc: # Generates project documentation into the `doc` directory (different versions)
+ifndef DISABLE_TARGETS
+doc:
+	@$(MAKE) $(SILENTOPT) install-doc-dep
+	$(MAKE) $(SILENTOPT) clean-doc
+	doxygen Doxyfile
+	cd $(DOC_DIR)/html && grep -v 'target="_self">resources\|target="_self">doc' files.html > temp.html && mv temp.html files.html
+	@sed -i 's/\&lt;tt\&gt;/<tt>/g; s/\&lt;\/tt\&gt;/<\/tt>/g' $(DOC_DIR)/html/index.html
+	@sed -i '/\&lt;style\&gt; .smallcaps { font-variant: small-caps; } \&lt;\/style\&gt;/d' $(DOC_DIR)/html/index.html
+	@sed -i '/README.md/d' $(DOC_DIR)/doxygen_warnings.log
+	@echo '<html><head><meta http-equiv="refresh" content="0; url=html/index.html"></head></html>' > $(DOC_DIR)/documentation.html
+	@echo -e "$(COLOR_YELLOW)Do you want to open the HTML documentation in the main system browser? (y/n): $(COLOR_RESET)"
+	@bash -c 'read -t 5 -p "" choice; \
+	if [ "$$choice" = "y" ]; then \
+		if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null; then \
+			cmd.exe /C start $(DOC_DIR)/documentation.html; \
+		else \
+			xdg-open $(DOC_DIR)/documentation.html; \
+		fi \
+	fi'
+else
+doc:
+	$(MAKE) $(SILENTOPT) clean-doc
+	doxygen Doxyfile
+	@sed -i 's/\&lt;tt\&gt;/<tt>/g; s/\&lt;\/tt\&gt;/<\/tt>/g' $(DOC_DIR)/html/index.html
+	@sed -i '/\&lt;style\&gt; .smallcaps { font-variant: small-caps; } \&lt;\/style\&gt;/d' $(DOC_DIR)/html/index.html
+	@sed -i '/README.md/d' $(DOC_DIR)/doxygen_warnings.log
+	@echo '<html><head><meta http-equiv="refresh" content="0; url=./html/index.html"></head></html>' > $(DOC_DIR)/documentation.html
+endif
+
+### MC # pack: # Creates a ZIP archive with files intended for submission (not allowed for submission)
+ifndef DISABLE_TARGETS
+pack:
+	@$(MAKE) $(SILENTOPT) install-pack-dep
+	$(MAKE) $(SILENTOPT) clean
+	mkdir -p $(PACK_DIR)
+	$(MAKE) $(SILENTOPT) pack-prepare
+	@echo ""
+	@cd $(ARCHIVE_DIR) && zip -qr ../$(PACK_NAME) ./
+else
+pack:
+	@echo "$(COLOR_RED)The 'pack' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+
+################################################################################
+#                                                                              #
+#                                BUILD TARGETS                                 #
+#                                                                              #
+################################################################################
+
+###                                                                          ###
+#                      COMPILATION OF RELEASE APP VERSION                      #
+###                                                                          ###
+
+# Build static library 'libipk25-chat.a'
+$(RELEASE_BUILD_DIR)/$(IPK_LIB): $(LIB_OBJS)
+	@mkdir -p $(RELEASE_BUILD_DIR)
+	@echo "$(COLOR_MAGENTA)Creating static library '$(RELEASE_BUILD_DIR)/$(IPK_LIB)'...$(COLOR_RESET)"
+	ar rcs $(RELEASE_BUILD_DIR)/$(IPK_LIB) $(LIB_OBJS)
+
+# Build the excecutable 'ipk25-chat'
+$(EXECUTABLE): $(MAIN_OBJ) $(RELEASE_BUILD_DIR)/$(IPK_LIB)
+	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)'...$(COLOR_RESET)"
+	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(MAIN_OBJ) -L$(RELEASE_BUILD_DIR) -lipk25-chat $(LIBS)
+
+# Compile all object files into the 'build' directory
+$(RELEASE_BUILD_DIR)/%.o: src/%.cpp
+	@mkdir -p $(dir $@)
+	@echo "$(COLOR_MAGENTA)Compiling $<...$(COLOR_RESET)"
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+
+###                                                                          ###
+#                       COMPILATION OF DEBUG APP VERSION                       #
+###                                                                          ###
+
+# Build static library 'libipk25-chat-debug.a'
+$(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG): $(LIB_OBJS_DEBUG)
+	@mkdir -p $(DEBUG_BUILD_DIR)
+	@echo "$(COLOR_MAGENTA)Creating static library '$(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)' for debug...$(COLOR_RESET)"
+	ar rcs $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG) $(LIB_OBJS_DEBUG)
+
+# Build the executable 'ipk25-chat-debug'
+$(EXECUTABLE)-debug: $(MAIN_OBJ_DEBUG) $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)
+	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)-debug' for debug...$(COLOR_RESET)"
+	$(CXX) $(CXXFLAGS_DEBUG) -o $(EXECUTABLE)-debug $(MAIN_OBJ_DEBUG) -L$(DEBUG_BUILD_DIR) -lipk25-chat-debug $(LIBS)
+
+# Compile all object files into the 'build' directory
+$(DEBUG_BUILD_DIR)/%.o: src/%.cpp
+	@mkdir -p $(dir $@)
+	@echo "$(COLOR_MAGENTA)Compiling $< for debug...$(COLOR_RESET)"
+	$(CXX) $(CXXFLAGS_DEBUG) $(INCLUDES) -c $< -o $@
+
+
+################################################################################
+#                                                                              #
+#                        SPECIALIZED 'CLEAN' COMMANDS                          #
+#                                                                              #
+################################################################################
+
+### C # clean-all: # Removes all created files (build, doc, executable, archive, ...)
+clean-all: clean-build clean-exec clean-test clean-doc clean-pack clean-debug-exec
+
+### C # clean-build: # Removes the 'build' directory
+clean-build:
+	rm -rf $(BUILD_DIR)
+
+### C # clean-exec: # Removes the executable
+clean-exec:
+	rm -f $(EXECUTABLE)
+
+### C # clean-debug-exec: # Removes the debug executable
+clean-debug-exec:
+	rm -f $(EXECUTABLE)-debug
+
+### C # clean-test: # Removes 'test/bin' folder with test executables
+clean-test:
+	rm -rf $(TEST_BIN_DIR)
+
+### C # clean-doc: # Removes generated content of the 'doc' directory
+clean-doc:
+	find $(DOC_DIR) -mindepth 1 ! -path '$(DOC_DIR)/resources*' ! -path '$(DOC_DIR)/raw*' -delete || true
+
+### C # clean-pack: # Removes the 'pack' directory including the archive (not allowed for submission)
+ifndef DISABLE_TARGETS
+clean-pack:
+	rm -rf $(PACK_DIR)
+else
+clean-pack:
+	@echo "$(COLOR_RED)The 'clean-pack' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+
+################################################################################
+#                                                                              #
+#                               'TEST' COMMANDS                                #
+#                                                                              #
+################################################################################
+
+### T # test-chat-exceptions: # Builds and runs the 'ChatExceptions' test (not allowed for submission)
+ifndef DISABLE_TARGETS
+test-chat-exceptions:
+	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
+	@cmake --build build --config Test --target ChatExceptionsTests
+	./$(TEST_BIN_DIR)/ChatExceptionsTests
+else
+test-chat-exceptions:
+	@echo "$(COLOR_RED)The 'test-chat-exceptions' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### T # test-exception-handler: # Builds and runs the 'ExceptionHandler' test (not allowed for submission)
+ifndef DISABLE_TARGETS
+test-exception-handler:
+	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
+	@cmake --build build --config Test --target ExceptionHandlerTests
+	./$(TEST_BIN_DIR)/ExceptionHandlerTests
+else
+test-exception-handler:
+	@echo "$(COLOR_RED)The 'test-exception-handler' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### T # test-argument-parser: # Builds and runs the 'ArgumentParser' test (not allowed for submission)
+ifndef DISABLE_TARGETS
+test-argument-parser:
+	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
+	@cmake --build build --config Test --target ArgumentParserTests
+	./$(TEST_BIN_DIR)/ArgumentParserTests
+else
+test-argument-parser:
+	@echo "$(COLOR_RED)The 'test-argument-parser' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+
+################################################################################
+#                                                                              #
+#                    PACKAGING THE PROJECT FOR SUBMISSION INTO '.ZIP'          #
+#                                                                              #
+################################################################################
+
+### P # pack-prepare: # Copies all necessary files to the 'pack/xkalinj00' directory (not allowed for submission)
+ifndef DISABLE_TARGETS
+pack-prepare:
+	@{ \
+		missing_files=0; \
+		if [ -d "$(SRC_DIR)" ]; then \
+			rsync -a --include '*/' --include '*.cpp' --exclude '*' --exclude '*/' \
+			--prune-empty-dirs ./ $(ARCHIVE_DIR)/; \
+		else \
+			echo "$(COLOR_RED)\nError: The directory "$(SRC_DIR)" does not exist.$(COLOR_RESET)"; \
+		fi; \
+		if [ -d "$(SRC_DIR)" ]; then \
+			rsync -a --include '*/' --include '*.hpp' --exclude '*' --exclude '*/' \
+			--prune-empty-dirs ./ $(ARCHIVE_DIR)/; \
+		else \
+			echo "$(COLOR_RED)\nError: The directory "$(SRC_DIR)" does not exist.$(COLOR_RESET)"; \
+		fi; \
+		if [ -d "$(TEST_DIR)" ]; then \
+			rsync -a --include '*.cpp' --include '*.hpp' --exclude '*/' $(TEST_DIR)/ $(ARCHIVE_DIR)/$(TEST_DIR)/; \
+		else \
+			echo "$(COLOR_RED)\nError: The directory "$(TEST_DIR)" does not exist.$(COLOR_RESET)"; \
+		fi; \
+		if [ -d "$(DOC_DIR)/resources" ]; then \
+			mkdir -p $(ARCHIVE_DIR)/$(DOC_DIR)/resources; \
+			rsync -a $(DOC_DIR)/resources/ $(ARCHIVE_DIR)/$(DOC_DIR)/resources/; \
+		else \
+			echo "$(COLOR_RED)\nError: The directory "$(DOC_DIR)/resources" does not exist.$(COLOR_RESET)"; \
+		fi; \
+		if [ -f "Makefile" ]; then \
+			rsync -a Makefile $(ARCHIVE_DIR)/; \
+		else \
+			missing_files=1; \
+		fi; \
+		if [ -f "CMakeLists.txt" ]; then \
+			rsync -a CMakeLists.txt $(ARCHIVE_DIR)/; \
+		else \
+			missing_files=1; \
+		fi; \
+		if [ -f "Doxyfile" ]; then \
+			rsync -a Doxyfile $(ARCHIVE_DIR)/; \
+		else \
+			missing_files=1; \
+		fi; \
+		if [ -f "README.md" ]; then \
+			rsync -a README.md $(ARCHIVE_DIR)/; \
+		else \
+			missing_files=1; \
+		fi; \
+		if [ -f "CHANGELOG.md" ]; then \
+			rsync -a CHANGELOG.md $(ARCHIVE_DIR)/; \
+		else \
+			missing_files=1; \
+		fi; \
+		if [ -f "LICENSE" ]; then \
+			rsync -a LICENSE $(ARCHIVE_DIR)/; \
+		else \
+			missing_files=1; \
+		fi; \
+		echo "$(COLOR_GREEN)\nList of copied files:$(COLOR_RESET)"; \
+		find $(PACK_DIR) -type f -printf "$(COLOR_GREEN)%p$(COLOR_RESET)\n"; \
+		if [ "$$missing_files" -eq 1 ]; then \
+			echo "$(COLOR_RED)\nList of missing files:$(COLOR_RESET)"; \
+		fi; \
+		if [ ! -f "$(ARCHIVE_DIR)/Makefile" ]; then \
+			echo "$(COLOR_RED)Error: The file "Makefile" was not copied.$(COLOR_RESET)"; \
+		fi; \
+		if [ ! -f "$(ARCHIVE_DIR)/CMakeLists.txt" ]; then \
+        	echo "$(COLOR_RED)Error: The file "CMakeLists.txt" was not copied.$(COLOR_RESET)"; \
+        fi; \
+		if [ ! -f "$(ARCHIVE_DIR)/Doxyfile" ]; then \
+			echo "$(COLOR_RED)Error: The file "Doxyfile" was not copied.$(COLOR_RESET)"; \
+		fi; \
+		if [ ! -f "$(ARCHIVE_DIR)/README.md" ]; then \
+			echo "$(COLOR_RED)Error: The file "README.md" was not copied.$(COLOR_RESET)"; \
+		fi; \
+		if [ ! -f "$(ARCHIVE_DIR)/CHANGELOG.md" ]; then \
+			echo "$(COLOR_RED)Error: The file "CHANGELOG.md" was not copied.$(COLOR_RESET)"; \
+		fi; \
+		if [ ! -f "$(ARCHIVE_DIR)/LICENSE" ]; then \
+			echo "$(COLOR_RED)Error: The file "LICENSE" was not copied.$(COLOR_RESET)"; \
+		fi; \
+	}
+else
+pack-prepare:
+	@echo "$(COLOR_RED)The 'pack-prepare' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+
+################################################################################
+#                                                                              #
+#                    TARGETS FOR INSTALLING NECESSARY TOOLS                    #
+#                                                                              #
+################################################################################
+
+### DEV # install-dev-dep: # Installs dependencies needed for using all 'Makefile' functions (not allowed for submission)
+ifndef DISABLE_TARGETS
+install-dev-dep: update-dep install-help-dep install-doc-dep install-pack-dep install-test-dep
+else
+install-dev-dep:
+	@echo "$(COLOR_RED)The 'install-dev-dep' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### DEV # install-help-dep: # Installs dependencies needed for printing 'Makefile' help - 'less' (not allowed for submission)
+ifndef DISABLE_TARGETS
+install-help-dep:
+	@dpkg -s less >/dev/null 2>&1 || (echo "Installing less" && sudo apt-get install less)
+else
+install-help-dep:
+	@echo "$(COLOR_RED)The 'install-help-dep' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### DEV # install-doc-dep: # Installs dependencies needed for generating documentation - 'doxygen' (not allowed for submission)
+ifndef DISABLE_TARGETS
+install-doc-dep:
+	@dpkg -s doxygen >/dev/null 2>&1 || (echo "Installing doxygen" && sudo apt-get install doxygen)
+else
+install-doc-dep:
+	@echo "$(COLOR_RED)The 'install-doc-dep' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### DEV # install-pack-dep: # Installs dependencies needed for project packaging - 'rsync', 'zip' (not allowed for submission)
+ifndef DISABLE_TARGETS
+install-pack-dep:
+	@dpkg -s rsync >/dev/null 2>&1 || (echo "Installing rsync" && sudo apt-get install rsync)
+	@dpkg -s zip >/dev/null 2>&1 || (echo "Installing zip" && sudo apt-get install zip)
+else
+install-pack-dep:
+	@echo "$(COLOR_RED)The 'install-pack-dep' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### DEV # install-test-dep: # Installs dependencies needed for project testing - cmake (not allowed for submission)
+ifndef DISABLE_TARGETS
+install-test-dep:
+	@dpkg -s cmake >/dev/null 2>&1 || (echo "Installing cmake" && sudo apt-get install cmake)
+else
+install-test-dep:
+	@echo "$(COLOR_RED)The 'install-pack-dep' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### DEV # update-dep: # Updates the list of available packages (not allowed for submission)
+ifndef DISABLE_TARGETS
+update-dep:
+	sudo apt-get update -y
+else
+update-dep:
+	@echo "$(COLOR_RED)The 'update-dep' target is disabled for project submission.$(COLOR_RESET)"
+endif
+
+### end of file Makefile ###
