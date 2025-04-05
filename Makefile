@@ -8,7 +8,7 @@
 # Author:       Jan Kalina <xkalinj00>                                         #
 #                                                                              #
 # Created:      02.04.2025                                                     #
-# Last edit:    03.04.2025                                                     #
+# Last edit:    05.04.2025                                                     #
 #                                                                              #
 # Description:  This Makefile is used for compiling the project IPK25 Chat     #
 #               Client for the IPK course. Besides building, the Makefile      #
@@ -53,7 +53,7 @@ COLOR_MAGENTA = \033[0;35m
 $(VERBOSE)SILENTOPT = -s
 
 # Definition of a constant to disable selected targets (for submission)
-DISABLE_TARGETS ?= true
+SUBMISSION_MODE ?= true
 
 
 ###                   ###
@@ -141,7 +141,7 @@ MAIN_OBJ_DEBUG = $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(MAIN_SRC:.cpp=
 all: build
 
 ### MC # build: # Builds the 'ipk25-chat' via CMake in developer version and Make in submission version
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 build:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 	@cmake --build build --config Release --target ipk25-chat
@@ -157,7 +157,7 @@ run:
 	./$(EXECUTABLE) -h
 
 ### MC # test: # Builds and runs the test executable 'ipk25-chat-test' (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 test:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
 	@cmake --build build --config Test --target ipk25-chat-test
@@ -175,7 +175,7 @@ CATEGORIES := MC C T P DEV
 
 ### MC # help: # Prints help for using the Makefile
 help:
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 	@$(MAKE) $(SILENTOPT) install-help-dep
 endif
 	@{ \
@@ -204,14 +204,14 @@ endif
 	} | less -R
 
 ### MC # clean: # Runs 'clean-all' in developer / submission mode (different versions)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 clean: clean-all
 else
 clean: clean-build clean-test clean-doc clean-debug-exec
 endif
 
 ### MC # doc: # Generates project documentation into the `doc` directory (different versions)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 doc:
 	@$(MAKE) $(SILENTOPT) install-doc-dep
 	$(MAKE) $(SILENTOPT) clean-doc
@@ -241,7 +241,7 @@ doc:
 endif
 
 ### MC # pack: # Creates a ZIP archive with files intended for submission (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 pack:
 	@$(MAKE) $(SILENTOPT) install-pack-dep
 	$(MAKE) $(SILENTOPT) clean
@@ -335,7 +335,7 @@ clean-doc:
 	find $(DOC_DIR) -mindepth 1 ! -path '$(DOC_DIR)/resources*' ! -path '$(DOC_DIR)/raw*' -delete || true
 
 ### C # clean-pack: # Removes the 'pack' directory including the archive (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 clean-pack:
 	rm -rf $(PACK_DIR)
 else
@@ -351,7 +351,7 @@ endif
 ################################################################################
 
 ### T # test-chat-exceptions: # Builds and runs the 'ChatExceptions' test (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 test-chat-exceptions:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
 	@cmake --build build --config Test --target ChatExceptionsTests
@@ -362,7 +362,7 @@ test-chat-exceptions:
 endif
 
 ### T # test-exception-handler: # Builds and runs the 'ExceptionHandler' test (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 test-exception-handler:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
 	@cmake --build build --config Test --target ExceptionHandlerTests
@@ -373,7 +373,7 @@ test-exception-handler:
 endif
 
 ### T # test-argument-parser: # Builds and runs the 'ArgumentParser' test (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 test-argument-parser:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
 	@cmake --build build --config Test --target ArgumentParserTests
@@ -391,7 +391,7 @@ endif
 ################################################################################
 
 ### P # pack-prepare: # Copies all necessary files to the 'pack/xkalinj00' directory (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 pack-prepare:
 	@{ \
 		missing_files=0; \
@@ -420,6 +420,8 @@ pack-prepare:
 		fi; \
 		if [ -f "Makefile" ]; then \
 			rsync -a Makefile $(ARCHIVE_DIR)/; \
+			sed -i '0,/SUBMISSION_MODE/ {/SUBMISSION_MODE/ s|#||g}' $(ARCHIVE_DIR)/Makefile; \
+            sed -i '0,/SUBMISSION_MODE/ s|^\s*\(.*SUBMISSION_MODE.*\)$$|\1|' $(ARCHIVE_DIR)/Makefile; \
 		else \
 			missing_files=1; \
 		fi; \
@@ -484,8 +486,19 @@ endif
 #                                                                              #
 ################################################################################
 
+### DEV # developer-mode: # Switches the Makefile to developer mode
+developer-mode:
+	@sed -i '0,/SUBMISSION_MODE/ {/^[^#]*SUBMISSION_MODE/ s/^/#/}' Makefile
+	@echo "$(COLOR_MAGENTA)The Makefile has been switched to:$(COLOR_RESET) $(COLOR_YELLOW)DEVELOPER MODE$(COLOR_RESET)"
+
+### DEV # submission-mode: # Switches the Makefile to submission mode
+submission-mode:
+	@sed -i '0,/SUBMISSION_MODE/ {/SUBMISSION_MODE/ s|#||g}' Makefile
+	@sed -i '0,/SUBMISSION_MODE/ s|^\s*\(.*SUBMISSION_MODE.*\)$$|\1|' Makefile
+	@echo "$(COLOR_MAGENTA)The Makefile has been switched to:$(COLOR_RESET) $(COLOR_YELLOW)SUBMISSION MODE$(COLOR_RESET)"
+
 ### DEV # install-dev-dep: # Installs dependencies needed for using all 'Makefile' functions (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 install-dev-dep: update-dep install-help-dep install-doc-dep install-pack-dep install-test-dep
 else
 install-dev-dep:
@@ -493,7 +506,7 @@ install-dev-dep:
 endif
 
 ### DEV # install-help-dep: # Installs dependencies needed for printing 'Makefile' help - 'less' (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 install-help-dep:
 	@dpkg -s less >/dev/null 2>&1 || (echo "Installing less" && sudo apt-get install less)
 else
@@ -502,7 +515,7 @@ install-help-dep:
 endif
 
 ### DEV # install-doc-dep: # Installs dependencies needed for generating documentation - 'doxygen' (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 install-doc-dep:
 	@dpkg -s doxygen >/dev/null 2>&1 || (echo "Installing doxygen" && sudo apt-get install doxygen)
 else
@@ -511,7 +524,7 @@ install-doc-dep:
 endif
 
 ### DEV # install-pack-dep: # Installs dependencies needed for project packaging - 'rsync', 'zip' (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 install-pack-dep:
 	@dpkg -s rsync >/dev/null 2>&1 || (echo "Installing rsync" && sudo apt-get install rsync)
 	@dpkg -s zip >/dev/null 2>&1 || (echo "Installing zip" && sudo apt-get install zip)
@@ -521,7 +534,7 @@ install-pack-dep:
 endif
 
 ### DEV # install-test-dep: # Installs dependencies needed for project testing - cmake (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 install-test-dep:
 	@dpkg -s cmake >/dev/null 2>&1 || (echo "Installing cmake" && sudo apt-get install cmake)
 else
@@ -530,7 +543,7 @@ install-test-dep:
 endif
 
 ### DEV # update-dep: # Updates the list of available packages (not allowed for submission)
-ifndef DISABLE_TARGETS
+ifndef SUBMISSION_MODE
 update-dep:
 	sudo apt-get update -y
 else
