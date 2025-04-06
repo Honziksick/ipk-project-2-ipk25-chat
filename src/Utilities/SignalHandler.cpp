@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    03.04.2025                                                    *
+ * Last edit:    06.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the SignalHandler class, which is           *
  *               responsible for handling system signals.                      *
@@ -22,6 +22,7 @@
 
 #include "Utilities/SignalHandler.hpp"
 #include "Exceptions/ChatExceptions.hpp"
+#include "Utilities/Logger.hpp"
 #include <csignal>  // signal
 
 using namespace IPK25ChatClient::Exceptions;
@@ -29,15 +30,17 @@ using namespace IPK25ChatClient::Exceptions;
 namespace IPK25ChatClient::Utilities
 {
     void SignalHandler::registerHandlers() {
+        logger("Registering signal handlers");
         signal(SIGINT, handleSignal);
         signal(SIGSEGV, handleSignal);
     } // SignalHandler::registerHandlers()
 
     void SignalHandler::handleSignal(const int signal) {
+        logger("Handling signal: %d", signal);
         if(signal == SIGINT) {
             throw UserInterruptionException("SIGINT: User interrupted the program.");
         }
-        else if(signal == SIGSEGV) {
+        if(signal == SIGSEGV) {
             throw InternalErrorException("SIGSEGV: Segmentation fault occurred.");
         }
     } // SignalHandler::handleSignal()

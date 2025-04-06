@@ -23,6 +23,7 @@
 #include "Exceptions/ChatExceptions.hpp"
 #include "Constants/ExceptionMessages.hpp"
 #include "Enums/ExitCodes.hpp"
+#include "Utilities/Logger.hpp"
 
 using namespace IPK25ChatClient::Constants;
 using namespace IPK25ChatClient::Enums;
@@ -35,63 +36,81 @@ namespace IPK25ChatClient::Exceptions
             ExitCodes::SUCCESS,
             cHelpRequestedMsg,
             move(detail)
-        } {}
+        } {
+        logger("HelpRequestedException created with detail: %s", detail.c_str());
+    }
 
     InvalidArgumentException::InvalidArgumentException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::INVALID_ARGUMENT_ERROR,
             cInvalidArgumentErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("InvalidArgumentException created with detail: %s", detail.c_str());
+    }
 
     HostnameResolutionException::HostnameResolutionException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::HOSTNAME_RESOLUTION_ERROR,
             cHostnameResolutionErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("HostnameResolutionException created with detail: %s", detail.c_str());
+    }
 
     InternalErrorException::InternalErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::INTERNAL_ERROR,
             cInternalErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("InternalErrorException created with detail: %s", detail.c_str());
+    }
 
     SocketErrorException::SocketErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::SOCKET_ERROR,
             cSocketErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("SocketErrorException created with detail: %s", detail.c_str());
+    }
 
     ProtocolErrorException::ProtocolErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::PROTOCOL_ERROR,
             cProtocolErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("ProtocolErrorException created with detail: %s", detail.c_str());
+    }
 
     UknownErrorException::UknownErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::UNKNOWN_ERROR,
             cUnknownErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("UknownErrorException created with detail: %s", detail.c_str());
+    }
 
     TimeoutErrorException::TimeoutErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::TIMEOUT_ERROR,
             cTimeoutErrorMsg,
             move(detail)
-        } {}
+        } {
+        logger("TimeoutErrorException created with detail: %s", detail.c_str());
+    }
 
     UserInterruptionException::UserInterruptionException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::USER_INTERRUPTION_ERROR,
             cUserInterruptionMsg,
             move(detail)
-        } {}
+        } {
+        logger("UserInterruptionException created with detail: %s", detail.c_str());
+    }
 } // IPK25ChatClient::Exceptions
 
 /*** end of file ChatExceptions.cpp ***/
