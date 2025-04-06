@@ -34,7 +34,7 @@ namespace IPK25ChatClient::Exceptions
     HelpRequestedException::HelpRequestedException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::SUCCESS,
-            ExceptionMessages::cHelpRequestedMsg,
+            ExceptionMessages::HELP_REQUESTED_MSG,
             move(detail)
         } {
         logger("HelpRequestedException created with detail: %s", detail.c_str());
@@ -43,7 +43,7 @@ namespace IPK25ChatClient::Exceptions
     InvalidArgumentException::InvalidArgumentException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::INVALID_ARGUMENT_ERROR,
-            ExceptionMessages::cInvalidArgumentErrorMsg,
+            ExceptionMessages::INVALID_ARGUMENT_ERROR_MSG,
             move(detail)
         } {
         logger("InvalidArgumentException created with detail: %s", detail.c_str());
@@ -52,7 +52,7 @@ namespace IPK25ChatClient::Exceptions
     HostnameResolutionException::HostnameResolutionException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::HOSTNAME_RESOLUTION_ERROR,
-            ExceptionMessages::cHostnameResolutionErrorMsg,
+            ExceptionMessages::HOSTNAME_RESOLUTION_ERROR_MSG,
             move(detail)
         } {
         logger("HostnameResolutionException created with detail: %s", detail.c_str());
@@ -61,7 +61,7 @@ namespace IPK25ChatClient::Exceptions
     InternalErrorException::InternalErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::INTERNAL_ERROR,
-            ExceptionMessages::cInternalErrorMsg,
+            ExceptionMessages::INTERNAL_ERROR_MSG,
             move(detail)
         } {
         logger("InternalErrorException created with detail: %s", detail.c_str());
@@ -70,7 +70,7 @@ namespace IPK25ChatClient::Exceptions
     SocketErrorException::SocketErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::SOCKET_ERROR,
-            ExceptionMessages::cSocketErrorMsg,
+            ExceptionMessages::SOCKET_ERROR_MSG,
             move(detail)
         } {
         logger("SocketErrorException created with detail: %s", detail.c_str());
@@ -79,7 +79,7 @@ namespace IPK25ChatClient::Exceptions
     ProtocolErrorException::ProtocolErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::PROTOCOL_ERROR,
-            ExceptionMessages::cProtocolErrorMsg,
+            ExceptionMessages::PROTOCOL_ERROR_MSG,
             move(detail)
         } {
         logger("ProtocolErrorException created with detail: %s", detail.c_str());
@@ -88,7 +88,7 @@ namespace IPK25ChatClient::Exceptions
     UknownErrorException::UknownErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::UNKNOWN_ERROR,
-            ExceptionMessages::cUnknownErrorMsg,
+            ExceptionMessages::UNKNOWN_ERROR_MSG,
             move(detail)
         } {
         logger("UknownErrorException created with detail: %s", detail.c_str());
@@ -97,7 +97,7 @@ namespace IPK25ChatClient::Exceptions
     TimeoutErrorException::TimeoutErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::TIMEOUT_ERROR,
-            ExceptionMessages::cTimeoutErrorMsg,
+            ExceptionMessages::TIMEOUT_ERROR_MSG,
             move(detail)
         } {
         logger("TimeoutErrorException created with detail: %s", detail.c_str());
@@ -106,7 +106,7 @@ namespace IPK25ChatClient::Exceptions
     UserInterruptionException::UserInterruptionException(string detail) noexcept
         : ChatBaseException{
             ExitCodes::USER_INTERRUPTION_ERROR,
-            ExceptionMessages::cUserInterruptionMsg,
+            ExceptionMessages::USER_INTERRUPTION_MSG,
             move(detail)
         } {
         logger("UserInterruptionException created with detail: %s", detail.c_str());

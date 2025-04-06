@@ -31,8 +31,8 @@ using namespace IPK25ChatClient::Constants;
 namespace IPK25ChatClient::Common
 {
     CommandLineOptions::CommandLineOptions()
-        : mTransportProtocol{TransportProtocol::None}, mServerPort{DefaultCliOptions::cServerPort},
-          mUdpMaxRetransmit{DefaultCliOptions::cUdpMaxRetransmit}, mUdpTimeoutMs{DefaultCliOptions::cUdpTimeoutMs} {}
+        : mTransportProtocol{TransportProtocol::None}, mServerPort{DefaultCliOptions::SERVER_PORT},
+          mUdpMaxRetransmit{DefaultCliOptions::UDP_MAX_RETRANSMIT}, mUdpTimeoutMs{DefaultCliOptions::UDP_TIMEOUT_MS} {}
 } // IPK25ChatClient::Common
 
 /*** end of file CommandLineOptions.cpp ***/

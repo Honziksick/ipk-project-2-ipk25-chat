@@ -33,9 +33,9 @@ namespace IPK25ChatClient::Constants
      */
     class DefaultCliOptions {
     public:
-        static constexpr uint16_t cServerPort = 4567;    /**< Default server port number. */
-        static constexpr uint8_t cUdpMaxRetransmit = 3;  /**< Default maximum number of UDP retransmissions. */
-        static constexpr uint16_t cUdpTimeoutMs = 250;   /**< Default UDP timeout duration in milliseconds. */
+        static constexpr uint16_t SERVER_PORT = 4567;     /**< Default server port number. */
+        static constexpr uint8_t UDP_MAX_RETRANSMIT = 3;  /**< Default maximum number of UDP retransmissions. */
+        static constexpr uint16_t UDP_TIMEOUT_MS = 250;   /**< Default UDP timeout duration in milliseconds. */
     }; // DefaultCLIOptions
 } // IPK25ChatClient::Constants
 

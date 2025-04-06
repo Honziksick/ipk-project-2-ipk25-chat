@@ -35,47 +35,47 @@ namespace IPK25ChatClient::Constants
         /**
          * @brief Message indicating that the user requested help.
          */
-        static constexpr auto cHelpRequestedMsg = "User requested help.";
+        static constexpr auto HELP_REQUESTED_MSG = "User requested help.";
 
         /**
          * @brief Error message for invalid argument.
          */
-        static constexpr auto cInvalidArgumentErrorMsg = "Invalid argument provided.";
+        static constexpr auto INVALID_ARGUMENT_ERROR_MSG = "Invalid argument provided.";
 
         /**
          * @brief Error message for hostname resolution error.
          */
-        static constexpr auto cHostnameResolutionErrorMsg = "Hostname resolution error occurred.";
+        static constexpr auto HOSTNAME_RESOLUTION_ERROR_MSG = "Hostname resolution error occurred.";
 
         /**
          * @brief Error message for internal error.
          */
-        static constexpr auto cInternalErrorMsg = "Internal error occurred.";
+        static constexpr auto INTERNAL_ERROR_MSG = "Internal error occurred.";
 
         /**
          * @brief Error message for socket error.
          */
-        static constexpr auto cSocketErrorMsg = "Socket error occurred.";
+        static constexpr auto SOCKET_ERROR_MSG = "Socket error occurred.";
 
         /**
          * @brief Error message for protocol error.
          */
-        static constexpr auto cProtocolErrorMsg = "Protocol error occurred.";
+        static constexpr auto PROTOCOL_ERROR_MSG = "Protocol error occurred.";
 
         /**
          * @brief Error message for unknown error.
          */
-        static constexpr auto cUnknownErrorMsg = "An unexpected unknown error occurred. Please report this issue to the developers.";
+        static constexpr auto UNKNOWN_ERROR_MSG = "An unexpected unknown error occurred. Please report this issue to the developers.";
 
         /**
          * @brief Error message for timeout error.
          */
-        static constexpr auto cTimeoutErrorMsg = "Connection timed out.";
+        static constexpr auto TIMEOUT_ERROR_MSG = "Connection timed out.";
 
         /**
          * @brief Error message for user interruption.
          */
-        static constexpr auto cUserInterruptionMsg = "Operation was interrupted by SIGINT signal (i.e., CTRL+C).";
+        static constexpr auto USER_INTERRUPTION_MSG = "Operation was interrupted by SIGINT signal (i.e., CTRL+C).";
     }; // ExceptionMessages
 } // IPK25ChatClient::Constants
 
