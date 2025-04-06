@@ -26,49 +26,57 @@
 namespace IPK25ChatClient::Constants
 {
     /**
-     * @brief Message indicating that the user requested help.
+     * @class ExceptionMessages
+     * @brief Class containing constant exception messages used in the
+     *        IPK25 Chat Client project.
      */
-    inline constexpr auto cHelpRequestedMsg = "User requested help.";
+    class ExceptionMessages {
+    public:
+        /**
+         * @brief Message indicating that the user requested help.
+         */
+        static constexpr auto cHelpRequestedMsg = "User requested help.";
 
-    /**
-     * @brief Error message for invalid argument.
-     */
-    inline constexpr auto cInvalidArgumentErrorMsg = "Invalid argument provided.";
+        /**
+         * @brief Error message for invalid argument.
+         */
+        static constexpr auto cInvalidArgumentErrorMsg = "Invalid argument provided.";
 
-    /**
-     * @brief Error message for hostname resolution error.
-     */
-    inline constexpr auto cHostnameResolutionErrorMsg = "Hostname resolution error occurred.";
+        /**
+         * @brief Error message for hostname resolution error.
+         */
+        static constexpr auto cHostnameResolutionErrorMsg = "Hostname resolution error occurred.";
 
-    /**
-     * @brief Error message for internal error.
-     */
-    inline constexpr auto cInternalErrorMsg = "Internal error occurred.";
+        /**
+         * @brief Error message for internal error.
+         */
+        static constexpr auto cInternalErrorMsg = "Internal error occurred.";
 
-    /**
-     * @brief Error message for socket error.
-     */
-    inline constexpr auto cSocketErrorMsg = "Socket error occurred.";
+        /**
+         * @brief Error message for socket error.
+         */
+        static constexpr auto cSocketErrorMsg = "Socket error occurred.";
 
-    /**
-     * @brief Error message for protocol error.
-     */
-    inline constexpr auto cProtocolErrorMsg = "Protocol error occurred.";
+        /**
+         * @brief Error message for protocol error.
+         */
+        static constexpr auto cProtocolErrorMsg = "Protocol error occurred.";
 
-    /**
-     * @brief Error message for unknown error.
-     */
-    inline constexpr auto cUnknownErrorMsg = "An unexpected unknown error occurred. Please report this issue to the developers.";
+        /**
+         * @brief Error message for unknown error.
+         */
+        static constexpr auto cUnknownErrorMsg = "An unexpected unknown error occurred. Please report this issue to the developers.";
 
-    /**
-     * @brief Error message for timeout error.
-     */
-    inline constexpr auto cTimeoutErrorMsg = "Connection timed out.";
+        /**
+         * @brief Error message for timeout error.
+         */
+        static constexpr auto cTimeoutErrorMsg = "Connection timed out.";
 
-    /**
-     * @brief Error message for user interruption.
-     */
-    inline constexpr auto cUserInterruptionMsg = "Operation was interrupted by SIGINT signal (i.e., CTRL+C).";
+        /**
+         * @brief Error message for user interruption.
+         */
+        static constexpr auto cUserInterruptionMsg = "Operation was interrupted by SIGINT signal (i.e., CTRL+C).";
+    }; // ExceptionMessages
 } // IPK25ChatClient::Constants
 
 #endif // EXCEPTION_MESSAGES_HPP
