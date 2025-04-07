@@ -42,7 +42,7 @@ namespace IPK25ChatClient::Common
         explicit CommandLineOptions();
 
         Enums::TransportProtocol mTransportProtocol;  /**< Transport protocol type (TCP or UDP).  */
-        std::string mServer;                          /**< Server IP address or hostname.         */
+        std::string mTargetServer;                    /**< Server IP address or hostname.         */
         uint16_t mServerPort;                         /**< Server port number.                    */
         uint8_t mUdpMaxRetransmit;                    /**< Maximum number of UDP retransmissions. */
         uint16_t mUdpTimeoutMs;                       /**< UDP timeout duration in milliseconds.  */

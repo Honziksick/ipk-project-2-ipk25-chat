@@ -33,10 +33,10 @@
 #define logger(format, ...) \
     do { \
         if (*#format) { \
-            fprintf(stderr, "%s:%-4d | %15s | " format "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
+            fprintf(stderr, "%-40s:%-4d | %30s | " format "\n", __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
         } \
         else { \
-            fprintf(stderr, "%s:%-4d | %15s | \n", __FILE__, __LINE__, __func__); \
+            fprintf(stderr, "%-40s:%-4d | %30s | \n", __FILE__, __LINE__, __func__); \
         } \
     } while (0)
 #else
