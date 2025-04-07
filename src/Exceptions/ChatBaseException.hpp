@@ -41,7 +41,7 @@ namespace IPK25ChatClient::Exceptions
          * @param message The error message.
          * @param detail Additional details about the error.
          */
-        ChatBaseException(Enums::ExitCodes code, std::string message, std::string detail = "");
+        ChatBaseException(Enums::ExitCode code, std::string message, std::string detail = "");
 
         /**
          * @brief Returns the error message.
@@ -65,7 +65,7 @@ namespace IPK25ChatClient::Exceptions
         std::string detail() const noexcept;
 
     private:
-        const Enums::ExitCodes mCode; /**< The error code.                     */
+        const Enums::ExitCode mCode; /**< The error code.                     */
         const std::string mMessage;   /**< The error message.                  */
         std::string mDetail;          /**< Additional details about the error. */
     }; // ChatBaseException

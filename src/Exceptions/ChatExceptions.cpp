@@ -32,63 +32,63 @@ namespace IPK25ChatClient::Exceptions
 {
     HelpRequestedException::HelpRequestedException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::SUCCESS,
+            ExitCode::SUCCESS,
             ExceptionMessages::HELP_REQUESTED_MSG,
             move(detail)
         } {}
 
     InvalidArgumentException::InvalidArgumentException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::INVALID_ARGUMENT_ERROR,
+            ExitCode::INVALID_ARGUMENT_ERROR,
             ExceptionMessages::INVALID_ARGUMENT_ERROR_MSG,
             move(detail)
         } {}
 
     HostnameResolutionException::HostnameResolutionException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::HOSTNAME_RESOLUTION_ERROR,
+            ExitCode::HOSTNAME_RESOLUTION_ERROR,
             ExceptionMessages::HOSTNAME_RESOLUTION_ERROR_MSG,
             move(detail)
         } {}
 
     InternalErrorException::InternalErrorException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::INTERNAL_ERROR,
+            ExitCode::INTERNAL_ERROR,
             ExceptionMessages::INTERNAL_ERROR_MSG,
             move(detail)
         } {}
 
     SocketErrorException::SocketErrorException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::SOCKET_ERROR,
+            ExitCode::SOCKET_ERROR,
             ExceptionMessages::SOCKET_ERROR_MSG,
             move(detail)
         } {}
 
     ProtocolErrorException::ProtocolErrorException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::PROTOCOL_ERROR,
+            ExitCode::PROTOCOL_ERROR,
             ExceptionMessages::PROTOCOL_ERROR_MSG,
             move(detail)
         } {}
 
     UknownErrorException::UknownErrorException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::UNKNOWN_ERROR,
+            ExitCode::UNKNOWN_ERROR,
             ExceptionMessages::UNKNOWN_ERROR_MSG,
             move(detail)
         } {}
 
     TimeoutErrorException::TimeoutErrorException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::TIMEOUT_ERROR,
+            ExitCode::TIMEOUT_ERROR,
             ExceptionMessages::TIMEOUT_ERROR_MSG,
             move(detail)
         } {}
 
     UserInterruptionException::UserInterruptionException(string detail) noexcept
         : ChatBaseException{
-            ExitCodes::USER_INTERRUPTION_ERROR,
+            ExitCode::USER_INTERRUPTION_ERROR,
             ExceptionMessages::USER_INTERRUPTION_MSG,
             move(detail)
         } {}

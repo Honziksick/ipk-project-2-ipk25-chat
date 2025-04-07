@@ -27,14 +27,14 @@
 namespace IPK25ChatClient::Enums
 {
     /**
-     * @enum ExitCodes
+     * @enum ExitCode
      * @brief Enum class representing custom exit codes in the IPK25 Chat Client.
      *
      * @details This enum class defines various error codes that can be used
      *          to represent different error conditions in the IPK25 Chat Client
      *          project.
      */
-    enum class ExitCodes {
+    enum class ExitCode {
         SUCCESS                   = 0,   /**< Success exit code (EX_OK).                     */
         INVALID_ARGUMENT_ERROR    = 64,  /**< Command line usage error (EX_USAGE).           */
         HOSTNAME_RESOLUTION_ERROR = 68,  /**< Hostname resolution error code (EX_NOHOST).    */

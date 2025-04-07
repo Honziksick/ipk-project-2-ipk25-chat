@@ -27,7 +27,7 @@ using namespace std;
 
 namespace IPK25ChatClient::Exceptions
 {
-    ChatBaseException::ChatBaseException(const Enums::ExitCodes code, string message, string detail)
+    ChatBaseException::ChatBaseException(const Enums::ExitCode code, string message, string detail)
         : mCode{code}, mMessage{move(message)}, mDetail{move(detail)} {}
 
     const char *ChatBaseException::what() const noexcept {
