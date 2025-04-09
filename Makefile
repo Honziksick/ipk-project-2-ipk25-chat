@@ -8,7 +8,7 @@
 # Author:       Jan Kalina <xkalinj00>                                         #
 #                                                                              #
 # Created:      02.04.2025                                                     #
-# Last edit:    05.04.2025                                                     #
+# Last edit:    09.04.2025                                                     #
 #                                                                              #
 # Description:  This Makefile is used for compiling the project IPK25 Chat     #
 #               Client for the IPK course. Besides building, the Makefile      #
@@ -31,7 +31,7 @@
 ###                                   ###
 
 # Project name
-EXECUTABLE = ipk25-chat
+EXECUTABLE = ipk25chat-client
 
 # Name of the ZIP archive for project submission
 PACK_NAME = xkalinj00
@@ -106,20 +106,20 @@ CXXFLAGS_DEBUG = $(CXX_STD) $(DEBUG_FLAGS) $(WARNING_FLAGS) $(SANITIZE_FLAGS)
 
 INCLUDES = -I$(SRC_DIR)
 LIBS = -lnet
-IPK_LIB = libipk25-chat.a
-IPK_LIB_DEBUG = libipk25-chat-debug.a
+IPK_LIB = libipk25chat-client.a
+IPK_LIB_DEBUG = libipk25chat-client-debug.a
 
 
 ###                     ###
 #  Wildcards & Variables  #
 ###                     ###
 
-# For 'ipk25-chat-lib.a'
+# For 'ipk25chat-client-lib.a'
 LIB_SRCS := $(shell find $(SRC_DIR) -type f -name "*.cpp" | grep -v "$(SRC_DIR)/App/main.cpp")
 LIB_OBJS := $(patsubst $(SRC_DIR)/%, $(RELEASE_BUILD_DIR)/%, $(LIB_SRCS:.cpp=.o))
 LIB_OBJS_DEBUG := $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(LIB_SRCS:.cpp=.o))
 
-# For 'ipk25-chat'
+# For 'ipk25chat-client'
 MAIN_SRC = $(SRC_DIR)/App/main.cpp
 MAIN_OBJ = $(patsubst $(SRC_DIR)/%, $(RELEASE_BUILD_DIR)/%, $(MAIN_SRC:.cpp=.o))
 MAIN_OBJ_DEBUG = $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(MAIN_SRC:.cpp=.o))
@@ -137,14 +137,14 @@ MAIN_OBJ_DEBUG = $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(MAIN_SRC:.cpp=
 		test-chat-exceptions pack-prepare install-dev-dep install-help-dep \
 		install-test-dep install-doc-dep install-pack-dep update-dep
 
-### MC # all: # Builds the 'ipk25-chat'
+### MC # all: # Builds the 'ipk25chat-client'
 all: build
 
-### MC # build: # Builds the 'ipk25-chat' via CMake in developer version and Make in submission version
+### MC # build: # Builds the 'ipk25chat-client' via CMake in developer version and Make in submission version
 ifndef SUBMISSION_MODE
 build:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-	@cmake --build build --config Release --target ipk25-chat
+	@cmake --build build --config Release --target ipk25chat-client
 else
 build: $(EXECUTABLE)
 endif
@@ -156,12 +156,12 @@ run:
 	fi
 	./$(EXECUTABLE) -h
 
-### MC # test: # Builds and runs the test executable 'ipk25-chat-test' (not allowed for submission)
+### MC # test: # Builds and runs the test executable 'ipk25chat-client-test' (not allowed for submission)
 ifndef SUBMISSION_MODE
 test:
 	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
-	@cmake --build build --config Test --target ipk25-chat-test
-	./$(TEST_BIN_DIR)/ipk25-chat-test
+	@cmake --build build --config Test --target ipk25chat-client-test
+	./$(TEST_BIN_DIR)/ipk25chat-client-test
 else
 test:
 	@echo "$(COLOR_RED)The 'test' target is disabled for project submission.$(COLOR_RESET)"
@@ -265,16 +265,16 @@ endif
 #                      COMPILATION OF RELEASE APP VERSION                      #
 ###                                                                          ###
 
-# Build static library 'libipk25-chat.a'
+# Build static library 'libipk25chat-client.a'
 $(RELEASE_BUILD_DIR)/$(IPK_LIB): $(LIB_OBJS)
 	@mkdir -p $(RELEASE_BUILD_DIR)
 	@echo "$(COLOR_MAGENTA)Creating static library '$(RELEASE_BUILD_DIR)/$(IPK_LIB)'...$(COLOR_RESET)"
 	ar rcs $(RELEASE_BUILD_DIR)/$(IPK_LIB) $(LIB_OBJS)
 
-# Build the excecutable 'ipk25-chat'
+# Build the excecutable 'ipk25chat-client'
 $(EXECUTABLE): $(MAIN_OBJ) $(RELEASE_BUILD_DIR)/$(IPK_LIB)
 	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)'...$(COLOR_RESET)"
-	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(MAIN_OBJ) -L$(RELEASE_BUILD_DIR) -lipk25-chat $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(MAIN_OBJ) -L$(RELEASE_BUILD_DIR) -lipk25chat-client $(LIBS)
 
 # Compile all object files into the 'build' directory
 $(RELEASE_BUILD_DIR)/%.o: src/%.cpp
@@ -287,16 +287,16 @@ $(RELEASE_BUILD_DIR)/%.o: src/%.cpp
 #                       COMPILATION OF DEBUG APP VERSION                       #
 ###                                                                          ###
 
-# Build static library 'libipk25-chat-debug.a'
+# Build static library 'libipk25chat-client-debug.a'
 $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG): $(LIB_OBJS_DEBUG)
 	@mkdir -p $(DEBUG_BUILD_DIR)
 	@echo "$(COLOR_MAGENTA)Creating static library '$(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)' for debug...$(COLOR_RESET)"
 	ar rcs $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG) $(LIB_OBJS_DEBUG)
 
-# Build the executable 'ipk25-chat-debug'
+# Build the executable 'ipk25chat-client-debug'
 $(EXECUTABLE)-debug: $(MAIN_OBJ_DEBUG) $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)
 	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)-debug' for debug...$(COLOR_RESET)"
-	$(CXX) $(CXXFLAGS_DEBUG) -o $(EXECUTABLE)-debug $(MAIN_OBJ_DEBUG) -L$(DEBUG_BUILD_DIR) -lipk25-chat-debug $(LIBS)
+	$(CXX) $(CXXFLAGS_DEBUG) -o $(EXECUTABLE)-debug $(MAIN_OBJ_DEBUG) -L$(DEBUG_BUILD_DIR) -lipk25chat-client-debug $(LIBS)
 
 # Compile all object files into the 'build' directory
 $(DEBUG_BUILD_DIR)/%.o: src/%.cpp

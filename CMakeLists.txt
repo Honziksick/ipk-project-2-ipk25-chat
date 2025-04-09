@@ -55,7 +55,7 @@ endif()
 # Ensure the existence of the build directory
 file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 
-# Set the output directory for the app release binary (ipk25-chat)
+# Set the output directory for the app release binary (ipk25chat-client)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/..")
 
 # Include necessary directories (e.g., libpcap, src)
@@ -73,28 +73,28 @@ list(REMOVE_ITEM ALL_SOURCES
      )
 
 ###                                                                     ###
-#  Build library from project files (ipk25-chat-lib) (except 'main.cpp') #
+#  Build library from project files (ipk25chat-client-lib) (except 'main.cpp') #
 ###                                                                     ###
 
 # Create a static library from the source files
-add_library(ipk25-chat-lib STATIC ${ALL_SOURCES})
-target_include_directories(ipk25-chat-lib PUBLIC src)
+add_library(ipk25chat-client-lib STATIC ${ALL_SOURCES})
+target_include_directories(ipk25chat-client-lib PUBLIC src)
 
 # Link with libpcap and libnet manually.
-target_link_libraries(ipk25-chat-lib PUBLIC pcap net)
+target_link_libraries(ipk25chat-client-lib PUBLIC pcap net)
 
 
 ###                                  ###
-#  Build main executabe (ipk25-chat)  #
+#  Build main executabe (ipk25chat-client)  #
 ###                                  ###
 
-add_executable(ipk25-chat src/App/main.cpp)
-target_link_libraries(ipk25-chat
+add_executable(ipk25chat-client src/App/main.cpp)
+target_link_libraries(ipk25chat-client
                       PRIVATE
-                      ipk25-chat-lib
+                      ipk25chat-client-lib
                       )
 
-target_include_directories(ipk25-chat PRIVATE ipk25-chat-lib)
+target_include_directories(ipk25chat-client PRIVATE ipk25chat-client-lib)
 
 
 ################################################################################
@@ -127,7 +127,7 @@ foreach(TEST_SOURCE ${TEST_SOURCES})
     add_executable(${TEST_NAME} ${TEST_SOURCE})
     target_link_libraries(${TEST_NAME}
                           PRIVATE
-                          ipk25-chat-lib
+                          ipk25chat-client-lib
                           gtest
                           gtest_main
                           )
@@ -145,20 +145,20 @@ endforeach()
 #  Build combined test executable  #
 ###                              ###
 
-add_executable(ipk25-chat-test ${TEST_SOURCES})
-target_link_libraries(ipk25-chat-test
+add_executable(ipk25chat-client-test ${TEST_SOURCES})
+target_link_libraries(ipk25chat-client-test
                       PRIVATE
-                      ipk25-chat-lib
+                      ipk25chat-client-lib
                       gtest
                       gtest_main
                       )
-target_link_options(ipk25-chat-test PRIVATE
+target_link_options(ipk25chat-client-test PRIVATE
                     -Wl,--wrap=getifaddrs
                     -Wl,--wrap=freeifaddrs
                     )
-set_target_properties(ipk25-chat-test PROPERTIES
+set_target_properties(ipk25chat-client-test PROPERTIES
                       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test/bin"
                       )
-add_test(NAME ipk25-chat-test COMMAND ipk25-chat-test)
+add_test(NAME ipk25chat-client-test COMMAND ipk25chat-client-test)
 
 ### end of file CMakeLists.txt ###

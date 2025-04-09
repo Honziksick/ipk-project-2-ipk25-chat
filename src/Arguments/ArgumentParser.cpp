@@ -101,8 +101,8 @@ namespace IPK25ChatClient::Arguments
                 );
 
         // Customize usage message
-        app.usage("   ./ipk25-chat [-t udpOrTcp | --transport-protocol udpOrTcp] [-s ipOrHostname | --server ipOrHostname]\n"
-                "                <-p port | --port port> <-d timeout | --wait timeout> <-r max | --max-retransmissions max>"
+        app.usage("   ./ipk25chat-client [-t udpOrTcp | --transport-protocol udpOrTcp] [-s ipOrHostname | --server ipOrHostname]\n"
+                "                      <-p port | --port port> <-d timeout | --wait timeout> <-r max | --max-retransmissions max>"
                 );
 
         // Add options
