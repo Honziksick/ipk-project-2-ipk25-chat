@@ -17,7 +17,7 @@
 /**
  * @file ExceptionMessages.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Constant exception messages for the IPK25 Chat Client project.
+ * @brief Header file containing exception messages for the IPK25 Chat Client project.
  */
 
 #ifndef EXCEPTION_MESSAGES_HPP
