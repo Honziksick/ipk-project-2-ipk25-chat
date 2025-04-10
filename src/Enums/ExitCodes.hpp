@@ -44,7 +44,7 @@ namespace IPK25ChatClient::Enums
         UNKNOWN_ERROR             = 78,  /**< Unknown error code (EX_CONFIG).                */
         TIMEOUT_ERROR             = 116, /**< Connection timed out (ETIMEDOUT).              */
         USER_INTERRUPTION_ERROR   = 130  /**< Interrupted by user error code (128 + SIGINT). */
-    }; // ExitCodes
+    }; // ExitCode
 } // IPK25ChatClient::Enums
 
 #endif // EXIT_CODES_HPP

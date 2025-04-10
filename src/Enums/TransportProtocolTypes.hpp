@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    09.04.2025                                                    *
  *                                                                             *
  * Description:  Header file defining protocol types enumeration for the       *
  *               IPK25 Chat Client project.                                    *
@@ -26,16 +26,16 @@
 namespace IPK25ChatClient::Enums
 {
     /**
-     * @enum TransportProtocol
+     * @enum TransportProtocolType
      * @brief Enumeration for transport protocol types.
      */
-    enum class TransportProtocol {
+    enum class TransportProtocolType {
         None = 0,    /**< No protocol type specified. */
-        UDP  = 1,    /**< UDP protocol.               */
-        TCP  = 2,    /**< TCP protocol.               */
-        IPv4 = 3,    /**< IPv4 protocol.              */
-        IPv6 = 4,    /**< IPv6 protocol.              */
-    }; // TransportProtocol
+        UDP,         /**< UDP protocol.               */
+        TCP,         /**< TCP protocol.               */
+        IPv4,        /**< IPv4 protocol.              */
+        IPv6,        /**< IPv6 protocol.              */
+    }; // TransportProtocolType
 } // IPK25ChatClient::Enums
 
 #endif // TRANSPORT_PROTOCOL_TYPES_HPP

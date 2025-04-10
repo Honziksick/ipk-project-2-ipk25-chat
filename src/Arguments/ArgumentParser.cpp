@@ -84,7 +84,7 @@ namespace IPK25ChatClient::Arguments
         logger(
                 "Arguments parsed successfully: mTargetServer: %s, mTransportProtocol: %s, mServerPort: %u, mUdpMaxRetransmit: %u, mUdpTimeoutMs: %u",
                 targetServer.c_str(),
-                commandLineOptions.mTransportProtocol == Enums::TransportProtocol::TCP ? "TCP" : "UDP",
+                commandLineOptions.mTransportProtocol == Enums::TransportProtocolType::TCP ? "TCP" : "UDP",
                 commandLineOptions.mServerPort,
                 commandLineOptions.mUdpMaxRetransmit,
                 commandLineOptions.mUdpTimeoutMs);
@@ -161,7 +161,7 @@ namespace IPK25ChatClient::Arguments
     void ArgumentParser::populateRemainingOptions(CommandLineOptions &commandLineOptions,
                                                   const string &transportProtocol, const string &targetServer) {
         commandLineOptions.mTransportProtocol =
-                (transportProtocol == "tcp") ? TransportProtocol::TCP : TransportProtocol::UDP;
+                (transportProtocol == "tcp") ? TransportProtocolType::TCP : TransportProtocolType::UDP;
 
         commandLineOptions.mTargetServer = targetServer;
     } // ArgumentParser::populateRemainingOptions()

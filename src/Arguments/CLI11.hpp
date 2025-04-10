@@ -9401,7 +9401,7 @@ CLI11_INLINE void App::_process_requirements() {
         }
         // Required but empty
         if(opt->get_required() && opt->count() == 0) {
-            throw RequiredError(opt->get_name());
+            throw RequiredError(opt->get_name(true, true));
         }
         // Requires
         for(const Option *opt_req : opt->needs_)
