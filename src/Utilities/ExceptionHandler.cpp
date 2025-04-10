@@ -57,9 +57,9 @@ namespace IPK25ChatClient::Utilities
     } // ExceptionHandler::handleError()
 
     void ExceptionHandler::printError(const ChatBaseException &exception) {
-        cerr << Color::COLOR_RED << "Error " << exception.code() << ": " << exception.what() << Color::RESET << endl;
+        cerr << Color::RED << "Error " << exception.code() << ": " << exception.what() << Color::RESET << endl;
         if(!exception.detail().empty()) {
-            cerr << Color::COLOR_YELLOW << "Detail: " << exception.detail() << Color::RESET << endl;
+            cerr << Color::YELLOW << "Detail: " << exception.detail() << Color::RESET << endl;
         }
     } // ExceptionHandler::printError()
 

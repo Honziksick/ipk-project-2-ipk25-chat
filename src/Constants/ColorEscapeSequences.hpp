@@ -39,11 +39,11 @@ namespace IPK25ChatClient::Constants
         static constexpr auto FORMAT_BOLD = "\033[1m";     /**< Bold text format.     */
 
         // Foreground colors
-        static constexpr auto COLOR_RED = "\033[31m";      /**< Red text color.       */
-        static constexpr auto COLOR_GREEN = "\033[32m";    /**< Green text color.     */
-        static constexpr auto COLOR_YELLOW = "\033[33m";   /**< Yellow text color.    */
-        static constexpr auto COLOR_MAGENTA = "\033[35m";  /**< Magenta text color.   */
-        static constexpr auto COLOR_CYAN = "\033[36m";     /**< Cyan text color.      */
+        static constexpr auto RED = "\033[31m";      /**< Red text color.       */
+        static constexpr auto GREEN = "\033[32m";    /**< Green text color.     */
+        static constexpr auto YELLOW = "\033[33m";   /**< Yellow text color.    */
+        static constexpr auto MAGENTA = "\033[35m";  /**< Magenta text color.   */
+        static constexpr auto CYAN = "\033[36m";     /**< Cyan text color.      */
     }; // Color
 } // IPK25ChatClient::Constants
 
