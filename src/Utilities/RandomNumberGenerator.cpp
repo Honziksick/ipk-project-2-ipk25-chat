@@ -12,7 +12,7 @@
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               RandomNumberGenerator class, which provides utility           *
- *               functions for random number generation.                       *
+ *               methods for random number generation.                         *
  *                                                                             *
  ******************************************************************************/
 /**

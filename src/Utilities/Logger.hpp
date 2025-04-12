@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the Logger utility.                           *
  *               Provides macros for conditional debug printing.               *
@@ -23,7 +23,10 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 
-#include <cstdio>
+#include "Constants/ColorEscapeSequences.hpp"
+#include <cstdio>  // fprintf()
+
+using namespace IPK25ChatClient::Constants;
 
 // Define DEBUG_PRINT to enable debug printing
 #define DEBUG_PRINT

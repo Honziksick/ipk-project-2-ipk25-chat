@@ -8,16 +8,16 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    09.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
  *                                                                             *
- * Description:  Header file defining protocol types enumeration for the       *
+ * Description:  Header file defining the protocol types enumeration for the   *
  *               IPK25 Chat Client project.                                    *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file TransportProtocolTypes.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file for protocol types enumeration.
+ * @brief Header file defining the protocol types enumeration.
  */
 
 #ifndef TRANSPORT_PROTOCOL_TYPES_HPP

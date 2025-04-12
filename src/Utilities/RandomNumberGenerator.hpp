@@ -11,14 +11,14 @@
  * Last edit:    08.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the declaration of the                     *
- *               RandomNumberGenerator class, which provides utility           *
- *               functions for random number generation.                       *
+ *               `RandomNumberGenerator` class, which provides utility         *
+ *               methods for random number generation.                         *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file RandomNumberGenerator.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file of the RandomNumberGenerator class for random
+ * @brief Header file of the `RandomNumberGenerator` class for random
  *        number generation.
  */
 
@@ -42,7 +42,7 @@ namespace IPK25ChatClient::Utilities
         /**
          * @brief Generates a random 16-bit ephemeral port number.
          *
-         * @details This function returns a random port number in the range
+         * @details This method returns a random port number in the range
          *          of 49152 to 65535 (2^16 - 1).
          *
          * @return uint16_t A random ephemeral port number.

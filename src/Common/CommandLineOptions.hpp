@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    09.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the definition of the CommandLineOptions   *
  *               class, which is used for storing command line options for     *
@@ -55,7 +55,7 @@ namespace IPK25ChatClient::Common
          *          and compares all member variables.
          *
          * @param other The other CommandLineOptions object to compare with.
-         * @return True if all member variables are equal, False otherwise.
+         * @return `true` if all member variables are equal, `false` otherwise.
          */
         bool operator==(const CommandLineOptions &other) const = default;
     }; // CommandLineOptions

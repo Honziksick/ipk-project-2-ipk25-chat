@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description: This file contains the definition of color escape sequences    *
  *              used for formatting text output in the IPK25 Chat Client       *
@@ -35,15 +35,15 @@ namespace IPK25ChatClient::Constants
     class Color {
     public:
         // General formatting escape sequences
-        static constexpr auto RESET = "\033[0m";           /**< Reset all attributes. */
-        static constexpr auto FORMAT_BOLD = "\033[1m";     /**< Bold text format.     */
+        static constexpr auto RESET = "\033[0m";        /**< Reset all attributes. */
+        static constexpr auto FORMAT_BOLD = "\033[1m";  /**< Bold text format.     */
 
         // Foreground colors
-        static constexpr auto RED = "\033[31m";      /**< Red text color.       */
-        static constexpr auto GREEN = "\033[32m";    /**< Green text color.     */
-        static constexpr auto YELLOW = "\033[33m";   /**< Yellow text color.    */
-        static constexpr auto MAGENTA = "\033[35m";  /**< Magenta text color.   */
-        static constexpr auto CYAN = "\033[36m";     /**< Cyan text color.      */
+        static constexpr auto RED = "\033[31m";      /**< Red text color.     */
+        static constexpr auto GREEN = "\033[32m";    /**< Green text color.   */
+        static constexpr auto YELLOW = "\033[33m";   /**< Yellow text color.  */
+        static constexpr auto MAGENTA = "\033[35m";  /**< Magenta text color. */
+        static constexpr auto CYAN = "\033[36m";     /**< Cyan text color.    */
     }; // Color
 } // IPK25ChatClient::Constants
 

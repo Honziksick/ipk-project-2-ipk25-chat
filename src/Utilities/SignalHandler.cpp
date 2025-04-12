@@ -10,14 +10,14 @@
  * Created:      03.04.2025                                                    *
  * Last edit:    06.04.2025                                                    *
  *                                                                             *
- * Description:  Implementation of the SignalHandler class, which is           *
+ * Description:  Implementation of the `SignalHandler` class, which is         *
  *               responsible for handling system signals.                      *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file SignalHandler.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation file for the SignalHandler class.
+ * @brief Implementation file for the `SignalHandler` class.
  */
 
 #include "Utilities/SignalHandler.hpp"
@@ -31,12 +31,14 @@ namespace IPK25ChatClient::Utilities
 {
     void SignalHandler::registerHandlers() {
         logger("Registering signal handlers");
+
         signal(SIGINT, handleSignal);
         signal(SIGSEGV, handleSignal);
     } // SignalHandler::registerHandlers()
 
     void SignalHandler::handleSignal(const int signal) {
         logger("Handling signal: %d", signal);
+
         if(signal == SIGINT) {
             throw UserInterruptionException("SIGINT: User interrupted the program.");
         }

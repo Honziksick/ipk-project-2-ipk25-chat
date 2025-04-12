@@ -10,14 +10,14 @@
  * Created:      03.04.2025                                                    *
  * Last edit:    03.04.2025                                                    *
  *                                                                             *
- * Description:  Declaration of the SignalHandler class, which is              *
+ * Description:  Declaration of the `SignalHandler` class, which is            *
  *               responsible for handling system signals.                      *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file SignalHandler.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file for the SignalHandler class.
+ * @brief Header file for the `SignalHandler` class.
  */
 
 #ifndef SIGNAL_HANDLER_HPP
