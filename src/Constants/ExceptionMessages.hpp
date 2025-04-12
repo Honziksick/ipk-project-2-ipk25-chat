@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    10.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains constant exception messages used in the    *
  *               IPK25 Chat Client project.                                    *
@@ -36,6 +36,11 @@ namespace IPK25ChatClient::Constants
          * @brief Message indicating that the user requested help.
          */
         static constexpr auto HELP_REQUESTED_MSG = "User requested help.";
+
+        /**
+         * @brief Message indicating that the user pressed CTRL+D or EOF was read.
+         */
+        static constexpr auto END_OF_FILE_MSG = "User pressed CTRL+D or EOF was read.";
 
         /**
          * @brief Error message for invalid argument.
