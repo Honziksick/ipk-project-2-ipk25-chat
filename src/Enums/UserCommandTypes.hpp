@@ -33,6 +33,7 @@ namespace IPK25ChatClient::Enums
      */
     enum class UserCommandType {
         UNKNOWN = 0,  /**< Represents an unknown command.                                                      */
+        INVALID,      /**< Represents an invalid command.                                                      */
         MESSAGE,      /**< Indicates that the user did not enter a command but a message to be sent.           */
         AUTH,         /**< \auth: Sends AUTH message with the data provided from the command to the server.    */
         JOIN,         /**< \join: Sends JOIN message with channel name from the command to the server.         */

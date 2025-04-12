@@ -33,7 +33,7 @@ namespace IPK25ChatClient::Enums
      */
     enum class MessageValidatorResult {
         OK = 0,                             /**< Message parameter is vavlid.    */
-        ERROR,                              /**< Message parameter is invavlid.  */
+        INVALID,                            /**< Message parameter is invavlid.  */
         UNKNOWN,                            /**< Unknown validation result.      */
         PARAMETER_TOO_LONG,                 /**< A parameter exceeds the maximum allowed length.          */
         PARAMETER_TOO_SHORT,                /**< A parameter is shorter than the minimum required length. */

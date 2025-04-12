@@ -39,6 +39,7 @@ namespace IPK25ChatClient::Enums::Mapping
     const unordered_map<UserCommandType, string> &EnumMaps::getUserCommandTypeMap() {
         static const unordered_map<UserCommandType, string> cMap = {
             {UserCommandType::UNKNOWN, "/unknown"},
+            {UserCommandType::INVALID, "/invalid"},
             {UserCommandType::MESSAGE, "/message"},
             {UserCommandType::AUTH, "/auth"},
             {UserCommandType::JOIN, "/join"},
@@ -103,7 +104,7 @@ namespace IPK25ChatClient::Enums::Mapping
     const unordered_map<MessageValidatorResult, string> &EnumMaps::getMessageValidatorResultMap() {
         static const unordered_map<MessageValidatorResult, string> cMap = {
             {MessageValidatorResult::OK, "Message parameter is valid"},
-            {MessageValidatorResult::ERROR, "Message parameter is invalid"},
+            {MessageValidatorResult::INVALID, "Message parameter is invalid"},
             {MessageValidatorResult::UNKNOWN, "Message parameter: Status unknown"},
             {MessageValidatorResult::PARAMETER_TOO_LONG, "Message parameter: Parameter too long"},
             {MessageValidatorResult::PARAMETER_TOO_SHORT, "Message parameter: Parameter too short"},

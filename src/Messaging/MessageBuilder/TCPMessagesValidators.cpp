@@ -85,7 +85,7 @@ namespace IPK25ChatClient::Messaging
             logger("Message parameter validation FAILED: parameterType: %s, messageParameter: %s, result: %s",
                    CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str(),
                    CastUtils::castEnumToString(result).c_str());
-            return MessageValidatorResult::ERROR;
+            return MessageValidatorResult::INVALID;
         }
     } // TcpMessagesValidator::validateMessageParameter
 
