@@ -21,7 +21,7 @@
  * @brief Main entry point for the IPK25 Chat Client application.
  */
 
-#include "Facades/ChatClientAppFacade.hpp"
+#include "Facades/MainClientFacade.hpp"
 #include "Utilities/ExceptionHandler.hpp"
 #include "Utilities/Logger.hpp"
 #include <exception>  // std::exception
@@ -32,12 +32,12 @@ using namespace std;
 int main(const int argc, char *argv[]) {
     logger("Starting IPK25 Chat Client application");
     try {
-        Facades::ChatClientAppFacade appFacade;
+        Facades::MainClientFacade appFacade;
         appFacade.runChatClient(argc, argv);
     }
     catch(const exception &e) {
         logger("Exception caught in main(): %s", e.what());
-        Utilities::ExceptionHandler::handleError(e);
+        Utilities::ExceptionHandler::handleError(e, Utilities::ExceptionHandler::TERMINATE);
     }
 
     logger("Successfully exiting IPK25 Chat Client application");
