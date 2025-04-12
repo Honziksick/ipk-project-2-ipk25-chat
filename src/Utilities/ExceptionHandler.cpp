@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the ExceptionHandler class, which is        *
  *               responsible for printing error messages and terminating the   *
@@ -36,7 +36,7 @@ using namespace std;
 
 namespace IPK25ChatClient::Utilities
 {
-    void ExceptionHandler::handleError(const exception &exception) {
+    void ExceptionHandler::handleError(const exception &exception, const bool terminate) {
         logger("Handling error: %s", exception.what());
 
         // Attempt to cast the original exception to ChatBaseException
@@ -53,7 +53,10 @@ namespace IPK25ChatClient::Utilities
 
         // Now we are 100% sure that the pChatException points to ChatBaseException
         printError(*pChatException);
-        terminateProgram(pChatException->code());
+
+        if(terminate) {
+            terminateProgram(pChatException->code());
+        }
     } // ExceptionHandler::handleError()
 
     void ExceptionHandler::printError(const ChatBaseException &exception) {

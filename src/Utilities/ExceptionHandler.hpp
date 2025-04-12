@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the ExceptionHandler class, which is           *
  *               responsible for printing error messages and terminating the   *
@@ -37,11 +37,24 @@ namespace IPK25ChatClient::Utilities
     class ExceptionHandler {
     public:
         /**
+         * @brief Flag to requesting program termination after handling the error.
+         */
+        static constexpr bool TERMINATE = true;
+
+        /**
          * @brief Handles the given exception by printing the error message
          *        and terminating the program with error code.
+         * @details This method attempts to cast the given exception to a
+         *          ChatBaseException. If the cast is successful, it prints the
+         *          error message and terminates the program with the error code
+         *          associated with the exception. If the cast fails, it prints a
+         *          generic error message and terminates the program with a default
+         *          error code.
+         *
          * @param exception The exception to handle.
+         * @param terminate Whether to terminate the program after handling the error.
          */
-        static void handleError(const std::exception &exception);
+        static void handleError(const std::exception &exception, bool terminate = false);
 
     private:
         /**
