@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains regular expression patterns as constants   *
  *               for validating various parameters in the IPK25 Chat Client.   *
@@ -37,6 +37,7 @@ namespace IPK25ChatClient::Constants
     class RegexPatterns {
     public:
         // Regular expression patterns accrording to the specification
+        static constexpr auto ALLOWED_SYMBOLS_REGEX_PATTERN = R"([a-zA-Z0-9_-]+)";           /**< Pattern for validating allowed symbols. */
         static constexpr auto USERNAME_REGEX_PATTERN = R"([a-zA-Z0-9_-]{1,20})";             /**< Pattern for validating usernames.       */
         static constexpr auto CHANNEL_REGEX_ID_PATTERN = R"([a-zA-Z0-9_-]{1,20})";           /**< Pattern for validating channel IDs.     */
         static constexpr auto SECRET_REGEX_PATTERN = R"([a-zA-Z0-9_-]{1,128})";              /**< Pattern for validating secrets.         */
@@ -46,12 +47,13 @@ namespace IPK25ChatClient::Constants
         // Additional regular expression patterns
         /**
          * @brief Regular expression for validating hostnames.
+         * @note This regex pattern was co-created with GitHub Copilot.
          */
         static constexpr auto HOSTNAME_REGEX_PATTERN = R"(^([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}\.?$)";
 
         /**
          * @brief Regular expression for validating IPv4 addresses.
-         * @details Source: https://ihateregex.io/expr/ip/
+         * @note Source: https://ihateregex.io/expr/ip/
          */
         static constexpr auto IPV4_REGEX_PATTERN =
                 R"(^(?!0\.0\.0\.0$)(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$)";
