@@ -38,7 +38,7 @@
 namespace IPK25ChatClient::Enums::Mapping
 {
     /**
-     * @class EnumMapper
+     * @class EnumMappers
      * @brief Provides static template methods for mapping enum values to their
      *        string representations.
      *
@@ -64,6 +64,28 @@ namespace IPK25ChatClient::Enums::Mapping
         template <typename EnumType>
         static const std::unordered_map<EnumType, std::string> &getEnumToStringMap();
     }; // EnumMappers
+
+    /**
+     * @brief Specialization of the template method to retrieve the mapping for `UserCommandType`.
+     * @return A constant reference to the map of `UserCommandType` to strings.
+     *
+     * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf
+     */
+    template <>
+    inline const std::unordered_map<UserCommandType, std::string> &EnumMappers::getEnumToStringMap<UserCommandType>() {
+        return getUserCommandTypeMap();
+    }
+
+    /**
+     * @brief Specialization of the template method to retrieve the mapping for `ClientFsmState`.
+     * @return A constant reference to the map of `ClientFsmState` to strings.
+     *
+     * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf
+     */
+    template <>
+    inline const std::unordered_map<ClientFsmState, std::string> &EnumMappers::getEnumToStringMap<ClientFsmState>() {
+        return getClientFsmStateMap();
+    }
 
     /**
      * @brief Specialization of the template method to retrieve the mapping for `ExitCode`.

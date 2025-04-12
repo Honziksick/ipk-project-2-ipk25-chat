@@ -24,6 +24,8 @@
 #ifndef ENUM_MAPS_HPP
 #define ENUM_MAPS_HPP
 
+#include "Enums/UserCommandTypes.hpp"
+#include "Enums/ClientFsmStates.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/MessageParameters.hpp"
@@ -48,6 +50,18 @@ namespace IPK25ChatClient::Enums::Mapping
      */
     class EnumMaps {
     protected:
+        /**
+         * @brief Retrieves the mapping for `UserCommandType` to strings.
+         * @return A constant reference to the map of `UserCommandType` to strings.
+         */
+        static const std::unordered_map<UserCommandType, std::string> &getUserCommandTypeMap();
+
+        /**
+         * @brief Retrieves the mapping for `ClientFsmState` to strings.
+         * @return A constant reference to the map of `ClientFsmState` to strings.
+         */
+        static const std::unordered_map<ClientFsmState, std::string> &getClientFsmStateMap();
+
         /**
          * @brief Retrieves the mapping for `ExitCode` to strings.
          * @return A constant reference to the map of `ExitCode` to strings.
