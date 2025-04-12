@@ -1,0 +1,296 @@
+/*******************************************************************************
+ *                                                                             *
+ * Project:      IPK25 Chat Client                                             *
+ * University:   Faculty of Information Technology, BUT                        *
+ * Subject:      IPK: Computer Communications and Networks                     *
+ *                                                                             *
+ * File:         TCPMessagesValidators.cpp                                     *
+ * Author:       Jan Kalina <xkalinj00>                                        *
+ *                                                                             *
+ * Created:      10.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
+ *                                                                             *
+ * Description:  This file contains the implementation of the                  *
+ *               TCPMessagesValidator class, which provides methods for        *
+ *               validating various message parameters used in the IPK25       *
+ *               Chat Client application.                                      *
+ *                                                                             *
+ ******************************************************************************/
+/**
+ * @file TCPMessagesValidators.cpp
+ * @author Jan Kalina \<xkalinj00>
+ * @brief Implementation of message validation logic for the IPK25 Chat Client.
+ */
+
+#include "Messaging/MessageBuilder/TCPMessagesValidators.hpp"
+#include "Client/ClientOutput/ClientOutput.hpp"
+#include "Enums/MessageParameters.hpp"
+#include "Enums/MessageValidatorResults.hpp"
+#include "Constants/ClientLimits.hpp"
+#include "Constants/RegexPatterns.hpp"
+#include "Exceptions/ChatExceptions.hpp"
+#include "Utilities/CastUtils.hpp"
+#include "Utilities/Logger.hpp"
+#include <string>       // std::string
+#include <regex>        // std::regex, std::regex_match
+#include <string_view>  // std::string_view
+
+using namespace IPK25ChatClient::Client::Output;
+using namespace IPK25ChatClient::Enums;
+using namespace IPK25ChatClient::Constants;
+using namespace IPK25ChatClient::Exceptions;
+using namespace IPK25ChatClient::Utilities;
+using namespace std;
+
+namespace IPK25ChatClient::Messaging
+{
+    MessageValidatorResult TcpMessagesValidator::validateMessageParameter(const MessageParameter parameterType,
+                                                                          const string_view messageParameter) {
+        logger("Message parameter validation started: parameterType: %s, messageParameter: %s",
+               CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str());
+
+        // Perform validation based on the parameter type
+        auto result = MessageValidatorResult::UNKNOWN;
+        switch(parameterType) {
+            case MessageParameter::USERNAME:
+                result = validateUsername(messageParameter);
+                break;
+            case MessageParameter::CHANNEL_ID:
+                result = validateChannelId(messageParameter);
+                break;
+            case MessageParameter::SECRET:
+                result = validateSecret(messageParameter);
+                break;
+            case MessageParameter::DISPLAY_NAME:
+                result = validateDisplayName(messageParameter);
+                break;
+            case MessageParameter::MESSAGE_CONTENT:
+                result = validateMessageContent(messageParameter);
+                break;
+            default:
+                throw InternalErrorException(
+                        "validateMessageParameter() error: Invalid message parameter "
+                        "type passed: " + CastUtils::castEnumToString(parameterType)
+                        );
+        }
+
+        // Check if the result is OK or may be interpreted as OK
+        if(result == MessageValidatorResult::OK || result == MessageValidatorResult::PARAMETER_TOO_LONG) {
+            logger("Message parameter validation SUCCEDDED: parameterType: %s, messageParameter: %s, result: %s",
+                   CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str(),
+                   CastUtils::castEnumToString(result).c_str());
+            return MessageValidatorResult::OK;
+        }
+        else {
+            logger("Message parameter validation FAILED: parameterType: %s, messageParameter: %s, result: %s",
+                   CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str(),
+                   CastUtils::castEnumToString(result).c_str());
+            return MessageValidatorResult::ERROR;
+        }
+    } // TcpMessagesValidator::validateMessageParameter
+
+    bool TcpMessagesValidator::validateContainingOnlyAllowedSymbols(const string_view messageParameter, const bool whiteCharsAllowed) {
+        logger("Deep validation called with messageParameter: %s", string(messageParameter).c_str());
+
+        // Choose the correct regex
+        regex allowedSymbolsRegex{};
+        if(whiteCharsAllowed) {
+            allowedSymbolsRegex = RegexPatterns::ALLOWED_SYMBOLS_WITH_WHITES_REGEX_PATTERN;
+        }
+        else {
+            allowedSymbolsRegex = RegexPatterns::ALLOWED_SYMBOLS_REGEX_PATTERN;
+        }
+
+        // Validate whether the message parameter contains only allowed symbols
+        bool isValid = true;
+        if(!regex_match(messageParameter.begin(), messageParameter.end(), allowedSymbolsRegex)) {
+            isValid = false;
+        }
+
+        // If the match failed, print an error message
+        if(!isValid) {
+            logger("Deep validation failed: parameter contains invalid symbols.");
+            ClientOutput::printClientInternalError(
+                    "Given message parameter '" + string(messageParameter) + "' contains invalid symbols. "
+                    "Allowed symbols are: " + RegexPatterns::ALLOWED_SYMBOLS_REGEX_PATTERN
+                    );
+            return false;
+        }
+
+        logger("Deep validation passed: parameter contains only allowed symbols.");
+        return true;
+    } // TcpMessagesValidator::validateContainingOnlyAllowedSymbols
+
+    bool TcpMessagesValidator::validateMinParameterLength(const string_view messageParameter, const unsigned int minLength) {
+        logger("Deep validation called with messageParameter: %s, minLength: %u", string(messageParameter).c_str(), minLength);
+
+        if(messageParameter.length() < minLength) {
+            logger("Deep validation failed: parameter length is %zu, which is less than %u", messageParameter.length(), minLength);
+            ClientOutput::printClientInternalError(
+                    "Given message parameter '" + string(messageParameter) + "' has invalid length. Message "
+                    "parameters must be between at least 1 characters long, but the given parameter is " +
+                    to_string(messageParameter.length()) + "characters long."
+                    );
+            return false;
+        }
+
+        logger("Deep validation passed: parameter length is %zu", messageParameter.length());
+        return true;
+    } // TcpMessagesValidator::validateMinParameterLength
+
+    bool TcpMessagesValidator::validateMaxParameterLength(const string_view messageParameter, const unsigned int maxLength) {
+        logger("Deep validation called with messageParameter: %s, maxLength: %u", string(messageParameter).c_str(), maxLength);
+
+        if(messageParameter.length() > maxLength) {
+            logger("Deep alidation failed: parameter length is %zu, which exceeds %u", messageParameter.length(), maxLength);
+            ClientOutput::printClientInternalError(
+                    "Given message paramter '" + string(messageParameter) + "' is too long. This message parameter "
+                    "can be at most " + to_string(maxLength) + "characters long, but given parameter is " +
+                    to_string(messageParameter.length()) + "characters long." + "Given parameter will be truncated "
+                    "to the maximum allowed length of " + to_string(maxLength) + "characters." +
+                    "Truncated parameter: '" + string(messageParameter.substr(0, maxLength)) + "'."
+                    );
+            return false;
+        }
+
+        logger("Deep validation passed: parameter length is %zu", messageParameter.length());
+        return true;
+    } // TcpMessagesValidator::validateMaxParameterLength
+
+    MessageValidatorResult TcpMessagesValidator::validateUsername(const string_view username) {
+        logger("Validation of username: %s", string(username).c_str());
+
+        static const regex cUsernameRegex(RegexPatterns::USERNAME_REGEX_PATTERN);
+        if(!regex_match(username.begin(), username.end(), cUsernameRegex)) {
+            logger("Username validation failed, performing deep validation.");
+            return deepUsernameValidation(username);
+        }
+
+        logger("Username validation passed.");
+        return MessageValidatorResult::OK;
+    } // TcpMessagesValidator::validateUsername
+
+    MessageValidatorResult TcpMessagesValidator::deepUsernameValidation(const string_view username) {
+        if(!validateContainingOnlyAllowedSymbols(username)) {
+            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+        }
+        if(!validateMinParameterLength(username, ClientLimits::MIN_USERNAME_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+        }
+        if(!validateMaxParameterLength(username, ClientLimits::MAX_USERNAME_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_LONG;
+        }
+
+        return MessageValidatorResult::UNKNOWN;
+    } // TcpMessagesValidator::deepUsernameValidation
+
+    MessageValidatorResult TcpMessagesValidator::validateChannelId(const string_view channelId) {
+        logger("Validation of channelId: %s", string(channelId).c_str());
+
+        static const regex cChannelIdRegex(RegexPatterns::CHANNEL_REGEX_ID_PATTERN);
+        if(!regex_match(channelId.begin(), channelId.end(), cChannelIdRegex)) {
+            logger("ChannelId validation failed, performing deep validation.");
+            return deepChannelIdValidation(channelId);
+        }
+
+        logger("ChannelId validation passed.");
+        return MessageValidatorResult::OK;
+    } // TcpMessagesValidator::validateChannelId
+
+    MessageValidatorResult TcpMessagesValidator::deepChannelIdValidation(const string_view channelId) {
+        if(!validateContainingOnlyAllowedSymbols(channelId)) {
+            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+        }
+        if(!validateMinParameterLength(channelId, ClientLimits::MIN_CHANNEL_ID_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+        }
+        if(!validateMaxParameterLength(channelId, ClientLimits::MAX_CHANNEL_ID_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_LONG;
+        }
+
+        return MessageValidatorResult::UNKNOWN;
+    } // TcpMessagesValidator::deepChannelIdValidation
+
+    MessageValidatorResult TcpMessagesValidator::validateSecret(const string_view secret) {
+        logger("Validation of secret: %s", string(secret).c_str());
+
+        static const regex cSecretRegex(RegexPatterns::SECRET_REGEX_PATTERN);
+        if(!regex_match(secret.begin(), secret.end(), cSecretRegex)) {
+            logger("Secret validation failed, performing deep validation.");
+            return deepSecretValidation(secret);
+        }
+
+        logger("Secret validation passed.");
+        return MessageValidatorResult::OK;
+    } // TcpMessagesValidator::validateSecret
+
+    MessageValidatorResult TcpMessagesValidator::deepSecretValidation(const string_view secret) {
+        if(!validateContainingOnlyAllowedSymbols(secret)) {
+            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+        }
+        if(!validateMinParameterLength(secret, ClientLimits::MIN_SECRET_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+        }
+        if(!validateMaxParameterLength(secret, ClientLimits::MAX_SECRET_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_LONG;
+        }
+
+        return MessageValidatorResult::UNKNOWN;
+    } // TcpMessagesValidator::deepSecretValidation
+
+    MessageValidatorResult TcpMessagesValidator::validateDisplayName(const string_view displayName) {
+        logger("Validation of displayName: %s", string(displayName).c_str());
+
+        static const regex cDisplayNameRegex(RegexPatterns::DISPLAYNAME_REGEX_PATTERN);
+        if(!regex_match(displayName.begin(), displayName.end(), cDisplayNameRegex)) {
+            logger("DisplayName validation failed, performing deep validation.");
+            return deepDisplayNameValidation(displayName);
+        }
+
+        logger("DisplayName validation passed.");
+        return MessageValidatorResult::OK;
+    } // TcpMessagesValidator::validateDisplayName
+
+    MessageValidatorResult TcpMessagesValidator::deepDisplayNameValidation(const string_view displayName) {
+        if(!validateContainingOnlyAllowedSymbols(displayName)) {
+            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+        }
+        if(!validateMinParameterLength(displayName, ClientLimits::MIN_DISPLAY_NAME_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+        }
+        if(!validateMaxParameterLength(displayName, ClientLimits::MAX_DISPLAY_NAME_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_LONG;
+        }
+
+        return MessageValidatorResult::UNKNOWN;
+    } // TcpMessagesValidator::deepDisplayNameValidation
+
+    MessageValidatorResult TcpMessagesValidator::validateMessageContent(const string_view messageContent) {
+        logger("Validation of messageContent: %s", string(messageContent).c_str());
+
+        static const regex cMessageContentRegex(RegexPatterns::MESSAGE_CONTENT_REGEX_PATTERN);
+        if(!regex_match(messageContent.begin(), messageContent.end(), cMessageContentRegex)) {
+            logger("MessageContent validation failed, performing deep validation.");
+            return deepMessageContentValidation(messageContent);
+        }
+
+        logger("MessageContent validation passed.");
+        return MessageValidatorResult::OK;
+    } // TcpMessagesValidator::validateMessageContent
+
+    MessageValidatorResult TcpMessagesValidator::deepMessageContentValidation(const string_view messageContent) {
+        if(!validateContainingOnlyAllowedSymbols(messageContent, true)) {
+            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+        }
+        if(!validateMinParameterLength(messageContent, ClientLimits::MIN_MESSAGE_CONTENT_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+        }
+        if(!validateMaxParameterLength(messageContent, ClientLimits::MAX_MESSAGE_CONTENT_LENGTH)) {
+            return MessageValidatorResult::PARAMETER_TOO_LONG;
+        }
+
+        return MessageValidatorResult::UNKNOWN;
+    } // TcpMessagesValidator::deepMessageContentValidation
+} // namespace IPK25ChatClient::Messaging
+
+/*** end of file TCPMessagesValidators.cpp ***/
