@@ -8,17 +8,17 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      07.04.2025                                                    *
- * Last edit:    07.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
  *                                                                             *
- * Description:  This file defines the enumeration for different types of      *
- *               messages used in the IPK25 Chat Client.                       *
+ * Description:  This file defines the enumeration `MessageType` for           *
+ *               different types of messages used in the IPK25 Chat Client.    *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file MessageTypes.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file defining the enumeration for different types of messages
- *        used in the IPK25 Chat Client.
+ * @brief Header file defining the enumeration `MessageType` for different
+ *        types of messages used in the IPK25 Chat Client.
  */
 
 #ifndef MESSAGE_TYPES_HPP

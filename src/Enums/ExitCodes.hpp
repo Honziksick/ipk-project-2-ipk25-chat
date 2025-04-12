@@ -8,9 +8,9 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    10.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
  *                                                                             *
- * Description:  Declaration of the ExitCodes enum class, which is used to     *
+ * Description:  Declaration of the `ExitCode` enum class, which is used to    *
  *               represent error and other exit codes in the IPK25 Chat        *
  *               Client project.                                               *
  *                                                                             *
@@ -18,7 +18,7 @@
 /**
  * @file ExitCodes.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file defining the ExitCodes enum class.
+ * @brief Header file defining the `ExitCode` enum class.
  */
 
 #ifndef EXIT_CODES_HPP
