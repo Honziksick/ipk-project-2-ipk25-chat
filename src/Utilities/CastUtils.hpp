@@ -25,7 +25,7 @@
 #ifndef CAST_UTILS_HPP
 #define CAST_UTILS_HPP
 
-#include "Enums/Mapping/EnumMaps.hpp"
+#include "Enums/Mapping/EnumMappers.hpp"
 #include "Exceptions/ChatExceptions.hpp"
 #include <string>       // std::string
 #include <type_traits>  // std::is_enum_v
@@ -78,7 +78,7 @@ namespace IPK25ChatClient::Utilities
             static_assert(std::is_enum_v<EnumType>, "Template parameter must be an enum type");
 
             // Retrieve the map for the given enum type
-            const auto &enumToStringMap = Enums::EnumMaps::getEnumToStringMap<EnumType>();
+            const auto &enumToStringMap = Enums::Mapping::EnumMappers::getEnumToStringMap<EnumType>();
 
             // Find the enum value in the map
             auto iterator = enumToStringMap.find(enumValue);
