@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains constant exception messages used in the    *
  *               IPK25 Chat Client project.                                    *
@@ -55,7 +55,7 @@ namespace IPK25ChatClient::Constants
         /**
          * @brief Error message for socket error.
          */
-        static constexpr auto SOCKET_ERROR_MSG = "Socket error occurred.";
+        static constexpr auto CONNECTION_ERROR_MSG = "Socket error occurred.";
 
         /**
          * @brief Error message for protocol error.

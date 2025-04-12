@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    03.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the ExitCodes enum class, which is used to     *
  *               represent error and other exit codes in the IPK25 Chat        *
@@ -18,7 +18,7 @@
 /**
  * @file ExitCodes.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file for the ExitCodes enum class.
+ * @brief Header file defining the ExitCodes enum class.
  */
 
 #ifndef EXIT_CODES_HPP
@@ -39,7 +39,7 @@ namespace IPK25ChatClient::Enums
         INVALID_ARGUMENT_ERROR    = 64,  /**< Command line usage error (EX_USAGE).           */
         HOSTNAME_RESOLUTION_ERROR = 68,  /**< Hostname resolution error code (EX_NOHOST).    */
         INTERNAL_ERROR            = 70,  /**< Internal error code (EX_SOFTWARE).             */
-        SOCKET_ERROR              = 71,  /**< Socket error code (EX_OSERR).                  */
+        CONNECTION_ERROR          = 71,  /**< Socket error code (EX_OSERR).                  */
         PROTOCOL_ERROR            = 76,  /**< Protocol error (EPROTO).                       */
         UNKNOWN_ERROR             = 78,  /**< Unknown error code (EX_CONFIG).                */
         TIMEOUT_ERROR             = 116, /**< Connection timed out (ETIMEDOUT).              */

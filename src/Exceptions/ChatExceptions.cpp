@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the ChatBaseException class used in   *
  *               the IPK25 Chat Client project.                                *
@@ -44,7 +44,7 @@ namespace IPK25ChatClient::Exceptions
             move(detail)
         } {}
 
-    HostnameResolutionException::HostnameResolutionException(string detail) noexcept
+    HostnameResolutionErrorException::HostnameResolutionErrorException(string detail) noexcept
         : ChatBaseException{
             ExitCode::HOSTNAME_RESOLUTION_ERROR,
             ExceptionMessages::HOSTNAME_RESOLUTION_ERROR_MSG,
@@ -58,10 +58,10 @@ namespace IPK25ChatClient::Exceptions
             move(detail)
         } {}
 
-    SocketErrorException::SocketErrorException(string detail) noexcept
+    ConnectionErrorException::ConnectionErrorException(string detail) noexcept
         : ChatBaseException{
-            ExitCode::SOCKET_ERROR,
-            ExceptionMessages::SOCKET_ERROR_MSG,
+            ExitCode::CONNECTION_ERROR,
+            ExceptionMessages::CONNECTION_ERROR_MSG,
             move(detail)
         } {}
 

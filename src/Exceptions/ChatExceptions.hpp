@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    10.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the ChatExceptions classes used in the        *
  *               IPK25 Chat Client project.                                    *
@@ -55,17 +55,17 @@ namespace IPK25ChatClient::Exceptions
     }; // InvalidArgumentException
 
     /**
-     * @class HostnameResolutionException
+     * @class HostnameResolutionErrorException
      * @brief Exception class for hostname resolution errors.
      */
-    class HostnameResolutionException final : public ChatBaseException {
+    class HostnameResolutionErrorException final : public ChatBaseException {
     public:
         /**
          * @brief Constructor for HostnameResolutionException.
          * @param detail Additional information about the error.
          */
-        explicit HostnameResolutionException(std::string detail = "") noexcept;
-    }; // HostnameResolutionException
+        explicit HostnameResolutionErrorException(std::string detail = "") noexcept;
+    }; // HostnameResolutionErrorException
 
     /**
      * @class InternalErrorException
@@ -81,17 +81,17 @@ namespace IPK25ChatClient::Exceptions
     }; // InternalErrorException
 
     /**
-     * @class SocketErrorException
+     * @class ConnectionErrorException
      * @brief Exception class for socket errors.
      */
-    class SocketErrorException final : public ChatBaseException {
+    class ConnectionErrorException final : public ChatBaseException {
     public:
         /**
-         * @brief Constructor for SocketErrorException.
+         * @brief Constructor for ConnectionErrorException.
          * @param detail Additional information about the error.
          */
-        explicit SocketErrorException(std::string detail = "") noexcept;
-    }; // SocketErrorException
+        explicit ConnectionErrorException(std::string detail = "") noexcept;
+    }; // ConnectionErrorException
 
     /**
      * @class ProtocolErrorException
