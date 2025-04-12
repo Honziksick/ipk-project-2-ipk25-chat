@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    10.04.2025                                                    *
+ * Last edit:    12.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the ExceptionHandler class, which is        *
  *               responsible for printing error messages and terminating the   *
@@ -24,7 +24,9 @@
 
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/ExceptionHandler.hpp"
+#include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
+#include "Enums/ExitCodes.hpp"
 #include "Constants/ColorEscapeSequences.hpp"
 #include <exception> // std::exception
 #include <iostream>  // std::cerr
@@ -32,6 +34,7 @@
 
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Constants;
+using namespace IPK25ChatClient::Enums;
 using namespace std;
 
 namespace IPK25ChatClient::Utilities
@@ -52,8 +55,11 @@ namespace IPK25ChatClient::Utilities
         }
 
         // Now we are 100% sure that the pChatException points to ChatBaseException
-        printError(*pChatException);
+        if(pChatException->code() != CastUtils::castEnumToInt(ExitCode::SUCCESS)) {
+            printError(*pChatException);
+        }
 
+        // Terminate the program if requested
         if(terminate) {
             terminateProgram(pChatException->code());
         }
