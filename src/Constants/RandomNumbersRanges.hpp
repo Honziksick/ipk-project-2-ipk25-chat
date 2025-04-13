@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      08.04.2025                                                    *
- * Last edit:    08.04.2025                                                    *
+ * Last edit:    13.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains constant ranges for random number          *
  *               generation used in the IPK25 Chat Client project.             *
@@ -38,7 +38,7 @@ namespace IPK25ChatClient::Constants
         static constexpr uint16_t MIN_EPHEMERAL_PORT = 49152;  /**< Minimum value for ephemeral port range. */
         static constexpr uint16_t MAX_EPHEMERAL_PORT = 65535;  /**< Maximum value for ephemeral port range. */
     }; // RandomNumbersRange
-} // namespace IPK25ChatClient::Constants
+} // IPK25ChatClient::Constants
 
 #endif // RANDOM_NUMBERS_RANGES_HPP
 

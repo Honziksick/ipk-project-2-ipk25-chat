@@ -32,13 +32,16 @@ namespace IPK25ChatClient::Enums
      * @brief Enumeration of client command types.
      */
     enum class UserCommandType {
-        UNKNOWN = 0,  /**< Represents an unknown command.                                                      */
-        INVALID,      /**< Represents an invalid command.                                                      */
-        MESSAGE,      /**< Indicates that the user did not enter a command but a message to be sent.           */
-        AUTH,         /**< \auth: Sends AUTH message with the data provided from the command to the server.    */
-        JOIN,         /**< \join: Sends JOIN message with channel name from the command to the server.         */
-        RENAME,       /**< \rename: Locally changes the display name of the user.                              */
-        HELP          /**< \help: Prints out supported local commands with their parameters and a description. */
+        // Helper values for the parser
+        UNKNOWN = 0,  /**< Represents an unknown command.                                                       */
+        INVALID,      /**< Represents an invalid command.                                                       */
+        MESSAGE,      /**< Indicates that the user did not enter a command but a message to be sent.            */
+
+        // Real client commands
+        AUTH,         /**< \\auth: Sends AUTH message with the data provided from the command to the server.    */
+        JOIN,         /**< \\join: Sends JOIN message with channel name from the command to the server.         */
+        RENAME,       /**< \\rename: Locally changes the display name of the user.                              */
+        HELP          /**< \\help: Prints out supported local commands with their parameters and a description. */
     }; // UserCommandType
 } // IPK25ChatClient::Enums
 

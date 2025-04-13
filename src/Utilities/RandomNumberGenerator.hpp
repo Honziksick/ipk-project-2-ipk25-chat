@@ -54,7 +54,7 @@ namespace IPK25ChatClient::Utilities
         static std::mt19937 mRandomGenerator;     /**< Mersenne Twister random number generator.               */
         static std::uniform_int_distribution<uint16_t> mPortDistribution16;  /**< Distribution for generating 16-bit port numbers. */
     }; // RandomNumberGenerator
-} // namespace IPK25ChatClient::Utilities
+} // IPK25ChatClient::Utilities
 
 #endif // RANDOM_NUMBER_GENERATOR_HPP
 
