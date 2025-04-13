@@ -34,29 +34,34 @@ namespace IPK25ChatClient::Constants
      */
     class ClientLimits {
     public:
-        static constexpr unsigned int MIN_SERVER_PORT = 1;  /**< Minimum server port number (port 0 is reserved and thus not allowed). */
-        static constexpr unsigned int MAX_SERVER_PORT = std::numeric_limits<uint16_t>::max();  /**< Maximum server port number. */
+        static constexpr size_t MIN_SERVER_PORT = 1;  /**< Minimum server port number (port 0 is reserved and thus not allowed). */
+        static constexpr size_t MAX_SERVER_PORT = std::numeric_limits<uint16_t>::max();  /**< Maximum server port number. */
 
-        static constexpr unsigned int MIN_UDP_RETRANSMIT = std::numeric_limits<uint8_t>::min();   /**< Minimum number of UDP retransmissions. */
-        static constexpr unsigned int MAX_UDP_RETRANSMIT = std::numeric_limits<uint8_t>::max();   /**< Maximum number of UDP retransmissions. */
+        static constexpr size_t MIN_UDP_RETRANSMIT = std::numeric_limits<uint8_t>::min();   /**< Minimum number of UDP retransmissions. */
+        static constexpr size_t MAX_UDP_RETRANSMIT = std::numeric_limits<uint8_t>::max();   /**< Maximum number of UDP retransmissions. */
 
-        static constexpr unsigned int MIN_UDP_TIMEOUT_MS = std::numeric_limits<uint16_t>::min();  /**< Minimum UDP timeout in milliseconds. */
-        static constexpr unsigned int MAX_UDP_TIMEOUT_MS = std::numeric_limits<uint16_t>::max();  /**< Maximum UDP timeout in milliseconds. */
+        static constexpr size_t MIN_UDP_TIMEOUT_MS = std::numeric_limits<uint16_t>::min();  /**< Minimum UDP timeout in milliseconds. */
+        static constexpr size_t MAX_UDP_TIMEOUT_MS = std::numeric_limits<uint16_t>::max();  /**< Maximum UDP timeout in milliseconds. */
 
-        static constexpr unsigned int MIN_USERNAME_LENGTH = 1;             /**< Minimum length of the username. */
-        static constexpr unsigned int MAX_USERNAME_LENGTH = 20;            /**< Maximum length of the username. */
+        static constexpr size_t MIN_USERNAME_LENGTH = 1;               /**< Minimum length of the username. */
+        static constexpr size_t MAX_USERNAME_LENGTH = 20;              /**< Maximum length of the username. */
 
-        static constexpr unsigned int MIN_CHANNEL_ID_LENGTH = 1;           /**< Minimum length of the channel ID. */
-        static constexpr unsigned int MAX_CHANNEL_ID_LENGTH = 20;          /**< Maximum length of the channel ID. */
+        static constexpr size_t MIN_CHANNEL_ID_LENGTH = 1;             /**< Minimum length of the channel ID. */
+        static constexpr size_t MAX_CHANNEL_ID_LENGTH = 20;            /**< Maximum length of the channel ID. */
 
-        static constexpr unsigned int MIN_SECRET_LENGTH = 1;               /**< Minimum length of the secret. */
-        static constexpr unsigned int MAX_SECRET_LENGTH = 128;             /**< Maximum length of the secret. */
+        static constexpr size_t MIN_SECRET_LENGTH = 1;                 /**< Minimum length of the secret. */
+        static constexpr size_t MAX_SECRET_LENGTH = 128;               /**< Maximum length of the secret. */
 
-        static constexpr unsigned int MIN_DISPLAY_NAME_LENGTH = 1;         /**< Minimum length of the display name. */
-        static constexpr unsigned int MAX_DISPLAY_NAME_LENGTH = 20;        /**< Maximum length of the display name. */
+        static constexpr size_t MIN_DISPLAY_NAME_LENGTH = 1;           /**< Minimum length of the display name. */
+        static constexpr size_t MAX_DISPLAY_NAME_LENGTH = 20;          /**< Maximum length of the display name. */
 
-        static constexpr unsigned int MIN_MESSAGE_CONTENT_LENGTH = 1;      /**< Minimum length of the message content. */
-        static constexpr unsigned int MAX_MESSAGE_CONTENT_LENGTH = 60000;  /**< Maximum length of the message content. */
+        static constexpr size_t MIN_MESSAGE_CONTENT_LENGTH = 1;        /**< Minimum length of the message content. */
+        static constexpr size_t MAX_MESSAGE_CONTENT_LENGTH = 60000;    /**< Maximum length of the message content. */
+
+        static constexpr size_t EXPECTED_NUMBER_OF_AUTH_PARAMS = 3;    /**< Expected number of parameters for the /auth command (`/auth {Username} {Secret} {DisplayName}`). */
+        static constexpr size_t EXPECTED_NUMBER_OF_JOIN_PARAMS = 1;    /**< Expected number of parameters for the /join command (`/join {ChannelID}`).       */
+        static constexpr size_t EXPECTED_NUMBER_OF_RENAME_PARAMS = 1;  /**< Expected number of parameters for the /rename command (`/rename {DisplayName}`). */
+        static constexpr size_t EXPECTED_NUMBER_OF_HELP_PARAMS = 0;    /**< Expected number of parameters for the /help command (`/help`).                   */
     }; // ClientLimits
 } // IPK25ChatClient::Constants
 
