@@ -26,9 +26,9 @@
 #define USER_COMMAND_HPP
 
 #include "Enums/UserCommandTypes.hpp"
-#include <string>
+#include <string>  // std::string
 
-namespace IPK25ChatClient::Parser
+namespace IPK25ChatClient::CommandParser
 {
     /**
      * @class UserCommand
@@ -40,17 +40,12 @@ namespace IPK25ChatClient::Parser
      */
     class UserCommand final {
     public:
-        /**
-         * @brief Default constructor for UserCommand class.
-         */
-        explicit UserCommand();
-
-        Enums::UserCommandType mMessageType;   /**< The type of the user command or message.           */
-        std::string mUsername;                 /**< The username associated with the command.          */
-        std::string mSecret;                   /**< The secret or password for authentication.         */
-        std::string mDisplayName;              /**< The display name of the user.                      */
-        std::string mChannelId;                /**< The ID of the channel associated with the command. */
-        std::string mMessageContent;           /**< The content of the message, if applicable.         */
+        Enums::UserCommandType mCommandType;  /**< The type of the user command (may be a message instead of a command). */
+        std::string mUsername;                /**< The username associated with the command.          */
+        std::string mSecret;                  /**< The secret or password for authentication.         */
+        std::string mDisplayName;             /**< The display name of the user.                      */
+        std::string mChannelId;               /**< The ID of the channel associated with the command. */
+        std::string mMessageContent;          /**< The content of the message, if applicable.         */
 
         /**
          * @brief Equality operator for UserCommand class.
@@ -64,7 +59,7 @@ namespace IPK25ChatClient::Parser
          */
         bool operator==(const UserCommand &other) const = default;
     }; // UserCommand
-} // IPK25ChatClient::Parser
+} // IPK25ChatClient::CommandParser
 
 #endif // USER_COMMAND_HPP
 

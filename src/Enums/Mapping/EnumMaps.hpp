@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    13.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `EnumMaps` class, which provides static    *
  *               mapping utilities for converting enum values to their         *
@@ -30,7 +30,7 @@
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/MessageParameters.hpp"
 #include "Enums/MessageTypes.hpp"
-#include "Enums/MessageValidatorResults.hpp"
+#include "Enums/CommandValidatorsResults.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -81,10 +81,10 @@ namespace IPK25ChatClient::Enums::Mapping
         static const std::unordered_map<MessageParameter, std::string> &getMessageParameterMap();
 
         /**
-         * @brief Retrieves the mapping for `MessageValidatorResult` to strings.
-         * @return A constant reference to the map of `MessageValidatorResult` to strings.
+         * @brief Retrieves the mapping for `CommandValidatorsResult` to strings.
+         * @return A constant reference to the map of `CommandValidatorsResult` to strings.
          */
-        static const std::unordered_map<MessageValidatorResult, std::string> &getMessageValidatorResultMap();
+        static const std::unordered_map<CommandValidatorsResult, std::string> &getMessageValidatorResultMap();
 
         /**
          * @brief Retrieves the mapping for `MessageType` to strings.
@@ -92,7 +92,7 @@ namespace IPK25ChatClient::Enums::Mapping
          */
         static const std::unordered_map<MessageType, std::string> &getMessageTypeMap();
     }; // EnumMaps
-} // namespace IPK25ChatClient::Enums
+} // IPK25ChatClient::Enums
 
 #endif // ENUM_MAPS_HPP
 

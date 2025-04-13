@@ -4,37 +4,37 @@
  * University:   Faculty of Information Technology, BUT                        *
  * Subject:      IPK: Computer Communications and Networks                     *
  *                                                                             *
- * File:         TCPMessagesValidators.hpp                                     *
+ * File:         CommandValidators.hpp                                         *
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    13.04.2025                                                    *
  *                                                                             *
- * Description:  This header file defines the TcpMessagesValidator class,      *
- *               which provides static methods for validating various message  *
+ * Description:  This header file defines the `CommandValidators` class,       *
+ *               which provides static methods for validating various command  *
  *               parameters used in the IPK25 Chat Client application. These   *
  *               methods ensure that parameters meet specific constraints      *
  *               such as allowed symbols, length limits, and regex patterns.   *
  *                                                                             *
  ******************************************************************************/
 /**
- * @file TCPMessagesValidators.hpp
+ * @file CommandValidators.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file defining of the TcpMessagesValidator class for message
- *        parameter validation.
+ * @brief Header file defining of the `CommandValidators` class
+ *        for message parameter validation.
  */
 
-#ifndef TCP_MESSAGES_VALIDATORS_HPP
-#define TCP_MESSAGES_VALIDATORS_HPP
+#ifndef COMMAND_VALIDATORS_HPP
+#define COMMAND_VALIDATORS_HPP
 
 #include "Enums/MessageParameters.hpp"
-#include "Enums/MessageValidatorResults.hpp"
+#include "Enums/CommandValidatorsResults.hpp"
 #include <string_view>  // std::string_view
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::CommandParser
 {
     /**
-     * @class TcpMessagesValidator
+     * @class CommandValidators
      * @brief Provides static methods for validating message parameters.
      *
      * @details This class contains methods to validate various message parameters
@@ -50,7 +50,7 @@ namespace IPK25ChatClient::Messaging
      *       validation checks separatly for allowed symbols, minimum and maximum
      *       lengths and provides detailed error messages.
      */
-    class TcpMessagesValidator final {
+    class CommandValidators final {
     public:
         /**
          * @brief Validates a message parameter based on its type.
@@ -58,9 +58,9 @@ namespace IPK25ChatClient::Messaging
          * @param parameterType The type of the message parameter (e.g., USERNAME, CHANNEL_ID).
          * @param messageParameter The value of the parameter to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult validateMessageParameter(Enums::MessageParameter parameterType,
+        static Enums::CommandValidatorsResult validateMessageParameter(Enums::MessageParameter parameterType,
                                                                       std::string_view messageParameter);
 
     private:
@@ -102,93 +102,93 @@ namespace IPK25ChatClient::Messaging
          *
          * @param username The username to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult validateUsername(std::string_view username);
+        static Enums::CommandValidatorsResult validateUsername(std::string_view username);
 
         /**
          * @brief Performs deep validation of a username parameter.
          *
          * @param username The username to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult deepUsernameValidation(std::string_view username);
+        static Enums::CommandValidatorsResult deepUsernameValidation(std::string_view username);
 
         /**
          * @brief Validates a channel ID parameter.
          *
          * @param channelId The channel ID to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult validateChannelId(std::string_view channelId);
+        static Enums::CommandValidatorsResult validateChannelId(std::string_view channelId);
 
         /**
          * @brief Performs deep validation of a channel ID parameter.
          *
          * @param channelId The channel ID to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult deepChannelIdValidation(std::string_view channelId);
+        static Enums::CommandValidatorsResult deepChannelIdValidation(std::string_view channelId);
 
         /**
          * @brief Validates a secret parameter.
          *
          * @param secret The secret to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult validateSecret(std::string_view secret);
+        static Enums::CommandValidatorsResult validateSecret(std::string_view secret);
 
         /**
          * @brief Performs deep validation of a secret parameter.
          *
          * @param secret The secret to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult deepSecretValidation(std::string_view secret);
+        static Enums::CommandValidatorsResult deepSecretValidation(std::string_view secret);
 
         /**
          * @brief Validates a display name parameter.
          *
          * @param displayName The display name to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult validateDisplayName(std::string_view displayName);
+        static Enums::CommandValidatorsResult validateDisplayName(std::string_view displayName);
 
         /**
          * @brief Performs deep validation of a display name parameter.
          *
          * @param displayName The display name to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult deepDisplayNameValidation(std::string_view displayName);
+        static Enums::CommandValidatorsResult deepDisplayNameValidation(std::string_view displayName);
 
         /**
          * @brief Validates a message content parameter.
          *
          * @param messageContent The message content to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult validateMessageContent(std::string_view messageContent);
+        static Enums::CommandValidatorsResult validateMessageContent(std::string_view messageContent);
 
         /**
          * @brief Performs deep validation of a message content parameter.
          *
          * @param messageContent The message content to validate.
          *
-         * @return A MessageValidatorResult indicating the validation outcome.
+         * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::MessageValidatorResult deepMessageContentValidation(std::string_view messageContent);
-    }; // TcpMessagesValidators
-} // IPK25ChatClient::Messaging
+        static Enums::CommandValidatorsResult deepMessageContentValidation(std::string_view messageContent);
+    }; // CommandValidators
+} // IPK25ChatClient::CommandParser
 
-#endif //TCP_MESSAGES_VALIDATORS_HPP
+#endif // COMMAND_VALIDATORS_HPP
 
-/*** end of file TCPMessagesValidators.hpp ***/
+/*** end of file CommandValidators.hpp ***/

@@ -4,28 +4,29 @@
  * University:   Faculty of Information Technology, BUT                        *
  * Subject:      IPK: Computer Communications and Networks                     *
  *                                                                             *
- * File:         TCPMessagesValidators.cpp                                     *
+ * File:         CommandValidators.cpp                                         *
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    13.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
- *               TCPMessagesValidator class, which provides methods for        *
+ *               `CommandValidators` class, which provides methods for         *
  *               validating various message parameters used in the IPK25       *
  *               Chat Client application.                                      *
  *                                                                             *
  ******************************************************************************/
 /**
- * @file TCPMessagesValidators.cpp
+ * @file CommandValidators.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation of message validation logic for the IPK25 Chat Client.
+ * @brief Implementation of the class `CommandValidators` for message
+ *         validation in the IPK25 Chat Client.
  */
 
-#include "Messaging/MessageBuilder/TCPMessagesValidators.hpp"
+#include "CommandParser/CommandValidators.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
 #include "Enums/MessageParameters.hpp"
-#include "Enums/MessageValidatorResults.hpp"
+#include "Enums/CommandValidatorsResults.hpp"
 #include "Constants/ClientLimits.hpp"
 #include "Constants/RegexPatterns.hpp"
 #include "Exceptions/ChatExceptions.hpp"
@@ -42,15 +43,15 @@ using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Utilities;
 using namespace std;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::CommandParser
 {
-    MessageValidatorResult TcpMessagesValidator::validateMessageParameter(const MessageParameter parameterType,
-                                                                          const string_view messageParameter) {
+    CommandValidatorsResult CommandValidators::validateMessageParameter(const MessageParameter parameterType,
+                                                                       const string_view messageParameter) {
         logger("Message parameter validation started: parameterType: %s, messageParameter: %s",
                CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str());
 
         // Perform validation based on the parameter type
-        auto result = MessageValidatorResult::UNKNOWN;
+        auto result = CommandValidatorsResult::UNKNOWN;
         switch(parameterType) {
             case MessageParameter::USERNAME:
                 result = validateUsername(messageParameter);
@@ -75,21 +76,21 @@ namespace IPK25ChatClient::Messaging
         }
 
         // Check if the result is OK or may be interpreted as OK
-        if(result == MessageValidatorResult::OK || result == MessageValidatorResult::PARAMETER_TOO_LONG) {
+        if(result == CommandValidatorsResult::OK || result == CommandValidatorsResult::PARAMETER_TOO_LONG) {
             logger("Message parameter validation SUCCEDDED: parameterType: %s, messageParameter: %s, result: %s",
                    CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str(),
                    CastUtils::castEnumToString(result).c_str());
-            return MessageValidatorResult::OK;
+            return CommandValidatorsResult::OK;
         }
         else {
             logger("Message parameter validation FAILED: parameterType: %s, messageParameter: %s, result: %s",
                    CastUtils::castEnumToString(parameterType).c_str(), string(messageParameter).c_str(),
                    CastUtils::castEnumToString(result).c_str());
-            return MessageValidatorResult::INVALID;
+            return CommandValidatorsResult::INVALID;
         }
-    } // TcpMessagesValidator::validateMessageParameter
+    } // CommandValidators::validateMessageParameter
 
-    bool TcpMessagesValidator::validateContainingOnlyAllowedSymbols(const string_view messageParameter, const bool whiteCharsAllowed) {
+    bool CommandValidators::validateContainingOnlyAllowedSymbols(const string_view messageParameter, const bool whiteCharsAllowed) {
         logger("Deep validation called with messageParameter: %s", string(messageParameter).c_str());
 
         // Choose the correct regex
@@ -119,9 +120,9 @@ namespace IPK25ChatClient::Messaging
 
         logger("Deep validation passed: parameter contains only allowed symbols.");
         return true;
-    } // TcpMessagesValidator::validateContainingOnlyAllowedSymbols
+    } // CommandValidators::validateContainingOnlyAllowedSymbols
 
-    bool TcpMessagesValidator::validateMinParameterLength(const string_view messageParameter, const unsigned int minLength) {
+    bool CommandValidators::validateMinParameterLength(const string_view messageParameter, const unsigned int minLength) {
         logger("Deep validation called with messageParameter: %s, minLength: %u", string(messageParameter).c_str(), minLength);
 
         if(messageParameter.length() < minLength) {
@@ -136,9 +137,9 @@ namespace IPK25ChatClient::Messaging
 
         logger("Deep validation passed: parameter length is %zu", messageParameter.length());
         return true;
-    } // TcpMessagesValidator::validateMinParameterLength
+    } // CommandValidators::validateMinParameterLength
 
-    bool TcpMessagesValidator::validateMaxParameterLength(const string_view messageParameter, const unsigned int maxLength) {
+    bool CommandValidators::validateMaxParameterLength(const string_view messageParameter, const unsigned int maxLength) {
         logger("Deep validation called with messageParameter: %s, maxLength: %u", string(messageParameter).c_str(), maxLength);
 
         if(messageParameter.length() > maxLength) {
@@ -155,9 +156,9 @@ namespace IPK25ChatClient::Messaging
 
         logger("Deep validation passed: parameter length is %zu", messageParameter.length());
         return true;
-    } // TcpMessagesValidator::validateMaxParameterLength
+    } // CommandValidators::validateMaxParameterLength
 
-    MessageValidatorResult TcpMessagesValidator::validateUsername(const string_view username) {
+    CommandValidatorsResult CommandValidators::validateUsername(const string_view username) {
         logger("Validation of username: %s", string(username).c_str());
 
         static const regex cUsernameRegex(RegexPatterns::USERNAME_REGEX_PATTERN);
@@ -167,24 +168,24 @@ namespace IPK25ChatClient::Messaging
         }
 
         logger("Username validation passed.");
-        return MessageValidatorResult::OK;
-    } // TcpMessagesValidator::validateUsername
+        return CommandValidatorsResult::OK;
+    } // CommandValidators::validateUsername
 
-    MessageValidatorResult TcpMessagesValidator::deepUsernameValidation(const string_view username) {
+    CommandValidatorsResult CommandValidators::deepUsernameValidation(const string_view username) {
         if(!validateContainingOnlyAllowedSymbols(username)) {
-            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+            return CommandValidatorsResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
         if(!validateMinParameterLength(username, ClientLimits::MIN_USERNAME_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+            return CommandValidatorsResult::PARAMETER_TOO_SHORT;
         }
         if(!validateMaxParameterLength(username, ClientLimits::MAX_USERNAME_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_LONG;
+            return CommandValidatorsResult::PARAMETER_TOO_LONG;
         }
 
-        return MessageValidatorResult::UNKNOWN;
-    } // TcpMessagesValidator::deepUsernameValidation
+        return CommandValidatorsResult::UNKNOWN;
+    } // CommandValidators::deepUsernameValidation
 
-    MessageValidatorResult TcpMessagesValidator::validateChannelId(const string_view channelId) {
+    CommandValidatorsResult CommandValidators::validateChannelId(const string_view channelId) {
         logger("Validation of channelId: %s", string(channelId).c_str());
 
         static const regex cChannelIdRegex(RegexPatterns::CHANNEL_REGEX_ID_PATTERN);
@@ -194,24 +195,24 @@ namespace IPK25ChatClient::Messaging
         }
 
         logger("ChannelId validation passed.");
-        return MessageValidatorResult::OK;
-    } // TcpMessagesValidator::validateChannelId
+        return CommandValidatorsResult::OK;
+    } // CommandValidators::validateChannelId
 
-    MessageValidatorResult TcpMessagesValidator::deepChannelIdValidation(const string_view channelId) {
+    CommandValidatorsResult CommandValidators::deepChannelIdValidation(const string_view channelId) {
         if(!validateContainingOnlyAllowedSymbols(channelId)) {
-            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+            return CommandValidatorsResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
         if(!validateMinParameterLength(channelId, ClientLimits::MIN_CHANNEL_ID_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+            return CommandValidatorsResult::PARAMETER_TOO_SHORT;
         }
         if(!validateMaxParameterLength(channelId, ClientLimits::MAX_CHANNEL_ID_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_LONG;
+            return CommandValidatorsResult::PARAMETER_TOO_LONG;
         }
 
-        return MessageValidatorResult::UNKNOWN;
-    } // TcpMessagesValidator::deepChannelIdValidation
+        return CommandValidatorsResult::UNKNOWN;
+    } // CommandValidators::deepChannelIdValidation
 
-    MessageValidatorResult TcpMessagesValidator::validateSecret(const string_view secret) {
+    CommandValidatorsResult CommandValidators::validateSecret(const string_view secret) {
         logger("Validation of secret: %s", string(secret).c_str());
 
         static const regex cSecretRegex(RegexPatterns::SECRET_REGEX_PATTERN);
@@ -221,24 +222,24 @@ namespace IPK25ChatClient::Messaging
         }
 
         logger("Secret validation passed.");
-        return MessageValidatorResult::OK;
-    } // TcpMessagesValidator::validateSecret
+        return CommandValidatorsResult::OK;
+    } // CommandValidators::validateSecret
 
-    MessageValidatorResult TcpMessagesValidator::deepSecretValidation(const string_view secret) {
+    CommandValidatorsResult CommandValidators::deepSecretValidation(const string_view secret) {
         if(!validateContainingOnlyAllowedSymbols(secret)) {
-            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+            return CommandValidatorsResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
         if(!validateMinParameterLength(secret, ClientLimits::MIN_SECRET_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+            return CommandValidatorsResult::PARAMETER_TOO_SHORT;
         }
         if(!validateMaxParameterLength(secret, ClientLimits::MAX_SECRET_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_LONG;
+            return CommandValidatorsResult::PARAMETER_TOO_LONG;
         }
 
-        return MessageValidatorResult::UNKNOWN;
-    } // TcpMessagesValidator::deepSecretValidation
+        return CommandValidatorsResult::UNKNOWN;
+    } // CommandValidators::deepSecretValidation
 
-    MessageValidatorResult TcpMessagesValidator::validateDisplayName(const string_view displayName) {
+    CommandValidatorsResult CommandValidators::validateDisplayName(const string_view displayName) {
         logger("Validation of displayName: %s", string(displayName).c_str());
 
         static const regex cDisplayNameRegex(RegexPatterns::DISPLAYNAME_REGEX_PATTERN);
@@ -248,24 +249,24 @@ namespace IPK25ChatClient::Messaging
         }
 
         logger("DisplayName validation passed.");
-        return MessageValidatorResult::OK;
-    } // TcpMessagesValidator::validateDisplayName
+        return CommandValidatorsResult::OK;
+    } // CommandValidators::validateDisplayName
 
-    MessageValidatorResult TcpMessagesValidator::deepDisplayNameValidation(const string_view displayName) {
+    CommandValidatorsResult CommandValidators::deepDisplayNameValidation(const string_view displayName) {
         if(!validateContainingOnlyAllowedSymbols(displayName)) {
-            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+            return CommandValidatorsResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
         if(!validateMinParameterLength(displayName, ClientLimits::MIN_DISPLAY_NAME_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+            return CommandValidatorsResult::PARAMETER_TOO_SHORT;
         }
         if(!validateMaxParameterLength(displayName, ClientLimits::MAX_DISPLAY_NAME_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_LONG;
+            return CommandValidatorsResult::PARAMETER_TOO_LONG;
         }
 
-        return MessageValidatorResult::UNKNOWN;
-    } // TcpMessagesValidator::deepDisplayNameValidation
+        return CommandValidatorsResult::UNKNOWN;
+    } // CommandValidators::deepDisplayNameValidation
 
-    MessageValidatorResult TcpMessagesValidator::validateMessageContent(const string_view messageContent) {
+    CommandValidatorsResult CommandValidators::validateMessageContent(const string_view messageContent) {
         logger("Validation of messageContent: %s", string(messageContent).c_str());
 
         static const regex cMessageContentRegex(RegexPatterns::MESSAGE_CONTENT_REGEX_PATTERN);
@@ -275,22 +276,22 @@ namespace IPK25ChatClient::Messaging
         }
 
         logger("MessageContent validation passed.");
-        return MessageValidatorResult::OK;
-    } // TcpMessagesValidator::validateMessageContent
+        return CommandValidatorsResult::OK;
+    } // CommandValidators::validateMessageContent
 
-    MessageValidatorResult TcpMessagesValidator::deepMessageContentValidation(const string_view messageContent) {
+    CommandValidatorsResult CommandValidators::deepMessageContentValidation(const string_view messageContent) {
         if(!validateContainingOnlyAllowedSymbols(messageContent, true)) {
-            return MessageValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
+            return CommandValidatorsResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
         if(!validateMinParameterLength(messageContent, ClientLimits::MIN_MESSAGE_CONTENT_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_SHORT;
+            return CommandValidatorsResult::PARAMETER_TOO_SHORT;
         }
         if(!validateMaxParameterLength(messageContent, ClientLimits::MAX_MESSAGE_CONTENT_LENGTH)) {
-            return MessageValidatorResult::PARAMETER_TOO_LONG;
+            return CommandValidatorsResult::PARAMETER_TOO_LONG;
         }
 
-        return MessageValidatorResult::UNKNOWN;
-    } // TcpMessagesValidator::deepMessageContentValidation
-} // namespace IPK25ChatClient::Messaging
+        return CommandValidatorsResult::UNKNOWN;
+    } // CommandValidators::deepMessageContentValidation
+} // IPK25ChatClient::CommandParser
 
-/*** end of file TCPMessagesValidators.cpp ***/
+/*** end of file CommandValidators.cpp ***/

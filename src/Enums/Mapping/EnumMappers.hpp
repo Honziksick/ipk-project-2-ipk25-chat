@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    13.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `EnumMappers` class, which provides        *
  *               static template mapping methods for converting enum values    *
@@ -30,7 +30,7 @@
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/MessageParameters.hpp"
 #include "Enums/MessageTypes.hpp"
-#include "Enums/MessageValidatorResults.hpp"
+#include "Enums/CommandValidatorsResults.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -121,13 +121,13 @@ namespace IPK25ChatClient::Enums::Mapping
     }
 
     /**
-     * @brief Specialization of the template method to retrieve the mapping for `MessageValidatorResult`.
-     * @return A constant reference to the map of `MessageValidatorResult` to strings.
+     * @brief Specialization of the template method to retrieve the mapping for `CommandValidatorsResult`.
+     * @return A constant reference to the map of `CommandValidatorsResult` to strings.
      *
      * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf
      */
     template <>
-    inline const std::unordered_map<MessageValidatorResult, std::string> &EnumMappers::getEnumToStringMap<MessageValidatorResult>() {
+    inline const std::unordered_map<CommandValidatorsResult, std::string> &EnumMappers::getEnumToStringMap<CommandValidatorsResult>() {
         return getMessageValidatorResultMap();
     }
 
@@ -141,7 +141,7 @@ namespace IPK25ChatClient::Enums::Mapping
     inline const std::unordered_map<MessageType, std::string> &EnumMappers::getEnumToStringMap<MessageType>() {
         return getMessageTypeMap();
     }
-} // namespace IPK25ChatClient::Enums
+} // IPK25ChatClient::Enums
 
 #endif // ENUM_MAPPERS_HPP
 
