@@ -25,7 +25,7 @@
 #include "Enums/UserCommandTypes.hpp"
 #include "Enums/ClientFsmStates.hpp"
 #include "Enums/ExitCodes.hpp"
-#include "Enums/MessageParameters.hpp"
+#include "Enums/CommandParameters.hpp"
 #include "Enums/MessageTypes.hpp"
 #include "Enums/CommandValidatorsResults.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
@@ -75,14 +75,14 @@ namespace IPK25ChatClient::Enums::Mapping
         return cMap;
     } // EnumMaps::getExitCodeMap
 
-    const unordered_map<MessageParameter, string> &EnumMaps::getMessageParameterMap() {
-        static const unordered_map<MessageParameter, string> cMap = {
-            {MessageParameter::MESSAGE_ID, "MessageID"},
-            {MessageParameter::USERNAME, "Username"},
-            {MessageParameter::CHANNEL_ID, "ChannelID"},
-            {MessageParameter::SECRET, "Secret"},
-            {MessageParameter::DISPLAY_NAME, "DisplayName"},
-            {MessageParameter::MESSAGE_CONTENT, "MessageContent"}
+    const unordered_map<CommandParameter, string> &EnumMaps::getMessageParameterMap() {
+        static const unordered_map<CommandParameter, string> cMap = {
+            {CommandParameter::MESSAGE_ID, "MessageID"},
+            {CommandParameter::USERNAME, "Username"},
+            {CommandParameter::CHANNEL_ID, "ChannelID"},
+            {CommandParameter::SECRET, "Secret"},
+            {CommandParameter::DISPLAY_NAME, "DisplayName"},
+            {CommandParameter::MESSAGE_CONTENT, "MessageContent"}
         };
         return cMap;
     } // EnumMaps::getMessageParameterMap

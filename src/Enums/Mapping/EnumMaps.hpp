@@ -28,7 +28,7 @@
 #include "Enums/ClientFsmStates.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
-#include "Enums/MessageParameters.hpp"
+#include "Enums/CommandParameters.hpp"
 #include "Enums/MessageTypes.hpp"
 #include "Enums/CommandValidatorsResults.hpp"
 #include <unordered_map>  // std::unordered_map
@@ -75,10 +75,10 @@ namespace IPK25ChatClient::Enums::Mapping
         static const std::unordered_map<TransportProtocolType, std::string> &getTransportProtocolTypeMap();
 
         /**
-         * @brief Retrieves the mapping for `MessageParameter` to strings.
-         * @return A constant reference to the map of `MessageParameter` to strings.
+         * @brief Retrieves the mapping for `CommandParameter` to strings.
+         * @return A constant reference to the map of `CommandParameter` to strings.
          */
-        static const std::unordered_map<MessageParameter, std::string> &getMessageParameterMap();
+        static const std::unordered_map<CommandParameter, std::string> &getMessageParameterMap();
 
         /**
          * @brief Retrieves the mapping for `CommandValidatorsResult` to strings.
