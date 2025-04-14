@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    09.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the declaration of the `CastUtils`         *
  *               class, which provides utility methodss for type casting,      *
@@ -80,10 +80,11 @@ namespace IPK25ChatClient::Utilities
             // Retrieve the map for the given enum type
             const auto &enumToStringMap = Enums::Mapping::EnumMappers::getEnumToStringMap<EnumType>();
 
-            // Find the enum value in the map
-            auto iterator = enumToStringMap.find(enumValue);
-            if(iterator != enumToStringMap.end()) {
-                return iterator->second;
+            // Find the string value in the map
+            for(const auto &pair : enumToStringMap) {
+                if(pair.first == enumValue) {
+                    return pair.second;
+                }
             }
 
             // Throw an exception if the value is not found
@@ -92,6 +93,41 @@ namespace IPK25ChatClient::Utilities
                     ", value: " + std::to_string(static_cast<int>(enumValue))
                     );
         } // CastUtils::castEnumToString
+
+        /**
+         * @brief Converts a string to its corresponding enum value.
+         * @details This method retrieves the map of string-to-enum mappings
+         *          for the given enum type and finds the enum value corresponding
+         *          to the provided string. If the string is not found,
+         *          an exception is thrown.
+         *
+         * @note My implementation was inspired by the previous method.
+         *
+         * @tparam EnumType The type of the enum to be converted. Must be an enum type.
+         * @param strValue The string representation of the enum value.
+         *
+         * @return EnumType The enum value corresponding to the string.
+         */
+        template <typename EnumType>
+        static EnumType castStringToEnum(const std::string &strValue) {
+            static_assert(std::is_enum_v<EnumType>, "Template parameter must be an enum type");
+
+            // Retrieve the map for the given enum type
+            const auto &enumToStringMap = Enums::Mapping::EnumMappers::getEnumToStringMap<EnumType>();
+
+            // Find the enum value in the map
+            for(const auto &pair : enumToStringMap) {
+                if(pair.second == strValue) {
+                    return pair.first;
+                }
+            }
+
+            // Throw an exception if the string is not found
+            throw Exceptions::InternalErrorException(
+                    "String value not found in the reverse lookup. Enum type: " +
+                    std::string(typeid(EnumType).name()) + ", value: " + strValue
+                    );
+        } // CastUtils::castStringToEnum
     }; // CastUtils
 } // IPK25ChatClient::Utilities
 
