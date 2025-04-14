@@ -58,6 +58,23 @@ namespace IPK25ChatClient::Utilities
         } // CastUtils::castEnumToInt
 
         /**
+         * @brief Converts an enum value to its `uint8_t` representation.
+         * @details This function uses a static assertion to ensure that the
+         *          template parameter is an enum type. If a non-enum type is
+         *          used, a compile-time error will occur.
+         *
+         * @tparam EnumType The type of the enum to be converted. Must be an enum type.
+         * @param enumValue The enum value to convert.
+         *
+         * @return uint8_t The unsigned short representation of the enum value.
+         */
+        template <typename EnumType>
+        static constexpr int castEnumToByte(EnumType enumValue) {
+            static_assert(std::is_enum_v<EnumType>, "Template parameter must be an enum type");
+            return static_cast<uint8_t>(enumValue);
+        } // CastUtils::castEnumToInt
+
+        /**
          * @brief Converts an enum value to its string representation.
          * @details This method uses a static assertion to ensure that the
          *          template parameter is an enum type. It retrieves the
