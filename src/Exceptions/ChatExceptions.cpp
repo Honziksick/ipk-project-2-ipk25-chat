@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the ChatBaseException class used in   *
  *               the IPK25 Chat Client project.                                *
@@ -43,6 +43,13 @@ namespace IPK25ChatClient::Exceptions
         ExceptionMessages::END_OF_FILE_MSG,
         move(detail)
     } {}
+
+    ServerDisconnectedException::ServerDisconnectedException(string detail) noexcept
+        : ChatBaseException{
+            ExitCode::SUCCESS,
+            ExceptionMessages::SERVER_DISCONNECTED_MSG,
+            move(detail)
+        } {}
 
     InvalidArgumentException::InvalidArgumentException(string detail) noexcept
         : ChatBaseException{
