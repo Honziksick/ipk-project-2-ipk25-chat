@@ -89,14 +89,15 @@ namespace IPK25ChatClient::Enums::Mapping
 
     const unordered_map<MessageType, string> &EnumMaps::getMessageTypeMap() {
         static const unordered_map<MessageType, string> cMap = {
-            {MessageType::CONFIRM, "Confirm"},
-            {MessageType::REPLY, "Reply"},
-            {MessageType::AUTH, "Auth"},
-            {MessageType::JOIN, "Join"},
-            {MessageType::MSG, "Message"},
-            {MessageType::PING, "Ping"},
-            {MessageType::ERR, "Error"},
-            {MessageType::BYE, "Bye"}
+            {MessageType::UNKNOWN, "unknown"},
+            {MessageType::CONFIRM, "confirm"},
+            {MessageType::REPLY, "reply"},
+            {MessageType::AUTH, "auth"},
+            {MessageType::JOIN, "join"},
+            {MessageType::MSG, "msg"},
+            {MessageType::PING, "ping"},
+            {MessageType::ERR, "err"},
+            {MessageType::BYE, "bye"}
         };
         return cMap;
     } // EnumMaps::getMessageTypeMap
