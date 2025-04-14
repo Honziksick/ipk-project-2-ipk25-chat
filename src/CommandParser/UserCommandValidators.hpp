@@ -4,13 +4,13 @@
  * University:   Faculty of Information Technology, BUT                        *
  * Subject:      IPK: Computer Communications and Networks                     *
  *                                                                             *
- * File:         CommandValidators.hpp                                         *
+ * File:         UserCommandValidators.hpp                                     *
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
  * Last edit:    13.04.2025                                                    *
  *                                                                             *
- * Description:  This header file defines the `CommandValidators` class,       *
+ * Description:  This header file defines the `UserCommandValidators` class,   *
  *               which provides static methods for validating various command  *
  *               parameters used in the IPK25 Chat Client application. These   *
  *               methods ensure that parameters meet specific constraints      *
@@ -18,23 +18,23 @@
  *                                                                             *
  ******************************************************************************/
 /**
- * @file CommandValidators.hpp
+ * @file UserCommandValidators.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file defining of the `CommandValidators` class
+ * @brief Header file defining of the `UserCommandValidators` class
  *        for message parameter validation.
  */
 
-#ifndef COMMAND_VALIDATORS_HPP
-#define COMMAND_VALIDATORS_HPP
+#ifndef USER_COMMAND_VALIDATORS_HPP
+#define USER_COMMAND_VALIDATORS_HPP
 
-#include "Enums/MessageParameters.hpp"
+#include "Enums/CommandParameters.hpp"
 #include "Enums/CommandValidatorsResults.hpp"
 #include <string_view>  // std::string_view
 
 namespace IPK25ChatClient::CommandParser
 {
     /**
-     * @class CommandValidators
+     * @class UserCommandValidators
      * @brief Provides static methods for validating message parameters.
      *
      * @details This class contains methods to validate various message parameters
@@ -50,18 +50,34 @@ namespace IPK25ChatClient::CommandParser
      *       validation checks separatly for allowed symbols, minimum and maximum
      *       lengths and provides detailed error messages.
      */
-    class CommandValidators final {
+    class UserCommandValidators final {
     public:
         /**
          * @brief Validates a message parameter based on its type.
          *
          * @param parameterType The type of the message parameter (e.g., USERNAME, CHANNEL_ID).
-         * @param messageParameter The value of the parameter to validate.
+         * @param commandParameter The value of the parameter to validate.
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateMessageParameter(Enums::MessageParameter parameterType,
-                                                                      std::string_view messageParameter);
+        static Enums::CommandValidatorsResult validateMessageParameter(Enums::CommandParameter parameterType,
+                                                                       std::string_view commandParameter);
+        /**
+         * @brief Performs post-processing validation of a command parameter.
+         *
+         * @details This method handles validation result post-proccessing.
+         *          It determines of the validation succeeded, failed, or the
+         *          parameter needs to be truncated to maximum length.
+         *
+         * @param parameterType The type of the message parameter being validated.
+         * @param validationResult The result of the initial validation process.
+         * @param commandParameter The command parameter to be validated and potentially modified.
+         *
+         * @return `true` if the post-processing validation is successful, `false` otherwise.
+         */
+        static bool postProccessValidation(Enums::CommandParameter parameterType,
+                                           Enums::CommandValidatorsResult validationResult,
+                                           std::string &commandParameter);
 
     private:
         /**
@@ -69,33 +85,33 @@ namespace IPK25ChatClient::CommandParser
          *
          * @note Spaces and line feeds are not allowed by default.
          *
-         * @param messageParameter The parameter to validate.
+         * @param commandParameter The parameter to validate.
          * @param whiteCharsAllowed A boolean flag indicating whether spaces
          *                          and line feeds are allowed in the parameter.
          *
          * @return `true` if the parameter contains only allowed symbols, `false` otherwise.
          */
-        static bool validateContainingOnlyAllowedSymbols(std::string_view messageParameter, bool whiteCharsAllowed = false);
+        static bool validateContainingOnlyAllowedSymbols(std::string_view commandParameter, bool whiteCharsAllowed = false);
 
         /**
          * @brief Validates that the parameter meets the minimum length requirement.
          *
-         * @param messageParameter The parameter to validate.
+         * @param commandParameter The parameter to validate.
          * @param minLength The minimum allowed length.
          *
          * @return `true` if the parameter meets the minimum length, `false` otherwise.
          */
-        static bool validateMinParameterLength(std::string_view messageParameter, unsigned int minLength);
+        static bool validateMinParameterLength(std::string_view commandParameter, unsigned int minLength);
 
         /**
          * @brief Validates that the parameter does not exceed the maximum length.
          *
-         * @param messageParameter The parameter to validate.
+         * @param commandParameter The parameter to validate.
          * @param maxLength The maximum allowed length.
          *
          * @return `true` if the parameter does not exceed the maximum length, `false` otherwise.
          */
-        static bool validateMaxParameterLength(std::string_view messageParameter, unsigned int maxLength);
+        static bool validateMaxParameterLength(std::string_view commandParameter, unsigned int maxLength);
 
         /**
          * @brief Validates a username parameter.
@@ -186,9 +202,24 @@ namespace IPK25ChatClient::CommandParser
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
         static Enums::CommandValidatorsResult deepMessageContentValidation(std::string_view messageContent);
-    }; // CommandValidators
+
+        /**
+         * @brief Truncates a message parameter based on its type.
+         *
+         * @details This method modifies the provided command parameter by truncating
+         *          it to the maximum allowed length for the given parameter type.
+         *          The truncation is performed by `StringUtils::truncateOverReference()`.
+         *
+         * @param parameterType The type of the message parameter (e.g., USERNAME, CHANNEL_ID).
+         * @param commandParameter The command parameter to be truncated. Passed by reference,
+         *                         so modifications will affect the original string.
+         *
+         * @return `true` if the parameter was truncated, `false` if no truncation was necessary.
+         */
+        static bool truncateMessageParameter(Enums::CommandParameter parameterType, std::string& commandParameter);
+    }; // UserCommandValidators
 } // IPK25ChatClient::CommandParser
 
-#endif // COMMAND_VALIDATORS_HPP
+#endif // USER_COMMAND_VALIDATORS_HPP
 
-/*** end of file CommandValidators.hpp ***/
+/*** end of file UserCommandValidators.hpp ***/
