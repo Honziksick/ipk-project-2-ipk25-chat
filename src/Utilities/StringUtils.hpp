@@ -12,7 +12,7 @@
  *                                                                             *
  * Description:  This file contains the declaration of the `StringUtils`       *
  *               class, which provides utility functions for string            *
- *               operations (e.g., toLower, splitStringBySpaces).              *
+ *               operations (e.g., toLower, splitBySpaces).              *
  *                                                                             *
  ******************************************************************************/
 /**
@@ -60,7 +60,7 @@ namespace IPK25ChatClient::Utilities
          * @return std::vector<std::string> A vector containing the substrings
          *         obtained by splitting the input string by spaces.
          */
-        static std::vector<std::string> splitStringBySpaces(const std::string &str);
+        static std::vector<std::string> splitBySpaces(const std::string &str);
 
         /**
          * @brief Truncates a string to a specified maximum length.

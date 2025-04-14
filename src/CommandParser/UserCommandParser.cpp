@@ -88,7 +88,7 @@ namespace IPK25ChatClient::CommandParser
 
     UserCommand UserCommandParser::parseClientCommand(const string &line) {
         // Split the command line into tokens by spaces
-        const auto tokens{StringUtils::splitStringBySpaces(line)};
+        const auto tokens{StringUtils::splitBySpaces(line)};
 
         // Check if the tokenization was successful
         if(tokens.empty()) {

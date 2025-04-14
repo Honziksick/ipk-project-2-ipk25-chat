@@ -12,7 +12,7 @@
  *                                                                             *
  * Description:  This file contains the implementation of the `StringUtils`    *
  *               class, which provides utility functions for string            *
- *               operations (e.g., toLower, splitStringBySpaces).              *
+ *               operations (e.g., toLower, splitBySpaces).              *
  *                                                                             *
  ******************************************************************************/
 /**
@@ -41,7 +41,7 @@ namespace IPK25ChatClient::Utilities
         return lowerCaseString;
     } // StringUtils::toLower
 
-    vector<string> StringUtils::splitStringBySpaces(const string &str) {
+    vector<string> StringUtils::splitBySpaces(const string &str) {
         vector<string> tokenVector;  // Vector of future tokens
         istringstream stream{str};   // Conversion of string to input stream
         string token;                // Temporary variable for each token
@@ -52,7 +52,7 @@ namespace IPK25ChatClient::Utilities
         }
 
         return tokenVector;
-    } // StringUtils::splitStringBySpaces
+    } // StringUtils::splitBySpaces
 
     bool StringUtils::truncateOverReference(string &str, const size_t maxLength) {
         if (str.length() > maxLength) {
