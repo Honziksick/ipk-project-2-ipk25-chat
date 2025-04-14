@@ -105,7 +105,7 @@ namespace IPK25ChatClient::CommandParser
                CastUtils::castEnumToString(validationResult).c_str(), string(commandParameter).c_str());
 
         // Perform post-processing based on the result
-        switch(parameterType) {
+        switch(validationResult) {
             case CommandValidatorsResult::OK:
                 return true;
             case CommandValidatorsResult::PARAMETER_TOO_LONG:
