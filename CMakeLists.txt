@@ -8,7 +8,7 @@
 # Author:       Jan Kalina <xkalinj00>                                         #
 #                                                                              #
 # Created:      02.04.2025                                                     #
-# Last edit:    03.04.2025                                                     #
+# Last edit:    14.04.2025                                                     #
 #                                                                              #
 # Description:  This file contains the CMake configuration for the IPK25 Chat  #
 #               Client project. It sets up the project, specifies the C++20    #
@@ -58,7 +58,7 @@ file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 # Set the output directory for the app release binary (ipk25chat-client)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/..")
 
-# Include necessary directories (e.g., libpcap, src)
+# Include necessary directories (e.g., src)
 include_directories(src)
 
 # Collect all source files in the 'src' directory
@@ -72,21 +72,18 @@ list(REMOVE_ITEM ALL_SOURCES
      "${CMAKE_CURRENT_SOURCE_DIR}/src/App/main.cpp"
      )
 
-###                                                                     ###
+###                                                                          ###
 #  Build library from project files (ipk25chat-client-lib) (except 'main.cpp') #
-###                                                                     ###
+###                                                                          ###
 
 # Create a static library from the source files
 add_library(ipk25chat-client-lib STATIC ${ALL_SOURCES})
 target_include_directories(ipk25chat-client-lib PUBLIC src)
 
-# Link with libpcap and libnet manually.
-target_link_libraries(ipk25chat-client-lib PUBLIC pcap net)
 
-
-###                                  ###
+###                                       ###
 #  Build main executabe (ipk25chat-client)  #
-###                                  ###
+###                                       ###
 
 add_executable(ipk25chat-client src/App/main.cpp)
 target_link_libraries(ipk25chat-client

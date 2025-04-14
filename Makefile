@@ -8,7 +8,7 @@
 # Author:       Jan Kalina <xkalinj00>                                         #
 #                                                                              #
 # Created:      02.04.2025                                                     #
-# Last edit:    09.04.2025                                                     #
+# Last edit:    14.04.2025                                                     #
 #                                                                              #
 # Description:  This Makefile is used for compiling the project IPK25 Chat     #
 #               Client for the IPK course. Besides building, the Makefile      #
@@ -105,7 +105,6 @@ CXXFLAGS_DEBUG = $(CXX_STD) $(DEBUG_FLAGS) $(WARNING_FLAGS) $(SANITIZE_FLAGS)
 ###                  ###
 
 INCLUDES = -I$(SRC_DIR)
-LIBS = -lnet
 IPK_LIB = libipk25chat-client.a
 IPK_LIB_DEBUG = libipk25chat-client-debug.a
 
@@ -274,7 +273,7 @@ $(RELEASE_BUILD_DIR)/$(IPK_LIB): $(LIB_OBJS)
 # Build the excecutable 'ipk25chat-client'
 $(EXECUTABLE): $(MAIN_OBJ) $(RELEASE_BUILD_DIR)/$(IPK_LIB)
 	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)'...$(COLOR_RESET)"
-	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(MAIN_OBJ) -L$(RELEASE_BUILD_DIR) -lipk25chat-client $(LIBS)
+	$(CXX) $(CXXFLAGS) -o $(EXECUTABLE) $(MAIN_OBJ) -L$(RELEASE_BUILD_DIR) -lipk25chat-client
 
 # Compile all object files into the 'build' directory
 $(RELEASE_BUILD_DIR)/%.o: src/%.cpp
@@ -296,7 +295,7 @@ $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG): $(LIB_OBJS_DEBUG)
 # Build the executable 'ipk25chat-client-debug'
 $(EXECUTABLE)-debug: $(MAIN_OBJ_DEBUG) $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)
 	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)-debug' for debug...$(COLOR_RESET)"
-	$(CXX) $(CXXFLAGS_DEBUG) -o $(EXECUTABLE)-debug $(MAIN_OBJ_DEBUG) -L$(DEBUG_BUILD_DIR) -lipk25chat-client-debug $(LIBS)
+	$(CXX) $(CXXFLAGS_DEBUG) -o $(EXECUTABLE)-debug $(MAIN_OBJ_DEBUG) -L$(DEBUG_BUILD_DIR) -lipk25chat-client-debug
 
 # Compile all object files into the 'build' directory
 $(DEBUG_BUILD_DIR)/%.o: src/%.cpp
