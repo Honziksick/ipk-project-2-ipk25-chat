@@ -26,6 +26,7 @@
 
 #include "Common/ChatDataTypes.hpp"
 #include "Messaging/ParsedMessage.hpp"
+#include <optional>  // std::optional
 
 namespace IPK25ChatClient::Messaging
 {
@@ -43,10 +44,11 @@ namespace IPK25ChatClient::Messaging
         /**
          * @brief Parses raw message content into a `ParsedMessage` object.
          *
-         * @param data The raw message content to be parsed.
-         * @return A `ParsedMessage` object containing the parsed message data.
+         * @param messageContent The raw message content to be parsed.
+         * @return std::optional<ParsedMessage> If a complete message is available,
+         *         its parsed representation is returned; otherwise, std::nullopt.
          */
-        virtual ParsedMessage parseIncomingMessage(const Common::MessageContent &data) = 0;
+        virtual std::optional<ParsedMessage> parseIncomingMessage(const Common::MessageContent &messageContent) = 0;
     }; // IMessageParser
 } // IPK25ChatClient::Messaging
 
