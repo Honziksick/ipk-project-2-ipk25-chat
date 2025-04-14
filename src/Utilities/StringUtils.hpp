@@ -8,11 +8,11 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      13.04.2025                                                    *
- * Last edit:    13.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the declaration of the `StringUtils`       *
  *               class, which provides utility functions for string            *
- *               operations (e.g., toLower, splitBySpaces).              *
+ *               operations (e.g., toLower, splitBySpaces, ...).               *
  *                                                                             *
  ******************************************************************************/
 /**
@@ -44,6 +44,16 @@ namespace IPK25ChatClient::Utilities
          * @return std::string The lowercase version of the input `std::string`.
          */
         static std::string toLower(const std::string &str);
+
+        /**
+         * @brief Splits g a string into tokens based on a given delimiter.
+         *
+         * @param str The input string to be split.
+         * @param delimiter The delimiter used to split the string (e.g., "\r\n").
+         *
+         * @return A vector of tokens extracted from the input string.
+         */
+        static std::vector<std::string> splitByDelimiter(const std::string &str, const std::string &delimiter);
 
         /**
          * @brief Splits a string into a vector of substrings based on spaces.
