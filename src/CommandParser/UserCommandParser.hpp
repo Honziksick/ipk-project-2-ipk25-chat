@@ -25,7 +25,7 @@
 #ifndef USER_COMMAND_PARSER_HPP
 #define USER_COMMAND_PARSER_HPP
 
-#include "CommandParser/UserCommand.hpp"
+#include "Common/UserCommand.hpp"
 #include <string>  // std::string
 #include <vector>  // std::vector
 
@@ -49,7 +49,7 @@ namespace IPK25ChatClient::CommandParser
          *         If the input is invalid, the returned object will have
          *         `UserCommandType::INVALID`.
          */
-        static UserCommand parseCommandLine();
+        static Common::UserCommand parseCommandLine();
 
     private:
         /**
@@ -85,7 +85,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A `UserCommand` object representing the parsed client command.
          */
-        static UserCommand parseClientCommand(const std::string &line);
+        static Common::UserCommand parseClientCommand(const std::string &line);
 
         /**
          * @brief Parses a chat message command from a given input line.
@@ -96,7 +96,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A `UserCommand` object representing the parsed chat message.
          */
-        static UserCommand parseChatMessage(const std::string &line);
+        static Common::UserCommand parseChatMessage(const std::string &line);
 
         /**
          * @brief Determines the type of command based on the command token.
@@ -119,7 +119,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A `UserCommand` object representing the parsed authentication command.
          */
-        static UserCommand parseAuthCommand(const std::vector<std::string> &commandParameters);
+        static Common::UserCommand parseAuthCommand(const std::vector<std::string> &commandParameters);
 
         /**
          * @brief Parses a join command.
@@ -131,7 +131,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A `UserCommand` object representing the parsed join command.
          */
-        static UserCommand parseJoinCommand(const std::vector<std::string> &commandParameters);
+        static Common::UserCommand parseJoinCommand(const std::vector<std::string> &commandParameters);
 
         /**
          * @brief Parses a rename command.
@@ -143,7 +143,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A `UserCommand` object representing the parsed rename command.
          */
-        static UserCommand parseRenameCommand(const std::vector<std::string> &commandParameters);
+        static Common::UserCommand parseRenameCommand(const std::vector<std::string> &commandParameters);
 
         /**
          * @brief Parses a help command.
@@ -155,7 +155,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A `UserCommand` object representing the parsed help command.
          */
-        static UserCommand parseHelpCommand(const std::vector<std::string> &commandParameters);
+        static Common::UserCommand parseHelpCommand(const std::vector<std::string> &commandParameters);
 
         /**
          * @brief Checks if the number of parameters matches the expected count.

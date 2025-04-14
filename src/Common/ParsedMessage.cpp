@@ -22,14 +22,14 @@
  *        a parsed message structure containing message type and fields.
  */
 
-#include "Messaging/ParsedMessage.hpp"
+#include "Common/ParsedMessage.hpp"
 #include "Enums/MessageTypes.hpp"
 
 using namespace IPK25ChatClient::Enums;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Common
 {
-    ParsedMessage::ParsedMessage() : mType{MessageType::UNKNOWN}, mMessageId{0} {}
-} // IPK25ChatClient::Messaging
+    ParsedMessage::ParsedMessage() : mType{MessageType::UNKNOWN}, mRefMessageId{0} {}
+} // IPK25ChatClient::Common
 
 /*** end of file ParsedMessage.cpp ***/

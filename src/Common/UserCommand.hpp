@@ -28,7 +28,7 @@
 #include "Enums/UserCommandTypes.hpp"
 #include <string>  // std::string
 
-namespace IPK25ChatClient::CommandParser
+namespace IPK25ChatClient::Common
 {
     /**
      * @class UserCommand
@@ -59,7 +59,7 @@ namespace IPK25ChatClient::CommandParser
          */
         bool operator==(const UserCommand &other) const = default;
     }; // UserCommand
-} // IPK25ChatClient::CommandParser
+} // IPK25ChatClient::Common
 
 #endif // USER_COMMAND_HPP
 

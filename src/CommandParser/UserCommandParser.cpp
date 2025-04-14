@@ -23,9 +23,9 @@
  */
 
 #include "CommandParser/UserCommandParser.hpp"
-#include "CommandParser/UserCommand.hpp"
 #include "CommandParser/UserCommandValidators.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
+#include "Common/UserCommand.hpp"
 #include "Exceptions/ChatExceptions.hpp"
 #include "Constants/ClientLimits.hpp"
 #include "Enums/UserCommandTypes.hpp"
@@ -38,6 +38,7 @@
 
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Client::Output;
+using namespace IPK25ChatClient::Common;
 using namespace IPK25ChatClient::Constants;
 using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Utilities;

@@ -30,7 +30,7 @@
 #include <vector>   // std::vector
 #include <cstdint>  // uint16_t
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Common
 {
     /**
      * @class ParsedMessage
@@ -40,15 +40,15 @@ namespace IPK25ChatClient::Messaging
      *          including its type and associated fields. This data class can
      *          be used to represent both TCP and UDP messages.
      */
-    class ParsedMessage {
+    class ParsedMessage final {
     public:
         explicit ParsedMessage();
 
-        Enums::MessageType mType;          /**< The type of the message (e.g., AUTH, MSG, BYE).                 */
-        uint16_t mMessageId;               /**< The unique identifier of an UDP message (unused for TCP).       */
-        std::vector<std::string> mFields;  /**< The fields of the message (e.g., displayName, message content). */
+        Enums::MessageType mType;          /**< The type of the message (e.g., AUTH, MSG, BYE).                      */
+        uint16_t mRefMessageId;            /**< The MessageID value of the message being confirmed (unused for TCP). */
+        std::vector<std::string> mFields;  /**< The fields of the message (e.g., displayName, message content).      */
     }; // ParsedMessage
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Common
 
 #endif // PARSED_MESSAGE_HPP
 
