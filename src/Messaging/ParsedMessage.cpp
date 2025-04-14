@@ -29,7 +29,7 @@ using namespace IPK25ChatClient::Enums;
 
 namespace IPK25ChatClient::Messaging
 {
-    ParsedMessage::ParsedMessage() : mType(MessageType::UNKNOWN) {}
+    ParsedMessage::ParsedMessage() : mType{MessageType::UNKNOWN}, mMessageId{0} {}
 } // IPK25ChatClient::Messaging
 
 /*** end of file ParsedMessage.cpp ***/

@@ -26,8 +26,9 @@
 #define PARSED_MESSAGE_HPP
 
 #include "Enums/MessageTypes.hpp"
-#include <string>
-#include <vector>
+#include <string>   // std::string
+#include <vector>   // std::vector
+#include <cstdint>  // uint16_t
 
 namespace IPK25ChatClient::Messaging
 {
@@ -41,9 +42,10 @@ namespace IPK25ChatClient::Messaging
      */
     class ParsedMessage {
     public:
-        ParsedMessage();
+        explicit ParsedMessage();
 
         Enums::MessageType mType;          /**< The type of the message (e.g., AUTH, MSG, BYE).                 */
+        uint16_t mMessageId;               /**< The unique identifier of an UDP message (unused for TCP).       */
         std::vector<std::string> mFields;  /**< The fields of the message (e.g., displayName, message content). */
     }; // ParsedMessage
 } // IPK25ChatClient::Messaging
