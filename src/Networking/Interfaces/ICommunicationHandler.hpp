@@ -28,6 +28,7 @@
 #define I_COMMUNICATION_HANDLER_HPP
 
 #include "Common/ChatDataTypes.hpp"
+#include "Common/ParsedMessage.hpp"
 
 namespace IPK25ChatClient::Networking
 {
@@ -66,16 +67,15 @@ namespace IPK25ChatClient::Networking
          * @brief Sends a message to the server.
          *
          * @param messageContent The message content to be sent.
-         * @return `true` if the message was sent successfully, `false` otherwise.
          */
-        virtual bool sendMessage(Common::MessageContent messageContent) = 0;
+        virtual void sendMessage(Common::MessageContent messageContent) = 0;
 
         /**
          * @brief Receives a message from the server.
          *
          * @return The content of the received message.
          */
-        virtual Common::MessageContent receiveMessage() = 0;
+        virtual Common::ParsedMessage receiveMessage() = 0;
 
         /**
          * @brief Checks if the connection is currently active.

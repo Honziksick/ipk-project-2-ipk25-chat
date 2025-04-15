@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    10.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
  * Description:  This file declares the `CommunicationHandlerBase` class,      *
  *               which serves as a base class for handling both TCP and UDP    *
@@ -28,9 +28,10 @@
 #define COMMUNICATION_HANDLER_BASE_HPP
 
 #include "Networking/Interfaces/ICommunicationHandler.hpp"
+#include "Messaging/Interfaces/IMessageParser.hpp"
 #include "Common/CommandLineOptions.hpp"
 #include <string>   // std::string
-#include <cstdint>  // uint16_t
+#include <memory>   // std::unique_ptr
 
 namespace IPK25ChatClient::Networking
 {
@@ -78,10 +79,11 @@ namespace IPK25ChatClient::Networking
         static constexpr bool CONNECTED{true};      /**< Constant representing a connected state.    */
         static constexpr bool DISCONNECTED{false};  /**< Constant representing a disconnected state. */
 
-        int mSocketFd;                /**< File descriptor for the socket connection. */
-        bool mIsConnected;            /**< Connection status flag.    */
-        std::string mServerAddress;   /**< Address of the server.     */
-        uint16_t mServerPort;         /**< Port number of the server. */
+        std::unique_ptr<Messaging::IMessageParser> mMessageParser;  /**< Message parser used for processing incoming messages. */
+        int mSocketFd;               /**< File descriptor for the socket connection. */
+        bool mIsConnected;           /**< Connection status flag.    */
+        std::string mServerAddress;  /**< Address of the server.     */
+        uint16_t mServerPort;        /**< Port number of the server. */
 
         /**
          * @brief Performs a graceful shutdown of the connection.
