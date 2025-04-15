@@ -24,7 +24,6 @@
 
 #include "Messaging/MessagingHandler/TCPMessagingHandler.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
-#include "Common/UserCommand.hpp"
 #include "Common/ParsedMessage.hpp"
 #include "Exceptions/ChatExceptions.hpp"
 #include "Constants/MessageFields.hpp"
@@ -70,86 +69,6 @@ namespace IPK25ChatClient::Messaging::Handler
 
         logger("processIncomingMessage() completed successfully");
     } // TcpMessagingHandler::processIncomingMessage
-
-    void TcpMessagingHandler::sendAuthMessage(const string &username, const string &displayName, const string &secret) {
-        logger("sendAuthMessage() called with username: %s, displayName: %s", username.c_str(), displayName.c_str());
-
-        try {
-            const UserCommand userCommand{
-                .mUsername = username,
-                .mSecret = secret,
-                .mDisplayName = displayName
-            };
-            const auto message = mMessageBuilder->buildMessage(MessageType::AUTH, userCommand);
-            mCommunicationHandler->sendMessage(message);
-        }
-        catch(const ConnectionErrorException &e) {
-            sendErrMessage(e.detail());
-            logger("sendAuthMessage() error: type: %s, detail: %s", e.what(), e.detail().c_str());
-            throw;
-        }
-
-        logger("sendAuthMessage() completed successfully");
-    } // TcpMessagingHandler::sendAuthMessage
-
-    void TcpMessagingHandler::sendJoinMessage(const string &channelId, const string &displayName) {
-        logger("sendJoinMessage() called with channelId: %s, displayName: %s", channelId.c_str(), displayName.c_str());
-
-        try {
-            const UserCommand userCommand{
-                .mDisplayName = displayName,
-                .mChannelId = channelId
-            };
-            const auto message = mMessageBuilder->buildMessage(MessageType::JOIN, userCommand);
-            mCommunicationHandler->sendMessage(message);
-        }
-        catch(const ConnectionErrorException &e) {
-            sendErrMessage(e.detail());
-            logger("sendJoinMessage() error: type: %s, detail: %s", e.what(), e.detail().c_str());
-            throw;
-        }
-
-        logger("sendJoinMessage() completed successfully");
-    } // TcpMessagingHandler::sendJoinMessage
-
-    void TcpMessagingHandler::sendMsgMessage(const string &displayName, const string &messageContent) {
-        logger("sendMsgMessage() called with displayName: %s, messageContent: %s", displayName.c_str(), messageContent.c_str());
-
-        try {
-            const UserCommand userCommand{
-                .mDisplayName = displayName,
-                .mMessageContent = messageContent
-            };
-            const auto message = mMessageBuilder->buildMessage(MessageType::MSG, userCommand);
-            mCommunicationHandler->sendMessage(message);
-        }
-        catch(const ConnectionErrorException &e) {
-            sendErrMessage(e.detail());
-            logger("sendMsgMessage() error: type: %s, detail: %s", e.what(), e.detail().c_str());
-            throw;
-        }
-
-        logger("sendMsgMessage() completed successfully");
-    } // TcpMessagingHandler::sendMsgMessage
-
-    void TcpMessagingHandler::sendByeMessage() {
-        logger("sendByeMessage() with mUserDisplayName: %s", mUserDisplayName.c_str());
-
-        try {
-            const UserCommand userCommand{
-                .mDisplayName = mUserDisplayName
-            };
-            const auto message = mMessageBuilder->buildMessage(MessageType::BYE, userCommand);
-            mCommunicationHandler->sendMessage(message);
-        }
-        catch(const ConnectionErrorException &e) {
-            sendErrMessage(e.detail());
-            logger("sendBye() error: type: %s, detail: %s", e.what(), e.detail().c_str());
-            throw;
-        }
-
-        logger("sendByeMessage() completed successfully");
-    } // TcpMessagingHandler::sendByeMessage
 } // IPK25ChatClient::Messaging::Handler
 
 /*** end of file TCPMessagingHandler.cpp ***/
