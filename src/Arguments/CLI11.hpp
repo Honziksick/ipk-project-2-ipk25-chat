@@ -139,7 +139,7 @@
 #endif
 #endif
 
-/** <filesystem> availability */
+/** \<filesystem> availability */
 #if defined CLI11_CPP17 && defined __has_include && !defined CLI11_HAS_FILESYSTEM
 #if __has_include(<filesystem>)
 // Filesystem cannot be used if targeting macOS < 10.15
@@ -166,7 +166,7 @@
 #endif
 #endif
 
-/** <codecvt> availability */
+/** \<codecvt> availability */
 #if !defined(CLI11_CPP26) && !defined(CLI11_HAS_CODECVT)
 #if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER) && __GNUC__ < 5
 #define CLI11_HAS_CODECVT 0
