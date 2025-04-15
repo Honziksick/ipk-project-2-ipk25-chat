@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    11.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the `TcpMessageBuilder` class, which  *
  *               provides static methods for constructing various types of     *
@@ -18,19 +18,31 @@
 /**
  * @file TCPMessageBuilder.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implements the `TcpMessageBuilder` class for building chat messages.
+ * @brief Implementation of the `TcpMessageBuilder` class for building chat
+ *        messages.
  */
 
-#include "TCPMessageBuilder.hpp"
+#include "Messaging/MessageBuilder/TCPMessageBuilder.hpp"
+#include "Common/ChatDataTypes.hpp"
+#include "Exceptions/ChatExceptions.hpp"
+#include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
 #include <string>   // std::string
 #include <sstream>  // std::ostringstream
 
+using namespace IPK25ChatClient::Common;
+using namespace IPK25ChatClient::Enums;
+using namespace IPK25ChatClient::Exceptions;
+using namespace IPK25ChatClient::Utilities;
 using namespace std;
 
 namespace IPK25ChatClient::Messaging
 {
-    string TcpMessageBuilder::buildAuthMessage(const string &username, const string &displayName, const string &secret) {
+    MessageContent TcpMessageBuilder::buildMessage(MessageType messageType, uint16_t refMessageId) {
+        throw InternalErrorException("buildMessage() is not supported for TcpMessageBuilder.");
+    } // TcpMessageBuilder::buildMessage
+
+    MessageContent TcpMessageBuilder::buildAuthMessage(const string &username, const string &displayName, const string &secret) {
         logger("username=%s, displayName=%s, secret=%s", username.c_str(), displayName.c_str(), secret.c_str());
 
         // Construct the message
@@ -38,10 +50,10 @@ namespace IPK25ChatClient::Messaging
         message << "AUTH " << username << " AS " << displayName << " USING " << secret << "\r\n";
 
         logger("message=%s", message.str().c_str());
-        return message.str();
+        return MessageContent{message.str()};
     } // TcpMessageBuilder::buildAuthMessage
 
-    string TcpMessageBuilder::buildJoinMessage(const string &channelId, const string &displayName) {
+    MessageContent TcpMessageBuilder::buildJoinMessage(const string &channelId, const string &displayName) {
         logger("channelId=%s, displayName=%s", channelId.c_str(), displayName.c_str());
 
         // Construct the message
@@ -49,10 +61,10 @@ namespace IPK25ChatClient::Messaging
         message << "JOIN " << channelId << " AS " << displayName << "\r\n";
 
         logger("message=%s", message.str().c_str());
-        return message.str();
+        return MessageContent{message.str()};
     } // TcpMessageBuilder::buildJoinMessage
 
-    string TcpMessageBuilder::buildMsgMessage(const string &displayName, const string &messageContent) {
+    MessageContent TcpMessageBuilder::buildMsgMessage(const string &displayName, const string &messageContent) {
         logger("displayName=%s, messageContent=%s", displayName.c_str(), messageContent.c_str());
 
         // Construct the message
@@ -60,20 +72,20 @@ namespace IPK25ChatClient::Messaging
         message << "MSG FROM " << displayName << " IS " << messageContent << "\r\n";
 
         logger("message=%s", message.str().c_str());
-        return message.str();
+        return MessageContent{message.str()};
     } // TcpMessageBuilder::buildMsgMessage
 
-    string TcpMessageBuilder::buildErrMessage(const string &displayName, const string &messageContent) {
+    MessageContent TcpMessageBuilder::buildErrMessage(const string &displayName, const string &messageContent) {
         logger("displayName=%s, messageContent=%s", displayName.c_str(), messageContent.c_str());
 
         // Construct the message
         ostringstream message;
         message << "ERR FROM " << displayName << " IS " << messageContent << "\r\n";
 
-        return message.str();
+        return MessageContent{message.str()};
     } // TcpMessageBuilder::buildErrMessage
 
-    string TcpMessageBuilder::buildByeMessage(const string &displayName) {
+    MessageContent TcpMessageBuilder::buildByeMessage(const string &displayName) {
         logger("displayName=%s", displayName.c_str());
 
         // Construct the message
@@ -81,19 +93,8 @@ namespace IPK25ChatClient::Messaging
         message << "BYE FROM " << displayName << "\r\n";
 
         logger("message=%s", message.str().c_str());
-        return message.str();
+        return MessageContent{message.str()};
     } // TcpMessageBuilder::buildByeMessage
-
-    string TcpMessageBuilder::buildReplyMessage(const string &messageContent, const bool success) {
-        logger("messageContent=%s, success=%s", messageContent.c_str(), success ? "true" : "false");
-
-        // Construct the message
-        ostringstream message;
-        message << "REPLY " << (success ? "OK" : "NOK") << " IS " << messageContent << "\r\n";
-
-        logger("message=%s", message.str().c_str());
-        return message.str();
-    } // TcpMessageBuilder::buildReplyMessage
 } // IPK25ChatClient::Messaging
 
 /*** end of file TCPMessageBuilder.cpp ***/

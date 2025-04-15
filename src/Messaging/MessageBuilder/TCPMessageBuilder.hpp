@@ -8,11 +8,11 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    11.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
- * Description:  Header file for the `TcpMessageBuilder` class, which provides *
- *               static methods for constructing various types of messages     *
- *               used in the IPK25 Chat Client.                                *
+ * Description:  Header file for the `TcpMessageBuilder` class, which          *
+ *               provides methods for constructing various types of            *
+ *               messages used in the IPK25 Chat Client.                       *
  *                                                                             *
  ******************************************************************************/
 /**
@@ -24,16 +24,37 @@
 #ifndef TCP_MESSAGE_BUILDER_HPP
 #define TCP_MESSAGE_BUILDER_HPP
 
-#include <string>  // std::string
+#include "Messaging/MessageBuilder/MessageBuilderBase.hpp"
+#include "Common/ChatDataTypes.hpp"
+#include "Common/UserCommand.hpp"
+#include "Enums/MessageTypes.hpp"
+#include <string>   // std::string
+#include <cstdint>  // uint16_t
 
 namespace IPK25ChatClient::Messaging
 {
     /**
      * @class TcpMessageBuilder
-     * @brief Provides static methods for building various types of TCP messages.
+     * @brief Provides methods for building various types of TCP messages.
      */
-    class TcpMessageBuilder final {
+    class TcpMessageBuilder final : public MessageBuilderBase {
     public:
+        /**
+         * @brief Constructs a message based on the provided user command.
+         * @details This overload of the `buildMessage` method is used only when
+         *          using the UDP protocol to cunstruct CONFIRM message.
+         *
+         * @note TCP doesn't support this overload.
+         *
+         * @param messageType The type of message to be constructed.
+         * @param refMessageId The MessageID value of the message being confirmed.
+         *
+         * @return A `MessageContent` object containing the constructed message.
+         */
+        Common::MessageContent buildMessage(Enums::MessageType messageType,
+                                            uint16_t refMessageId) override;
+
+    private:
         /**
          * @brief Builds an authentication message.
          *
@@ -41,11 +62,12 @@ namespace IPK25ChatClient::Messaging
          * @param displayName The display name of the user.
          * @param secret The secret for authentication.
          *
-         * @return A string containing the constructed authentication message.
+         * @return A `MessageContent` containing the constructed message
+         *         (`std::string` for TCP and `std::vector<uint8_t>` for UDP).
          */
-        static std::string buildAuthMessage(const std::string &username,
-                                            const std::string &displayName,
-                                            const std::string &secret);
+        Common::MessageContent buildAuthMessage(const std::string &username,
+                                                const std::string &displayName,
+                                                const std::string &secret) override;
 
         /**
          * @brief Builds a join message for joining a channel.
@@ -53,10 +75,11 @@ namespace IPK25ChatClient::Messaging
          * @param channelId The ID of the channel to join.
          * @param displayName The display name of the user.
          *
-         * @return A string containing the constructed join message.
+         * @return A `MessageContent` containing the constructed message
+         *         (`std::string` for TCP and `std::vector<uint8_t>` for UDP).
          */
-        static std::string buildJoinMessage(const std::string &channelId,
-                                            const std::string &displayName);
+        Common::MessageContent buildJoinMessage(const std::string &channelId,
+                                                const std::string &displayName) override;
 
         /**
          * @brief Builds a message to send to a channel.
@@ -64,10 +87,11 @@ namespace IPK25ChatClient::Messaging
          * @param displayName The display name of the user.
          * @param messageContent The content of the message.
          *
-         * @return A string containing the constructed message.
+         * @return A `MessageContent` containing the constructed message
+         *         (`std::string` for TCP and `std::vector<uint8_t>` for UDP).
          */
-        static std::string buildMsgMessage(const std::string &displayName,
-                                           const std::string &messageContent);
+        Common::MessageContent buildMsgMessage(const std::string &displayName,
+                                               const std::string &messageContent) override;
 
         /**
          * @brief Builds an error message.
@@ -75,30 +99,21 @@ namespace IPK25ChatClient::Messaging
          * @param displayName The display name of the user.
          * @param messageContent The content of the error message.
          *
-         * @return A string containing the constructed error message.
+         * @return A `MessageContent` containing the constructed message
+         *         (`std::string` for TCP and `std::vector<uint8_t>` for UDP).
          */
-        static std::string buildErrMessage(const std::string &displayName,
-                                           const std::string &messageContent);
+        Common::MessageContent buildErrMessage(const std::string &displayName,
+                                               const std::string &messageContent) override;
 
         /**
          * @brief Builds a goodbye message.
          *
          * @param displayName The display name of the user.
          *
-         * @return A string containing the constructed goodbye message.
+         * @return A `MessageContent` containing the constructed message
+         *         (`std::string` for TCP and `std::vector<uint8_t>` for UDP).
          */
-        static std::string buildByeMessage(const std::string &displayName);
-
-        /**
-         * @brief Builds a reply message indicating success or failure.
-         *
-         * @param messageContent The content of the reply message.
-         * @param success A boolean indicating whether the operation was successful.
-         *
-         * @return A string containing the constructed reply message.
-         */
-        static std::string buildReplyMessage(const std::string &messageContent,
-                                             bool success);
+        Common::MessageContent buildByeMessage(const std::string &displayName) override;
     }; // TcpMessageBuilder
 } // IPK25ChatClient::Messaging
 
