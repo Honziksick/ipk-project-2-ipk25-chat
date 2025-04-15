@@ -23,7 +23,7 @@
  */
 
 #include "Client/CommandParser/UserCommandParser.hpp"
-#include "Validators/MessageValidatorBase.hpp"
+#include "Validators/MessageParametersValidator.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
 #include "Common/UserCommand.hpp"
 #include "Exceptions/ChatExceptions.hpp"
@@ -50,7 +50,7 @@ using namespace std;
 namespace IPK25ChatClient::Client::CommandParser
 {
     // Inicialize the static members of the UserCommandParser class
-    unique_ptr<MessageParameterValidator> UserCommandParser::mMessageParameterValidator{make_unique<MessageParameterValidator>()};
+    unique_ptr<MessageParametersValidator> UserCommandParser::mMessageParametersValidator{make_unique<MessageParametersValidator>()};
 
     UserCommand UserCommandParser::parseCommandLine() {
         // Read a line from the standard input ('\n' is read but not included)
@@ -140,10 +140,10 @@ namespace IPK25ChatClient::Client::CommandParser
 
         // Validate the message content (e.g. length, allowed symbols)
         const auto messageContentResult =
-                mMessageParameterValidator->validateMessageParameter(MessageParameter::MESSAGE_CONTENT, messageContent);
+                mMessageParametersValidator->validateMessageParameter(MessageParameter::MESSAGE_CONTENT, messageContent);
 
         // Truncate the message content if necessary
-        if(mMessageParameterValidator->postProcessValidation(MessageParameter::MESSAGE_CONTENT, messageContentResult, messageContent)) {
+        if(mMessageParametersValidator->postProcessValidation(MessageParameter::MESSAGE_CONTENT, messageContentResult, messageContent)) {
             return UserCommand{
                 .mCommandType{UserCommandType::MESSAGE},
                 .mMessageContent{messageContent}
@@ -194,14 +194,14 @@ namespace IPK25ChatClient::Client::CommandParser
         string displayName{commandParameters[2]};
 
         // Validate the parameters (e.g. length, allowed symbols)
-        const auto usernameResult = mMessageParameterValidator->validateMessageParameter(MessageParameter::USERNAME, username);
-        const auto secretResult = mMessageParameterValidator->validateMessageParameter(MessageParameter::SECRET, secret);
-        const auto displayNameResult = mMessageParameterValidator->validateMessageParameter(MessageParameter::DISPLAY_NAME, displayName);
+        const auto usernameResult = mMessageParametersValidator->validateMessageParameter(MessageParameter::USERNAME, username);
+        const auto secretResult = mMessageParametersValidator->validateMessageParameter(MessageParameter::SECRET, secret);
+        const auto displayNameResult = mMessageParametersValidator->validateMessageParameter(MessageParameter::DISPLAY_NAME, displayName);
 
         // Truncate the parameters if necessary
-        if(mMessageParameterValidator->postProcessValidation(MessageParameter::USERNAME, usernameResult, username) &&
-            mMessageParameterValidator->postProcessValidation(MessageParameter::SECRET, secretResult, secret) &&
-            mMessageParameterValidator->postProcessValidation(MessageParameter::DISPLAY_NAME, displayNameResult, displayName)) {
+        if(mMessageParametersValidator->postProcessValidation(MessageParameter::USERNAME, usernameResult, username) &&
+            mMessageParametersValidator->postProcessValidation(MessageParameter::SECRET, secretResult, secret) &&
+            mMessageParametersValidator->postProcessValidation(MessageParameter::DISPLAY_NAME, displayNameResult, displayName)) {
             return UserCommand{
                 .mCommandType{UserCommandType::AUTH},
                 .mUsername{username},
@@ -229,10 +229,10 @@ namespace IPK25ChatClient::Client::CommandParser
         string channelId{commandParameters[0]};
 
         // Validate the parameter (e.g. length, allowed symbols)
-        const auto channelIdResult = mMessageParameterValidator->validateMessageParameter(MessageParameter::CHANNEL_ID, channelId);
+        const auto channelIdResult = mMessageParametersValidator->validateMessageParameter(MessageParameter::CHANNEL_ID, channelId);
 
         // Truncate the parameter if necessary
-        if(mMessageParameterValidator->postProcessValidation(MessageParameter::CHANNEL_ID, channelIdResult, channelId)) {
+        if(mMessageParametersValidator->postProcessValidation(MessageParameter::CHANNEL_ID, channelIdResult, channelId)) {
             return UserCommand{
                 .mCommandType{UserCommandType::JOIN},
                 .mChannelId{channelId},
@@ -258,10 +258,10 @@ namespace IPK25ChatClient::Client::CommandParser
         string displayName{commandParameters[0]};
 
         // Validate the parameter (e.g. length, allowed symbols)
-        const auto displayNameResult = mMessageParameterValidator->validateMessageParameter(MessageParameter::DISPLAY_NAME, displayName);
+        const auto displayNameResult = mMessageParametersValidator->validateMessageParameter(MessageParameter::DISPLAY_NAME, displayName);
 
         // Truncate the parameter if necessary
-        if(mMessageParameterValidator->postProcessValidation(MessageParameter::DISPLAY_NAME, displayNameResult, displayName)) {
+        if(mMessageParametersValidator->postProcessValidation(MessageParameter::DISPLAY_NAME, displayNameResult, displayName)) {
             return UserCommand{
                 .mCommandType{UserCommandType::RENAME},
                 .mDisplayName{commandParameters[2]}

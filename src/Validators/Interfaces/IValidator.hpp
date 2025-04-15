@@ -4,65 +4,45 @@
  * University:   Faculty of Information Technology, BUT                        *
  * Subject:      IPK: Computer Communications and Networks                     *
  *                                                                             *
- * File:         IMessageValidator.hpp                                         *
+ * File:         IValidator.hpp                                                *
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
  * Last edit:    15.04.2025                                                    *
  *                                                                             *
- * Description:  This file declares the `IMessageValidator` interface, which   *
- *               provides methods for validating and post-processing message   *
- *               parameters such as usernames, channel IDs, secrets, display   *
- *               names, and message content.                                   *
+ * Description:  This header file defines the `IValidator` interface, which    *
+ *               provides a contract for implementing validation logic for     *
+ *               message parameters in the IPK25 Chat Client application.      *
+ *               It includes a method for post-processing validation of        *
+ *               command parameters.                                           *
  *                                                                             *
  ******************************************************************************/
 /**
- * @file IMessageValidator.hpp
+ * @file IValidator.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Interface `IMessageValidator` for validating and post-processing
- *        message parameters.
+ * @brief Header file defining the `IValidator` interface for message parameter
+ *        validation.
  */
 
-#ifndef I_MESSAGE_VALIDATOR_HPP
-#define I_MESSAGE_VALIDATOR_HPP
+#ifndef I_VALIDATOR_HPP
+#define I_VALIDATOR_HPP
 
 #include "Enums/MessageParameters.hpp"
 #include "Enums/ValidatorResults.hpp"
-#include <string_view>  // std::string_view
+#include <string>  // std::string
 
 namespace IPK25ChatClient::Validators
 {
     /**
-     * @class IMessageValidator
+     * @class IValidator
      * @brief Interface for validating message parameters.
-     *
-     * @details This interface defines methods for validating various message
-     *          parameters such as usernames, channel IDs, secrets, display names,
-     *          and message content. It includes both basic validation and
-     *          post-processing validation to ensure parameters meet the required
-     *          constraints.
      */
-    class IMessageValidator {
+    class IValidator {
     public:
         /**
-         * @brief Virtual destructor for the `IMessageValidator` interface.
+         * @brief Virtual destructor for the `IValidator` interface.
          */
-        virtual ~IMessageValidator() = default;
-
-        /**
-         * @brief Validates a message parameter based on its type.
-         *
-         * @details This method performs validation of a message parameter
-         *          based on the specified parameter type. The validation
-         *          ensures the parameter meets the required constraints.
-         *
-         * @param parameterType The type of the message parameter (e.g., USERNAME, CHANNEL_ID).
-         * @param commandParameter The value of the parameter to validate.
-         *
-         * @return A ValidatorResult indicating the validation outcome.
-         */
-        virtual Enums::ValidatorResult validateMessageParameter(Enums::MessageParameter parameterType,
-                                                                std::string_view commandParameter) = 0;
+        virtual ~IValidator() = default;
 
         /**
          * @brief Performs post-processing validation of a command parameter.
@@ -80,9 +60,9 @@ namespace IPK25ChatClient::Validators
         virtual bool postProcessValidation(Enums::MessageParameter parameterType,
                                            Enums::ValidatorResult validationResult,
                                            std::string &commandParameter) = 0;
-    }; // IMessageValidator
+    }; // IValidator
 } // IPK25ChatClient::Validators
 
-#endif // I_MESSAGE_VALIDATOR_HPP
+#endif // I_VALIDATOR_HPP
 
-/*** end of file IMessageValidator.hpp ***/
+/*** end of file IValidator.hpp ***/
