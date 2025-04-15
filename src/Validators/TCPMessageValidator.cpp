@@ -25,7 +25,7 @@
 #include "Validators/TCPMessageValidator.hpp"
 #include "Common/ParsedMessage.hpp"
 #include "Enums/ValidatorResults.hpp"
-#include "Constants/ClientLimits.hpp"
+#include "Constants/MessageFields.hpp"
 #include "Constants/MessageKeywords.hpp"
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/CastUtils.hpp"
@@ -84,31 +84,31 @@ namespace IPK25ChatClient::Validators
     // AUTH message structure: AUTH/0 {Username}/1 AS/2 {DisplayName}/3 USING/4 {Secret}/5
     ValidatorResult TcpMessageValidator::validateAuthMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
-        if(parsedMessage.mFields.size() != ClientLimits::TCP_EXPECTED_AUTH_MESSAGE_FIELDS) {
+        if(parsedMessage.mFields.size() != MessageFields::TCP_EXPECTED_AUTH_MESSAGE_FIELDS) {
             return ValidatorResult::INVALID;
         }
         // 1) "AUTH"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[0], MessageKeywordsLowerCase::AUTH_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_AUTH_TYPE_INDEX], MessageKeywordsLowerCase::AUTH_LC)) {
             return ValidatorResult::INVALID;
         }
         // 2) {Username}
-        if(!mapValidatorResultToBool(validateUsername(parsedMessage.mFields[1]))) {
+        if(!mapValidatorResultToBool(validateUsername(parsedMessage.mFields[MessageFields::TCP_AUTH_USERNAME_INDEX]))) {
             return ValidatorResult::INVALID;
         }
         // 3) "AS"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[2], MessageKeywordsLowerCase::AS_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_AUTH_AS_KEYWORD_INDEX], MessageKeywordsLowerCase::AS_LC)) {
             return ValidatorResult::INVALID;
         }
         // 4) {DisplayName}
-        if(!mapValidatorResultToBool(validateUsername(parsedMessage.mFields[3]))) {
+        if(!mapValidatorResultToBool(validateUsername(parsedMessage.mFields[MessageFields::TCP_AUTH_DISPLAY_NAME_INDEX]))) {
             return ValidatorResult::INVALID;
         }
         // 5) "USING"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[4], MessageKeywordsLowerCase::USING_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_AUTH_USING_KEYWORD_INDEX], MessageKeywordsLowerCase::USING_LC)) {
             return ValidatorResult::INVALID;
         }
         // 6) {Secret}
-        if(!mapValidatorResultToBool(validateUsername(parsedMessage.mFields[5]))) {
+        if(!mapValidatorResultToBool(validateUsername(parsedMessage.mFields[MessageFields::TCP_AUTH_SECRET_INDEX]))) {
             return ValidatorResult::INVALID;
         }
 
@@ -119,23 +119,23 @@ namespace IPK25ChatClient::Validators
     // JOIN message structure: JOIN {ChannelID} AS {DisplayName}
     ValidatorResult TcpMessageValidator::validateJoinMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
-        if(parsedMessage.mFields.size() != ClientLimits::TCP_EXPECTED_JOIN_MESSAGE_FIELDS) {
+        if(parsedMessage.mFields.size() != MessageFields::TCP_EXPECTED_JOIN_MESSAGE_FIELDS) {
             return ValidatorResult::INVALID;
         }
         // 1) "JOIN"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[0], MessageKeywordsLowerCase::JOIN_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_JOIN_TYPE_INDEX], MessageKeywordsLowerCase::JOIN_LC)) {
             return ValidatorResult::INVALID;
         }
         // 2) {ChannelID}
-        if(!mapValidatorResultToBool(validateChannelId(parsedMessage.mFields[1]))) {
+        if(!mapValidatorResultToBool(validateChannelId(parsedMessage.mFields[MessageFields::TCP_JOIN_CHANNEL_ID_INDEX]))) {
             return ValidatorResult::INVALID;
         }
         // 3) "AS"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[2], MessageKeywordsLowerCase::AS_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_JOIN_AS_KEYWORD_INDEX], MessageKeywordsLowerCase::AS_LC)) {
             return ValidatorResult::INVALID;
         }
         // 4) {DisplayName}
-        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[3]))) {
+        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[MessageFields::TCP_JOIN_DISPLAY_NAME_INDEX]))) {
             return ValidatorResult::INVALID;
         }
 
@@ -146,27 +146,27 @@ namespace IPK25ChatClient::Validators
     // ERR message structure: ERR FROM {DisplayName} IS {MessageContent}
     ValidatorResult TcpMessageValidator::validateErrMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
-        if(parsedMessage.mFields.size() != ClientLimits::TCP_EXPECTED_ERR_MESSAGE_FIELDS) {
+        if(parsedMessage.mFields.size() != MessageFields::TCP_EXPECTED_ERR_MESSAGE_FIELDS) {
             return ValidatorResult::INVALID;
         }
         // 1) "ERR"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[0], MessageKeywordsLowerCase::ERR_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_ERR_TYPE_INDEX], MessageKeywordsLowerCase::ERR_LC)) {
             return ValidatorResult::INVALID;
         }
         // 2) "FROM"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[1], MessageKeywordsLowerCase::FROM_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_ERR_FROM_KEYWORD_INDEX], MessageKeywordsLowerCase::FROM_LC)) {
             return ValidatorResult::INVALID;
         }
         // 3) {DisplayName}
-        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[2]))) {
+        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[MessageFields::TCP_ERR_DISPLAY_NAME_INDEX]))) {
             return ValidatorResult::INVALID;
         }
         // 4) "IS"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[3], MessageKeywordsLowerCase::IS_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_ERR_IS_KEYWORD_INDEX], MessageKeywordsLowerCase::IS_LC)) {
             return ValidatorResult::INVALID;
         }
         // 5) {MessageContent}
-        if(!mapValidatorResultToBool(validateMessageContent(parsedMessage.mFields[4]))) {
+        if(!mapValidatorResultToBool(validateMessageContent(parsedMessage.mFields[MessageFields::TCP_ERR_MESSAGE_CONTENT_INDEX]))) {
             return ValidatorResult::INVALID;
         }
 
@@ -177,19 +177,19 @@ namespace IPK25ChatClient::Validators
     // BYE message structure: BYE FROM {DisplayName}
     ValidatorResult TcpMessageValidator::validateByeMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
-        if(parsedMessage.mFields.size() != ClientLimits::TCP_EXPECTED_BYE_MESSAGE_FIELDS) {
+        if(parsedMessage.mFields.size() != MessageFields::TCP_EXPECTED_BYE_MESSAGE_FIELDS) {
             return ValidatorResult::INVALID;
         }
         // 1) "BYE"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[0], MessageKeywordsLowerCase::BYE_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_BYE_TYPE_INDEX], MessageKeywordsLowerCase::BYE_LC)) {
             return ValidatorResult::INVALID;
         }
         // 2) "FROM"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[1], MessageKeywordsLowerCase::FROM_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_BYE_FROM_KEYWORD_INDEX], MessageKeywordsLowerCase::FROM_LC)) {
             return ValidatorResult::INVALID;
         }
         // 3) {DisplayName}
-        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[2]))) {
+        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[MessageFields::TCP_BYE_DISPLAY_NAME_INDEX]))) {
             return ValidatorResult::INVALID;
         }
 
@@ -200,24 +200,24 @@ namespace IPK25ChatClient::Validators
     // REPLY message structure: REPLY {"OK"|"NOK"} IS {MessageContent}
     ValidatorResult TcpMessageValidator::validateReplyMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
-        if(parsedMessage.mFields.size() != ClientLimits::TCP_EXPECTED_REPLY_MESSAGE_FIELDS) {
+        if(parsedMessage.mFields.size() != MessageFields::TCP_EXPECTED_REPLY_MESSAGE_FIELDS) {
             return ValidatorResult::INVALID;
         }
         // 1) "REPLY"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[0], MessageKeywordsLowerCase::REPLY_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_TYPE_INDEX], MessageKeywordsLowerCase::REPLY_LC)) {
             return ValidatorResult::INVALID;
         }
         // 2) {"OK"|"NOK"}
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[1], MessageKeywordsLowerCase::OK_LC) &&
-           !StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[1], MessageKeywordsLowerCase::NOK_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_RESULT_KEYWORD_INDEX], MessageKeywordsLowerCase::OK_LC) &&
+           !StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_RESULT_KEYWORD_INDEX], MessageKeywordsLowerCase::NOK_LC)) {
             return ValidatorResult::INVALID;
         }
         // 3) "IS"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[2], MessageKeywordsLowerCase::IS_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_IS_KEYWORD_INDEX], MessageKeywordsLowerCase::IS_LC)) {
             return ValidatorResult::INVALID;
         }
         // 4) {MessageContent}
-        if(!mapValidatorResultToBool(validateMessageContent(parsedMessage.mFields[3]))) {
+        if(!mapValidatorResultToBool(validateMessageContent(parsedMessage.mFields[MessageFields::TCP_REPLY_MESSAGE_CONTENT_INDEX]))) {
             return ValidatorResult::INVALID;
         }
 
@@ -228,27 +228,27 @@ namespace IPK25ChatClient::Validators
     // MSG message structure: MSG FROM {DisplayName} IS {MessageContent}
     ValidatorResult TcpMessageValidator::validateMsgMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
-        if(parsedMessage.mFields.size() != ClientLimits::TCP_EXPECTED_MSG_MESSAGE_FIELDS) {
+        if(parsedMessage.mFields.size() != MessageFields::TCP_EXPECTED_MSG_MESSAGE_FIELDS) {
             return ValidatorResult::INVALID;
         }
         // 1) "MSG"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[0], MessageKeywordsLowerCase::MSG_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_MSG_TYPE_INDEX], MessageKeywordsLowerCase::MSG_LC)) {
             return ValidatorResult::INVALID;
         }
         // 2) "FROM"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[1], MessageKeywordsLowerCase::FROM_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_MSG_FROM_KEYWORD_INDEX], MessageKeywordsLowerCase::FROM_LC)) {
             return ValidatorResult::INVALID;
         }
         // 3) {DisplayName}
-        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[2]))) {
+        if(!mapValidatorResultToBool(validateDisplayName(parsedMessage.mFields[MessageFields::TCP_MSG_DISPLAY_NAME_INDEX]))) {
             return ValidatorResult::INVALID;
         }
         // 4) "IS"
-        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[3], MessageKeywordsLowerCase::IS_LC)) {
+        if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_MSG_IS_KEYWORD_INDEX], MessageKeywordsLowerCase::IS_LC)) {
             return ValidatorResult::INVALID;
         }
         // 5) {MessageContent}
-        if(!mapValidatorResultToBool(validateMessageContent(parsedMessage.mFields[4]))) {
+        if(!mapValidatorResultToBool(validateMessageContent(parsedMessage.mFields[MessageFields::TCP_MSG_MESSAGE_CONTENT_INDEX]))) {
             return ValidatorResult::INVALID;
         }
 
