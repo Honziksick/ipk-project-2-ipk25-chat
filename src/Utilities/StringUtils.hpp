@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      13.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the declaration of the `StringUtils`       *
  *               class, which provides utility functions for string            *
@@ -53,7 +53,8 @@ namespace IPK25ChatClient::Utilities
          *
          * @return A vector of tokens extracted from the input string.
          */
-        static std::vector<std::string> splitByDelimiter(const std::string &str, const std::string &delimiter);
+        static std::vector<std::string> splitByDelimiter(const std::string &str,
+                                                         const std::string &delimiter);
 
         /**
          * @brief Splits a string into a vector of substrings based on spaces.
@@ -71,6 +72,24 @@ namespace IPK25ChatClient::Utilities
          *         obtained by splitting the input string by spaces.
          */
         static std::vector<std::string> splitBySpaces(const std::string &str);
+
+        /**
+         * @brief Splits a string into a fixed number of tokens based on a delimiter.
+         *
+         * @details This method divides the input string into a specified number of
+         *          tokens. The first (numberOfTokens - 1) tokens are split by the
+         *          delimiter, and the last token contains the remainder of the
+         *          string and may include delimiter symbols.
+         *
+         * @param str The input string to be split.
+         * @param delimiter The delimiter used to split the string.
+         * @param numberOfTokens The fixed number of tokens to split the string into.
+         *
+         * @return std::vector<std::string> A vector of strings containing the split tokens.
+         */
+        static std::vector<std::string> splitIntoFixedCount(const std::string &str,
+                                                            const std::string &delimiter,
+                                                            size_t numberOfTokens);
 
         /**
          * @brief Truncates a string to a specified maximum length.

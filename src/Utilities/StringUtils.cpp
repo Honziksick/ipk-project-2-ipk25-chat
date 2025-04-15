@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      13.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the `StringUtils`    *
  *               class, which provides utility functions for string            *
@@ -72,6 +72,31 @@ namespace IPK25ChatClient::Utilities
 
         return tokenVector;
     } // StringUtils::splitBySpaces
+
+    vector<string> StringUtils::splitIntoFixedCount(const string &str, const string &delimiter, const size_t numberOfTokens) {
+        vector<string> tokens;  // Vector of future tokens
+        size_t start = 0;       // Start position for substring extraction
+
+        // Get token index = 0...(n-2)
+        for (size_t iToken = 1; iToken < numberOfTokens; iToken++) {
+            const size_t delimiterPosition = str.find(delimiter, start);  // Find the position of the delimiter
+
+            // If the delimiter is not found, add the remaining part of the string
+            if (delimiterPosition == string::npos) {
+                tokens.emplace_back(str.substr(start));
+                return tokens;
+            }
+
+            // Else add the token to the vector and update start position
+            tokens.emplace_back(str.substr(start, delimiterPosition - start));
+            start = delimiterPosition + 1;
+        }
+
+        // The last token index = (n-1) represents the rest of the input string (may contain delimiter symbols)
+        tokens.push_back(str.substr(start));
+
+        return tokens;
+    } // StringUtils::splitIntoFixedCount
 
     bool StringUtils::truncateOverReference(string &str, const size_t maxLength) {
         if(str.length() > maxLength) {
