@@ -25,9 +25,11 @@
 #ifndef USER_COMMAND_PARSER_HPP
 #define USER_COMMAND_PARSER_HPP
 
+#include "Validators/MessageValidatorBase.hpp"
 #include "Common/UserCommand.hpp"
 #include <string>  // std::string
 #include <vector>  // std::vector
+#include <memory>  // std::unique_ptr
 
 namespace IPK25ChatClient::Client::CommandParser
 {
@@ -52,6 +54,8 @@ namespace IPK25ChatClient::Client::CommandParser
         static Common::UserCommand parseCommandLine();
 
     private:
+        static std::unique_ptr<Validators::MessageParameterValidator> mMessageParameterValidator; /**< Validate message parameters. */
+
         /**
          * @brief Reads a line of input from the user.
          * @details Reads a single line from `STDIN`. If the input fails, an empty
