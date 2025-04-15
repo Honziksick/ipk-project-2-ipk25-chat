@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      14.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `TCPMessageParser` class, which         *
  *               handles parsing of TCP messages in the chat client.           *
@@ -26,6 +26,7 @@
 #include "Common/ChatDataTypes.hpp"
 #include "Common/ParsedMessage.hpp"
 #include "Enums/MessageTypes.hpp"
+#include "Constants/ClientLimits.hpp"
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/StringUtils.hpp"
 #include "Utilities/CastUtils.hpp"
@@ -38,6 +39,7 @@
 using namespace IPK25ChatClient::Client::Output;
 using namespace IPK25ChatClient::Common;
 using namespace IPK25ChatClient::Enums;
+using namespace IPK25ChatClient::Constants;
 using namespace IPK25ChatClient::Utilities;
 using namespace IPK25ChatClient::Exceptions;
 using namespace std;
@@ -97,34 +99,82 @@ namespace IPK25ChatClient::Messaging::Parser
     } // TcpMessageParser::tryToExtractCompletedMessages
 
     ParsedMessage TcpMessageParser::tokenizeMessage(const string &message) {
-        // We split the message using 'splitByDelimiter()' to cause multiple spaces create empty tokens
-        const vector<string> tokens = StringUtils::splitByDelimiter(message, TOKEN_DELIMITER);
-
-        if(tokens.empty()) {
+        // We get a first token, which represents the command
+        const size_t firstDelimiterPosition = message.find(TOKEN_DELIMITER);
+        if(firstDelimiterPosition == string::npos) {
+            logger("Client received a malformed message from the server: missing any delimiter");
             ClientOutput::printClientInternalError(
-                    "Client failed to proccess incoming message. We appologize for the inconvenience."
+                    "Client received a malformed message from the server. The client will try "
+                    "to send an error message to the server and will gracefully terminate if possible."
                     );
-            return ParsedMessage{};
+            throw ProtocolErrorException(
+                    "Client received a malformed message from the server: message is incomplete"
+                    );
         }
+        const string messageTypeToken = message.substr(0, firstDelimiterPosition);
 
-        // První token se interpretuje jako typ zprávy.
+        // ABNF strings are case-insensitive, and the character set for these
+        // strings is US-ASCII. (Source: RFC 5234)
+        const auto messageType = CastUtils::castStringToEnum<MessageType>(StringUtils::toLower(messageTypeToken));
+
+        // We split the message using 'splitIntoFixedCount()' depanding on the message type
         ParsedMessage parsedMessage{};
-        try {
-            // ABNF strings are case insensitive and the character set for these
-            // strings is US-ASCII. (Source: RFC 5234)
-            parsedMessage.mType = CastUtils::castStringToEnum<MessageType>(StringUtils::toLower(tokens[0]));
-        }
-        catch(...) {
-            parsedMessage.mType = MessageType::UNKNOWN;
-        }
-
-        // The remaining tokens are interpreted as fields of the message.
-        for(int iToken = 1; iToken < tokens.size(); iToken++) {
-            if(!tokens[iToken].empty()) {
-                parsedMessage.mFields.emplace_back(tokens[iToken]);
+        switch(messageType) {
+            case MessageType::AUTH: {
+                // Expecting 6 tokens: AUTH {Username} AS {DisplayName} USING {Secret}
+                parsedMessage.mFields = StringUtils::splitIntoFixedCount(message, TOKEN_DELIMITER,
+                                                                         ClientLimits::TCP_EXPECTED_AUTH_MESSAGE_FIELDS);
+                parsedMessage.mType = MessageType::AUTH;
+                break;
             }
-        }
-        return parsedMessage;
+            case MessageType::JOIN: {
+                // Expecting 4 tokens: JOIN {ChannelID} AS {DisplayName}
+                parsedMessage.mFields = StringUtils::splitIntoFixedCount(message, TOKEN_DELIMITER,
+                                                                         ClientLimits::TCP_EXPECTED_JOIN_MESSAGE_FIELDS);
+                parsedMessage.mType = MessageType::JOIN;
+                break;
+            }
+            case MessageType::MSG: {
+                // Expecting 5 tokens: MSG FROM {DisplayName} IS {MessageContent}
+                parsedMessage.mFields = StringUtils::splitIntoFixedCount(message, TOKEN_DELIMITER,
+                                                                         ClientLimits::TCP_EXPECTED_MSG_MESSAGE_FIELDS);
+                parsedMessage.mType = MessageType::MSG;
+                break;
+            }
+            case MessageType::ERR: {
+                // Expecting 5 tokens: ERR FROM {DisplayName} IS {MessageContent}
+                parsedMessage.mFields = StringUtils::splitIntoFixedCount(message, TOKEN_DELIMITER,
+                                                                         ClientLimits::TCP_EXPECTED_ERR_MESSAGE_FIELDS);
+                parsedMessage.mType = MessageType::ERR;
+                break;
+            }
+            case MessageType::BYE: {
+                // Expecting 3 tokens: BYE FROM {DisplayName}
+                parsedMessage.mFields = StringUtils::splitIntoFixedCount(message, TOKEN_DELIMITER,
+                                                                         ClientLimits::TCP_EXPECTED_BYE_MESSAGE_FIELDS);
+                parsedMessage.mType = MessageType::BYE;
+                break;
+            }
+            case MessageType::REPLY: {
+                // Expecting 4 tokens: REPLY {OK|NOK} IS {MessageContent}
+                parsedMessage.mFields = StringUtils::splitIntoFixedCount(message, TOKEN_DELIMITER,
+                                                                         ClientLimits::TCP_EXPECTED_REPLY_MESSAGE_FIELDS);
+                parsedMessage.mType = MessageType::REPLY;
+                break;
+            }
+            default: {
+                logger("Client received a malformed message from the server: unknown message type");
+                ClientOutput::printClientInternalError(
+                        "Client received a malformed message from the server. The client will try "
+                        "to send an error message to the server and will gracefully terminate if possible."
+                        );
+                throw ProtocolErrorException(
+                        "Client received a malformed message from the server: unknown message type"
+                        );
+            }
+        } // switch(commandTokenType)
+
+        return parsedMessage;  // We return the tokenized (parsed) message
     } // TcpMessageParser::tokenizeMessage
 } // IPK25ChatClient::Messaging::Parser
 
