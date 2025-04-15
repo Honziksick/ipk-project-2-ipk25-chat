@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  This file defines various limits and constants used in the    *
  *               chat client.                                                  *
@@ -62,6 +62,22 @@ namespace IPK25ChatClient::Constants
         static constexpr size_t EXPECTED_NUMBER_OF_JOIN_PARAMS = 1;    /**< Expected number of parameters for the /join command (`/join {ChannelID}`).       */
         static constexpr size_t EXPECTED_NUMBER_OF_RENAME_PARAMS = 1;  /**< Expected number of parameters for the /rename command (`/rename {DisplayName}`). */
         static constexpr size_t EXPECTED_NUMBER_OF_HELP_PARAMS = 0;    /**< Expected number of parameters for the /help command (`/help`).                   */
+
+        static constexpr size_t TCP_EXPECTED_ERR_MESSAGE_FIELDS = 5;   /**< ERR   message structure: ERR FROM {DisplayName} IS {MessageContent}      */
+        static constexpr size_t TCP_EXPECTED_REPLY_MESSAGE_FIELDS = 4; /**< REPLY message structure: REPLY {"OK"|"NOK"} IS {MessageContent}          */
+        static constexpr size_t TCP_EXPECTED_AUTH_MESSAGE_FIELDS = 6;  /**< AUTH  message structure: AUTH {Username} AS {DisplayName} USING {Secret} */
+        static constexpr size_t TCP_EXPECTED_JOIN_MESSAGE_FIELDS = 4;  /**< JOIN  message structure: JOIN {ChannelID} AS {DisplayName}               */
+        static constexpr size_t TCP_EXPECTED_MSG_MESSAGE_FIELDS = 5;   /**< MSG   message structure: MSG FROM {DisplayName} IS {MessageContent}      */
+        static constexpr size_t TCP_EXPECTED_BYE_MESSAGE_FIELDS = 3;   /**< BYE   message structure: BYE FROM {DisplayName}                          */
+
+        static constexpr size_t UDP_EXPECTED_ERR_MESSAGE_FIELDS = 4;      /**< ERR     message structure: {Type} {MessageID} {DisplayName} {MessageContent}            */
+        static constexpr size_t UDP_EXPECTED_REPLY_MESSAGE_FIELDS = 5;    /**< REPL Y  message structure: {Type} {MessageID} {Result} {Ref_MessageID} {MessageContent} */
+        static constexpr size_t UDP_EXPECTED_AUTH_MESSAGE_FIELDS = 5;     /**< AUTH    message structure: {Type} {MessageID} {Username} {DisplayName} {Secret}         */
+        static constexpr size_t UDP_EXPECTED_JOIN_MESSAGE_FIELDS = 4;     /**< JOIN    message structure: {Type} {MessageID} {ChannelID} {DisplayName}      */
+        static constexpr size_t UDP_EXPECTED_MSG_MESSAGE_FIELDS = 4;      /**< MSG     message structure: {Type} {MessageID} {DisplayName} {MessageContent} */
+        static constexpr size_t UDP_EXPECTED_BYE_MESSAGE_FIELDS = 3;      /**< BYE     message structure: {Type} {MessageID} {DisplayName} */
+        static constexpr size_t UDP_EXPECTED_CONFIRM_MESSAGE_FIELDS = 2;  /**< CONFIRM message structure: {Type} {Ref_MessageID} */
+        static constexpr size_t UDP_EXPECTED_PING_MESSAGE_FIELDS = 2;     /**< PING    message structure: {Type} {MessageID}     */
     }; // ClientLimits
 } // IPK25ChatClient::Constants
 
