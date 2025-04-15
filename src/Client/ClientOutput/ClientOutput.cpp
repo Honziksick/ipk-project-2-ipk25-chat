@@ -23,9 +23,14 @@
  */
 
 #include "Client/ClientOutput/ClientOutput.hpp"
-#include <string>    // std::string_view
-#include <iostream>  // std::cout
+#include "Constants/MessageKeywords.hpp"
+#include "Utilities/StringUtils.hpp"
+#include <string>       // std::string
+#include <string_view>  // std::string_view
+#include <iostream>     // std::cout
 
+using namespace IPK25ChatClient::Constants;
+using namespace IPK25ChatClient::Utilities;
 using namespace std;
 
 namespace IPK25ChatClient::Client::Output
@@ -42,13 +47,14 @@ namespace IPK25ChatClient::Client::Output
         cout << "ERROR: " << messageContent << '\n';
     } // ClientOutput::printClientInternalError
 
-    void ClientOutput::printClientReplySuccess(const string_view &messageContent) {
-        cout << "Action Success: " << messageContent << '\n';
-    } // ClientOutput::printClientReplySuccess
-
-    void ClientOutput::printClientReplyFailure(const string_view &messageContent) {
-        cout << "Action Failure: " << messageContent << '\n';
-    } // ClientOutput::printClientReplyFailure
+    void ClientOutput::printClientReply(const string &result, const string &messageContent) {
+        if(StringUtils::compareKeywordsCaseInsesitive(result, MessageKeywordsLowerCase::OK_LC)) {
+            cout << "Action Success: " << messageContent << '\n';
+        }
+        else {
+            cout << "Action Failure: " << messageContent << '\n';
+        }
+    } // ClientOutput::printClientReply
 } // IPK25ChatClient::Client::Output
 
 /*** end of file ClientOutput.cpp ***/

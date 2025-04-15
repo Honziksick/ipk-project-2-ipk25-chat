@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the ClientOutput class, which provides        *
  *               static methods for printing various types of client           *
@@ -25,7 +25,8 @@
 #ifndef CLIENT_OUTPUT_HPP
 #define CLIENT_OUTPUT_HPP
 
-#include <string>  // std::string_view
+#include <string>       // std::string
+#include <string_view>  // std::string_view
 
 namespace IPK25ChatClient::Client::Output
 {
@@ -64,20 +65,14 @@ namespace IPK25ChatClient::Client::Output
         static void printClientInternalError(const std::string_view &messageContent);
 
         /**
-         * @brief Prints a success message for a client reply.
-         * @details Format: `Action Success: {MessageContent}\n`
+         * @brief Prints a reply message from the server.
+         * @details Format: `Action [Succes|Failure]: {MessageContent}\n`
          *
-         * @param messageContent The content of the success message.
+         * @param result The result of the reply (e.g., "OK" or "NOK").
+         * @param messageContent The content of the reply message.
          */
-        static void printClientReplySuccess(const std::string_view &messageContent);
-
-        /**
-         * @brief Prints a failure message for a client reply.
-         * @details Format: `Action Failure: {MessageContent}\n`
-         *
-         * @param messageContent The content of the failure message.
-         */
-        static void printClientReplyFailure(const std::string_view &messageContent);
+        static void printClientReply(const std::string &result,
+                                     const std::string &messageContent);
     }; // ClientOutput
 } // IPK25ChatClient::Client::Output
 
