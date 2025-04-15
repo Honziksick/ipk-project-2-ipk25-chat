@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  This file defines constants for the expected number of        *
  *               fields in various message types and their respective field    *
@@ -85,6 +85,50 @@ namespace IPK25ChatClient::Constants
         static constexpr size_t TCP_MSG_DISPLAY_NAME_INDEX = 2;     /**< Index of the display name in a MSG message (TCP).    */
         static constexpr size_t TCP_MSG_IS_KEYWORD_INDEX = 3;       /**< Index of the "IS" keyword in a MSG message (TCP).    */
         static constexpr size_t TCP_MSG_MESSAGE_CONTENT_INDEX = 4;  /**< Index of the message content in a MSG message (TCP). */
+
+        // TODO: Set the correct indexes for the UDP message types when implementing UDPMessagingValidator
+        // AUTH message indexes (UDP)
+        static constexpr size_t UDP_AUTH_TYPE_INDEX = 0;           /**< Index of the message type in an AUTH message (UDP).    */
+        static constexpr size_t UDP_AUTH_USERNAME_INDEX = 1;       /**< Index of the username in an AUTH message (UDP).        */
+        static constexpr size_t UDP_AUTH_AS_KEYWORD_INDEX = 2;     /**< Index of the "AS" keyword in an AUTH message (UDP).    */
+        static constexpr size_t UDP_AUTH_DISPLAY_NAME_INDEX = 3;   /**< Index of the display name in an AUTH message (UDP).    */
+        static constexpr size_t UDP_AUTH_USING_KEYWORD_INDEX = 4;  /**< Index of the "USING" keyword in an AUTH message (UDP). */
+        static constexpr size_t UDP_AUTH_SECRET_INDEX = 5;         /**< Index of the secret in an AUTH message (UDP).          */
+
+        // JOIN message indexes (UDP)
+        static constexpr size_t UDP_JOIN_TYPE_INDEX = 0;          /**< Index of the message type in a JOIN message (UDP). */
+        static constexpr size_t UDP_JOIN_CHANNEL_ID_INDEX = 1;    /**< Index of the channel ID in a JOIN message (UDP).   */
+        static constexpr size_t UDP_JOIN_AS_KEYWORD_INDEX = 2;    /**< Index of the "AS" keyword in a JOIN message (UDP). */
+        static constexpr size_t UDP_JOIN_DISPLAY_NAME_INDEX = 3;  /**< Index of the display name in a JOIN message (UDP). */
+
+        // ERR message indexes (UDP)
+        static constexpr size_t UDP_ERR_TYPE_INDEX = 0;             /**< Index of the message type in an ERR message (UDP).    */
+        static constexpr size_t UDP_ERR_FROM_KEYWORD_INDEX = 1;     /**< Index of the "FROM" keyword in an ERR message (UDP).  */
+        static constexpr size_t UDP_ERR_DISPLAY_NAME_INDEX = 2;     /**< Index of the display name in an ERR message (UDP).    */
+        static constexpr size_t UDP_ERR_IS_KEYWORD_INDEX = 3;       /**< Index of the "IS" keyword in an ERR message (UDP).    */
+        static constexpr size_t UDP_ERR_MESSAGE_CONTENT_INDEX = 4;  /**< Index of the message content in an ERR message (UDP). */
+
+        // BYE message indexes (UDP)
+        static constexpr size_t UDP_BYE_TYPE_INDEX = 0;          /**< Index of the message type in a BYE message (UDP).   */
+        static constexpr size_t UDP_BYE_FROM_KEYWORD_INDEX = 1;  /**< Index of the "FROM" keyword in a BYE message (UDP). */
+        static constexpr size_t UDP_BYE_DISPLAY_NAME_INDEX = 2;  /**< Index of the display name in a BYE message (UDP).   */
+
+        // REPLY message indexes (UDP)
+        static constexpr size_t UDP_REPLY_TYPE_INDEX = 0;             /**< Index of the message type in a REPLY message (UDP).        */
+        static constexpr size_t UDP_REPLY_RESULT_KEYWORD_INDEX = 1;   /**< Index of the result ("OK"/"NOK") in a REPLY message (UDP). */
+        static constexpr size_t UDP_REPLY_IS_KEYWORD_INDEX = 2;       /**< Index of the "IS" keyword in a REPLY message (UDP).        */
+        static constexpr size_t UDP_REPLY_MESSAGE_CONTENT_INDEX = 3;  /**< Index of the message content in a REPLY message (UDP).     */
+
+        // MSG message indexes (UDP)
+        static constexpr size_t UDP_MSG_TYPE_INDEX = 0;             /**< Index of the message type in a MSG message (UDP).    */
+        static constexpr size_t UDP_MSG_FROM_KEYWORD_INDEX = 1;     /**< Index of the "FROM" keyword in a MSG message (UDP).  */
+        static constexpr size_t UDP_MSG_DISPLAY_NAME_INDEX = 2;     /**< Index of the display name in a MSG message (UDP).    */
+        static constexpr size_t UDP_MSG_IS_KEYWORD_INDEX = 3;       /**< Index of the "IS" keyword in a MSG message (UDP).    */
+        static constexpr size_t UDP_MSG_MESSAGE_CONTENT_INDEX = 4;  /**< Index of the message content in a MSG message (UDP). */
+
+        // CONFIRM message indexes (UDP)
+
+        // PING message indexes (UDP)
     }; // MessageFields
 } // IPK25ChatClient::Constants
 
