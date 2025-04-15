@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    14.04.2025                                                    *
  *                                                                             *
  * Description:  This file declares the `TcpCommunicationHandler` class,       *
  *               which implements TCP-based communication for the IPK25 Chat   *
@@ -28,6 +28,7 @@
 #define TCP_COMMUNICATION_HANDLER_HPP
 
 #include "Networking/CommunicationHandlerBase.hpp"
+#include "Common/ParsedMessage.hpp"
 #include "Common/ChatDataTypes.hpp"
 
 namespace IPK25ChatClient::Networking
@@ -69,9 +70,8 @@ namespace IPK25ChatClient::Networking
          *          message cannot be sent, it logs the error and returns `false`.
          *
          * @param messageContent The content of the message to be sent.
-         * @return `true` if the message was sent successfully, `false` otherwise.
          */
-        bool sendMessage(Common::MessageContent messageContent) override;
+        void sendMessage(Common::MessageContent messageContent) override;
 
         /**
          * @brief Receives a message from the server.
@@ -82,7 +82,7 @@ namespace IPK25ChatClient::Networking
          *
          * @return The content of the received message.
          */
-        Common::MessageContent receiveMessage() override;
+        Common::ParsedMessage receiveMessage() override;
 
     private:
         /**
