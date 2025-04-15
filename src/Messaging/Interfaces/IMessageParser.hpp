@@ -28,7 +28,7 @@
 #include "Common/ParsedMessage.hpp"
 #include <optional>  // std::optional
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Parser
 {
     /**
      * @class IMessageParser
@@ -50,7 +50,7 @@ namespace IPK25ChatClient::Messaging
          */
         virtual std::optional<Common::ParsedMessage> parseIncomingMessage(const Common::MessageContent &messageContent) = 0;
     }; // IMessageParser
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Parser
 
 #endif // I_MESSAGE_PARSER_HPP
 

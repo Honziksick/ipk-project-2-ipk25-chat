@@ -25,7 +25,7 @@
 
 #include <cstdint>  // uint16_t
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     /**
      * @class IMessageIdProvider
@@ -55,7 +55,7 @@ namespace IPK25ChatClient::Messaging
          */
         virtual uint16_t getNextMessageId() = 0;
     };
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 #endif // I_MESSAGE_ID_PROVIDER_HPP
 

@@ -35,7 +35,7 @@
 #include "Utilities/Logger.hpp"
 #include <unistd.h>  // close()
 
-using namespace IPK25ChatClient::Messaging;
+using namespace IPK25ChatClient::Messaging::Parser;
 using namespace IPK25ChatClient::Common;
 using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Exceptions;

@@ -31,7 +31,7 @@
 #include "Enums/MessageTypes.hpp"
 #include <string>  // std::string
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     /**
      * @class MessageBuilderBase
@@ -124,7 +124,7 @@ namespace IPK25ChatClient::Messaging
          */
         virtual Common::MessageContent buildByeMessage(const std::string &displayName) = 0;
     }; // MessageBuilderBase
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 #endif // MESSAGE_BUILDER_BASE_HPP
 

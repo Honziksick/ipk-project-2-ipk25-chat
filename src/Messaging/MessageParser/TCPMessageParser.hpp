@@ -31,7 +31,7 @@
 #include <vector>    // std::vector
 #include <optional>  // std::optional
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Parser
 {
     /**
      * @class TcpMessageParser
@@ -85,7 +85,7 @@ namespace IPK25ChatClient::Messaging
          */
         static Common::ParsedMessage tokenizeMessage(const std::string &message);
     }; // TcpMessageParser
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Parser
 
 #endif // TCP_MESSAGE_PARSER_HPP
 

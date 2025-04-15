@@ -42,7 +42,7 @@ using namespace IPK25ChatClient::Utilities;
 using namespace IPK25ChatClient::Exceptions;
 using namespace std;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Parser
 {
     optional<ParsedMessage> TcpMessageParser::parseIncomingMessage(const MessageContent &messageContent) {
         if(!holds_alternative<string>(messageContent)) {
@@ -127,6 +127,6 @@ namespace IPK25ChatClient::Messaging
 
         return parsedMessage;
     } // TcpMessageParser::tokenizeMessage
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Parser
 
 /*** end of file TCPMessageParser.cpp ***/

@@ -28,7 +28,7 @@
 #include "Common/UserCommand.hpp"
 #include "Enums/MessageTypes.hpp"
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     /**
      * @class IMessageBuilder
@@ -69,7 +69,7 @@ namespace IPK25ChatClient::Messaging
         virtual Common::MessageContent buildMessage(Enums::MessageType messageType,
                                                     uint16_t refMessageId) = 0;
     }; // IMessageBuilder
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 #endif // I_MESSAGE_BUILDER_HPP
 

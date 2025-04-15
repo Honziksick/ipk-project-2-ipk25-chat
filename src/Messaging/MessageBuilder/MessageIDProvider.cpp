@@ -28,7 +28,7 @@
 
 using namespace std;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     MessageIdProvider::MessageIdProvider() : mCurrentIdCounter{0} {}
 
@@ -46,6 +46,6 @@ namespace IPK25ChatClient::Messaging
 
         return nextMessageId;
     } // MessageIdProvider::getNextMessageId
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 /*** end of file MessageIDProvider.cpp ***/

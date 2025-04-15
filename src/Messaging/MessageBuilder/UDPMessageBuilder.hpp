@@ -34,7 +34,7 @@
 #include <vector>  // std::vector
 #include <memory>  // std::unique_ptr
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     /**
      * @class TcpMessageBuilder
@@ -167,7 +167,7 @@ namespace IPK25ChatClient::Messaging
          */
         static Common::MessageContent buildConfirmMessage(uint16_t refMessageId);
     }; // UdpMessageBuilder
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 #endif // UDP_MESSAGE_BUILDER_HPP
 

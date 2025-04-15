@@ -36,7 +36,7 @@ using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Utilities;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     MessageBuilderBase::MessageBuilderBase() : IMessageBuilder() {}
 
@@ -71,6 +71,6 @@ namespace IPK25ChatClient::Messaging
                         );
         } // switch(messageType)
     } // MessageBuilderBase::buildMessage
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 /*** end of file MessageBuilderBase.cpp ***/

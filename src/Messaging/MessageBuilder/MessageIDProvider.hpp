@@ -29,7 +29,7 @@
 #include <mutex>    // std::mutex
 #include <cstdint>  // uint16_t
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     /**
      * @class MessageIdProvider
@@ -73,7 +73,7 @@ namespace IPK25ChatClient::Messaging
         uint16_t mCurrentIdCounter;  /**< The current message ID counter.                           */
         std::mutex mMutex;           /**< Mutex for synchronizing access to the message ID counter. */
     }; // MessageIdProvider
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 #endif // MESSAGE_ID_PROVIDER_HPP
 

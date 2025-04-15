@@ -36,7 +36,7 @@ using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Utilities;
 using namespace std;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     MessageContent TcpMessageBuilder::buildMessage(MessageType messageType, uint16_t refMessageId) {
         throw InternalErrorException("buildMessage() is not supported for TcpMessageBuilder.");
@@ -95,6 +95,6 @@ namespace IPK25ChatClient::Messaging
         logger("message=%s", message.str().c_str());
         return MessageContent{message.str()};
     } // TcpMessageBuilder::buildByeMessage
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 /*** end of file TCPMessageBuilder.cpp ***/

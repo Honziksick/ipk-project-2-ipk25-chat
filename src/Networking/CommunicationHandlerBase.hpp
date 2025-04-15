@@ -79,7 +79,7 @@ namespace IPK25ChatClient::Networking
         static constexpr bool CONNECTED{true};      /**< Constant representing a connected state.    */
         static constexpr bool DISCONNECTED{false};  /**< Constant representing a disconnected state. */
 
-        std::unique_ptr<Messaging::IMessageParser> mMessageParser;  /**< Message parser used for processing incoming messages. */
+        std::unique_ptr<Messaging::Parser::IMessageParser> mMessageParser;  /**< Message parser used for processing incoming messages. */
         int mSocketFd;               /**< File descriptor for the socket connection. */
         bool mIsConnected;           /**< Connection status flag.    */
         std::string mServerAddress;  /**< Address of the server.     */

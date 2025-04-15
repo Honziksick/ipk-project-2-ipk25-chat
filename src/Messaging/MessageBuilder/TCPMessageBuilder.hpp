@@ -31,7 +31,7 @@
 #include <string>   // std::string
 #include <cstdint>  // uint16_t
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     /**
      * @class TcpMessageBuilder
@@ -115,7 +115,7 @@ namespace IPK25ChatClient::Messaging
          */
         Common::MessageContent buildByeMessage(const std::string &displayName) override;
     }; // TcpMessageBuilder
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 #endif // TCP_MESSAGE_BUILDER_HPP
 

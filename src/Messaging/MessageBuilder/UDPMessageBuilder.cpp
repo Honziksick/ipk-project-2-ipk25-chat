@@ -40,7 +40,7 @@ using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Utilities;
 using namespace std;
 
-namespace IPK25ChatClient::Messaging
+namespace IPK25ChatClient::Messaging::Builder
 {
     UdpMessageBuilder::UdpMessageBuilder() : mMessageIdProvider{make_unique<MessageIdProvider>()} {}
 
@@ -180,6 +180,6 @@ namespace IPK25ChatClient::Messaging
         logger("Confirm message built with size=%zu", message.size());
         return MessageContent{message};
     } // UdpMessageBuilder::buildConfirmMessage
-} // IPK25ChatClient::Messaging
+} // IPK25ChatClient::Messaging::Builder
 
 /*** end of file UDPMessageBuilder.cpp ***/
