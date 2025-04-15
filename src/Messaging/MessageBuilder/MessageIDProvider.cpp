@@ -17,7 +17,7 @@
  ******************************************************************************/
 /**
  * @file MessageIDProvider.cpp
- * @author Jan Kalina <xkalinj00>
+ * @author Jan Kalina \<xkalinj00>
  * @brief Implementation of the `MessageIdProvider` class for managing unique
  *        message IDs.
  */
