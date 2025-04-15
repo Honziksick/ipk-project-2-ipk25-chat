@@ -105,6 +105,10 @@ namespace IPK25ChatClient::Utilities
         }
         return false;
     } // StringUtils::truncateOverReference
+
+    bool StringUtils::compareKeywordsCaseInsesitive(const std::string &str1, const std::string &str2) {
+        return toLower(str1) == toLower(str2);
+    } // StringUtils::compareKeywordsCaseInsesitive
 } // IPK25ChatClient::Utilities
 
 /*** end of file StringUtils.cpp ***/

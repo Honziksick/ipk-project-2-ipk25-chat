@@ -105,6 +105,18 @@ namespace IPK25ChatClient::Utilities
          * @return `true` If the string was truncated, `false` otherwise.
          */
         static bool truncateOverReference(std::string &str, size_t maxLength);
+
+        /**
+         * @brief Compares two strings for equality in a case-insensitive manner.
+         * @details This function checks if two strings are equal, ignoring
+         *          differences in letter case.
+         *
+         * @param str1 The first string to compare.
+         * @param str2 The second string to compare.
+         *
+         * @return `true` if the strings are equal (case-insensitive), otherwise `false`.
+         */
+        static bool compareKeywordsCaseInsesitive(const std::string &str1, const std::string &str2);
     }; // StringUtils
 } // IPK25ChatClient::Utilities
 
