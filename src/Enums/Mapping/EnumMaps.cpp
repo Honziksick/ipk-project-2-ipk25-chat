@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    13.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `EnumMaps` class, which provides static *
  *               mapping utilities for converting enum values to their         *
@@ -27,8 +27,8 @@
 #include "Enums/ExitCodes.hpp"
 #include "Enums/CommandParameters.hpp"
 #include "Enums/MessageTypes.hpp"
-#include "Enums/CommandValidatorsResults.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
+#include "Enums/ValidatorResults.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -102,14 +102,14 @@ namespace IPK25ChatClient::Enums::Mapping
         return cMap;
     } // EnumMaps::getMessageTypeMap
 
-    const unordered_map<CommandValidatorsResult, string> &EnumMaps::getMessageValidatorResultMap() {
-        static const unordered_map<CommandValidatorsResult, string> cMap = {
-            {CommandValidatorsResult::OK, "Message parameter is valid"},
-            {CommandValidatorsResult::INVALID, "Message parameter is invalid"},
-            {CommandValidatorsResult::UNKNOWN, "Message parameter: Status unknown"},
-            {CommandValidatorsResult::PARAMETER_TOO_LONG, "Message parameter: Parameter too long"},
-            {CommandValidatorsResult::PARAMETER_TOO_SHORT, "Message parameter: Parameter too short"},
-            {CommandValidatorsResult::PARAMETER_CONTAINS_INVALID_SYMBOLS, "Message parameter: Parameter contains invalid symbols"}
+    const unordered_map<ValidatorResult, string> &EnumMaps::getMessageValidatorResultMap() {
+        static const unordered_map<ValidatorResult, string> cMap = {
+            {ValidatorResult::OK, "Message parameter is valid"},
+            {ValidatorResult::INVALID, "Message parameter is invalid"},
+            {ValidatorResult::UNKNOWN, "Message parameter: Status unknown"},
+            {ValidatorResult::PARAMETER_TOO_LONG, "Message parameter: Parameter too long"},
+            {ValidatorResult::PARAMETER_TOO_SHORT, "Message parameter: Parameter too short"},
+            {ValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS, "Message parameter: Parameter contains invalid symbols"}
         };
         return cMap;
     } // EnumMaps::getMessageValidatorResultMap

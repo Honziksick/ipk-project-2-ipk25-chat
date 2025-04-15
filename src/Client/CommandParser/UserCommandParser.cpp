@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      12.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `UserCommandParser` class, which        *
  *               provides functionality for parsing user input commands into   *
@@ -22,8 +22,8 @@
  *        commands from `STDIN` into structured objects.
  */
 
-#include "CommandParser/UserCommandParser.hpp"
-#include "CommandParser/UserCommandValidators.hpp"
+#include "Client/CommandParser/UserCommandParser.hpp"
+#include "Validators/UserCommandValidators.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
 #include "Common/UserCommand.hpp"
 #include "Exceptions/ChatExceptions.hpp"
@@ -38,13 +38,15 @@
 
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Client::Output;
+using namespace IPK25ChatClient::Client;
 using namespace IPK25ChatClient::Common;
 using namespace IPK25ChatClient::Constants;
 using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Utilities;
+using namespace IPK25ChatClient::Validators;
 using namespace std;
 
-namespace IPK25ChatClient::CommandParser
+namespace IPK25ChatClient::Client::CommandParser
 {
     UserCommand UserCommandParser::parseCommandLine() {
         // Read a line from the standard input ('\n' is read but not included)
@@ -297,6 +299,6 @@ namespace IPK25ChatClient::CommandParser
             return false;
         }
     } // UserCommandParser::checkCorrectNumberOfParameters
-} // IPK25ChatClient::CommandParser
+} // IPK25ChatClient::Client::CommandParser
 
 /*** end of file UserCommandParser.cpp ***/

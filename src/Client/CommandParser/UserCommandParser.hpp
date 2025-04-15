@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      12.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `UserCommandParser` class, which provides  *
  *               functionality for parsing user input commands into structured *
@@ -29,7 +29,7 @@
 #include <string>  // std::string
 #include <vector>  // std::vector
 
-namespace IPK25ChatClient::CommandParser
+namespace IPK25ChatClient::Client::CommandParser
 {
     /**
      * @class UserCommandParser
@@ -168,7 +168,7 @@ namespace IPK25ChatClient::CommandParser
         static bool checkCorrectNumberOfParameters(const std::vector<std::string> &commandParameters,
                                                    size_t expectedCount);
     }; // UserCommandParser
-} // IPK25ChatClient::CommandParser
+} // IPK25ChatClient::Client::CommandParser
 
 #endif // USER_COMMAND_PARSER_HPP
 

@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    13.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `EnumMaps` class, which provides static    *
  *               mapping utilities for converting enum values to their         *
@@ -30,7 +30,7 @@
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/CommandParameters.hpp"
 #include "Enums/MessageTypes.hpp"
-#include "Enums/CommandValidatorsResults.hpp"
+#include "Enums/ValidatorResults.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -84,7 +84,7 @@ namespace IPK25ChatClient::Enums::Mapping
          * @brief Retrieves the mapping for `CommandValidatorsResult` to strings.
          * @return A constant reference to the map of `CommandValidatorsResult` to strings.
          */
-        static const std::unordered_map<CommandValidatorsResult, std::string> &getMessageValidatorResultMap();
+        static const std::unordered_map<ValidatorResult, std::string> &getMessageValidatorResultMap();
 
         /**
          * @brief Retrieves the mapping for `MessageType` to strings.

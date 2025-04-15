@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    13.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  This header file defines the `UserCommandValidators` class,   *
  *               which provides static methods for validating various command  *
@@ -28,10 +28,10 @@
 #define USER_COMMAND_VALIDATORS_HPP
 
 #include "Enums/CommandParameters.hpp"
-#include "Enums/CommandValidatorsResults.hpp"
+#include "Enums/ValidatorResults.hpp"
 #include <string_view>  // std::string_view
 
-namespace IPK25ChatClient::CommandParser
+namespace IPK25ChatClient::Validators
 {
     /**
      * @class UserCommandValidators
@@ -60,7 +60,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateMessageParameter(Enums::CommandParameter parameterType,
+        static Enums::ValidatorResult validateMessageParameter(Enums::CommandParameter parameterType,
                                                                        std::string_view commandParameter);
         /**
          * @brief Performs post-processing validation of a command parameter.
@@ -76,7 +76,7 @@ namespace IPK25ChatClient::CommandParser
          * @return `true` if the post-processing validation is successful, `false` otherwise.
          */
         static bool postProccessValidation(Enums::CommandParameter parameterType,
-                                           Enums::CommandValidatorsResult validationResult,
+                                           Enums::ValidatorResult validationResult,
                                            std::string &commandParameter);
 
     private:
@@ -120,7 +120,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateUsername(std::string_view username);
+        static Enums::ValidatorResult validateUsername(std::string_view username);
 
         /**
          * @brief Performs deep validation of a username parameter.
@@ -129,7 +129,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult deepUsernameValidation(std::string_view username);
+        static Enums::ValidatorResult deepUsernameValidation(std::string_view username);
 
         /**
          * @brief Validates a channel ID parameter.
@@ -138,7 +138,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateChannelId(std::string_view channelId);
+        static Enums::ValidatorResult validateChannelId(std::string_view channelId);
 
         /**
          * @brief Performs deep validation of a channel ID parameter.
@@ -147,7 +147,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult deepChannelIdValidation(std::string_view channelId);
+        static Enums::ValidatorResult deepChannelIdValidation(std::string_view channelId);
 
         /**
          * @brief Validates a secret parameter.
@@ -156,7 +156,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateSecret(std::string_view secret);
+        static Enums::ValidatorResult validateSecret(std::string_view secret);
 
         /**
          * @brief Performs deep validation of a secret parameter.
@@ -165,7 +165,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult deepSecretValidation(std::string_view secret);
+        static Enums::ValidatorResult deepSecretValidation(std::string_view secret);
 
         /**
          * @brief Validates a display name parameter.
@@ -174,7 +174,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateDisplayName(std::string_view displayName);
+        static Enums::ValidatorResult validateDisplayName(std::string_view displayName);
 
         /**
          * @brief Performs deep validation of a display name parameter.
@@ -183,7 +183,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult deepDisplayNameValidation(std::string_view displayName);
+        static Enums::ValidatorResult deepDisplayNameValidation(std::string_view displayName);
 
         /**
          * @brief Validates a message content parameter.
@@ -192,7 +192,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult validateMessageContent(std::string_view messageContent);
+        static Enums::ValidatorResult validateMessageContent(std::string_view messageContent);
 
         /**
          * @brief Performs deep validation of a message content parameter.
@@ -201,7 +201,7 @@ namespace IPK25ChatClient::CommandParser
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::CommandValidatorsResult deepMessageContentValidation(std::string_view messageContent);
+        static Enums::ValidatorResult deepMessageContentValidation(std::string_view messageContent);
 
         /**
          * @brief Truncates a message parameter based on its type.
@@ -218,7 +218,7 @@ namespace IPK25ChatClient::CommandParser
          */
         static bool truncateMessageParameter(Enums::CommandParameter parameterType, std::string& commandParameter);
     }; // UserCommandValidators
-} // IPK25ChatClient::CommandParser
+} // IPK25ChatClient::Validators
 
 #endif // USER_COMMAND_VALIDATORS_HPP
 

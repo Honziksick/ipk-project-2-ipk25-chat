@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    13.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `EnumMappers` class, which provides        *
  *               static template mapping methods for converting enum values    *
@@ -30,7 +30,7 @@
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/CommandParameters.hpp"
 #include "Enums/MessageTypes.hpp"
-#include "Enums/CommandValidatorsResults.hpp"
+#include "Enums/ValidatorResults.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -127,7 +127,7 @@ namespace IPK25ChatClient::Enums::Mapping
      * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf
      */
     template <>
-    inline const std::unordered_map<CommandValidatorsResult, std::string> &EnumMappers::getEnumToStringMap<CommandValidatorsResult>() {
+    inline const std::unordered_map<ValidatorResult, std::string> &EnumMappers::getEnumToStringMap<ValidatorResult>() {
         return getMessageValidatorResultMap();
     }
 
