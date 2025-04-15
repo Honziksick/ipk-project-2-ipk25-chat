@@ -27,7 +27,7 @@
 #ifndef USER_COMMAND_VALIDATORS_HPP
 #define USER_COMMAND_VALIDATORS_HPP
 
-#include "Enums/CommandParameters.hpp"
+#include "Enums/MessageParameters.hpp"
 #include "Enums/ValidatorResults.hpp"
 #include <string_view>  // std::string_view
 
@@ -60,7 +60,7 @@ namespace IPK25ChatClient::Validators
          *
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
-        static Enums::ValidatorResult validateMessageParameter(Enums::CommandParameter parameterType,
+        static Enums::ValidatorResult validateMessageParameter(Enums::MessageParameter parameterType,
                                                                        std::string_view commandParameter);
         /**
          * @brief Performs post-processing validation of a command parameter.
@@ -75,7 +75,7 @@ namespace IPK25ChatClient::Validators
          *
          * @return `true` if the post-processing validation is successful, `false` otherwise.
          */
-        static bool postProccessValidation(Enums::CommandParameter parameterType,
+        static bool postProccessValidation(Enums::MessageParameter parameterType,
                                            Enums::ValidatorResult validationResult,
                                            std::string &commandParameter);
 
@@ -216,7 +216,7 @@ namespace IPK25ChatClient::Validators
          *
          * @return `true` if the parameter was truncated, `false` if no truncation was necessary.
          */
-        static bool truncateMessageParameter(Enums::CommandParameter parameterType, std::string& commandParameter);
+        static bool truncateMessageParameter(Enums::MessageParameter parameterType, std::string& commandParameter);
     }; // UserCommandValidators
 } // IPK25ChatClient::Validators
 

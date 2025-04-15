@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    13.04.2025                                                    *
+ * Last edit:    15.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `UserCommandValidators` class, which provides methods for     *
@@ -25,7 +25,7 @@
 
 #include "Validators/UserCommandValidators.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
-#include "Enums/CommandParameters.hpp"
+#include "Enums/MessageParameters.hpp"
 #include "Enums/ValidatorResults.hpp"
 #include "Constants/ClientLimits.hpp"
 #include "Constants/RegexPatterns.hpp"
@@ -46,7 +46,7 @@ using namespace std;
 
 namespace IPK25ChatClient::Validators
 {
-    ValidatorResult UserCommandValidators::validateMessageParameter(const CommandParameter parameterType,
+    ValidatorResult UserCommandValidators::validateMessageParameter(const MessageParameter parameterType,
                                                                        const string_view commandParameter) {
         logger("Message parameter validation started: parameterType: %s, commandParameter: %s",
                CastUtils::castEnumToString(parameterType).c_str(), string(commandParameter).c_str());
@@ -54,19 +54,19 @@ namespace IPK25ChatClient::Validators
         // Perform validation based on the parameter type
         auto result = ValidatorResult::UNKNOWN;
         switch(parameterType) {
-            case CommandParameter::USERNAME:
+            case MessageParameter::USERNAME:
                 result = validateUsername(commandParameter);
                 break;
-            case CommandParameter::CHANNEL_ID:
+            case MessageParameter::CHANNEL_ID:
                 result = validateChannelId(commandParameter);
                 break;
-            case CommandParameter::SECRET:
+            case MessageParameter::SECRET:
                 result = validateSecret(commandParameter);
                 break;
-            case CommandParameter::DISPLAY_NAME:
+            case MessageParameter::DISPLAY_NAME:
                 result = validateDisplayName(commandParameter);
                 break;
-            case CommandParameter::MESSAGE_CONTENT:
+            case MessageParameter::MESSAGE_CONTENT:
                 result = validateMessageContent(commandParameter);
                 break;
             default:
@@ -98,7 +98,7 @@ namespace IPK25ChatClient::Validators
         }
     } // UserCommandValidators::validateMessageParameter
 
-    bool UserCommandValidators::postProccessValidation(const CommandParameter parameterType,
+    bool UserCommandValidators::postProccessValidation(const MessageParameter parameterType,
                                                        const ValidatorResult validationResult, string &commandParameter) {
         logger("Post-processing of the validation started: parameterType: %s, "
                "validationResult: %s, commandParameter: %s", CastUtils::castEnumToString(parameterType).c_str(),
@@ -325,18 +325,18 @@ namespace IPK25ChatClient::Validators
         return ValidatorResult::UNKNOWN;
     } // UserCommandValidators::deepMessageContentValidation
 
-    bool UserCommandValidators::truncateMessageParameter(const CommandParameter parameterType, string &commandParameter) {
+    bool UserCommandValidators::truncateMessageParameter(const MessageParameter parameterType, string &commandParameter) {
         // Perform truncation based on the parameter type
         switch(parameterType) {
-            case CommandParameter::USERNAME:
+            case MessageParameter::USERNAME:
                 return StringUtils::truncateOverReference(commandParameter, ClientLimits::MAX_USERNAME_LENGTH);
-            case CommandParameter::CHANNEL_ID:
+            case MessageParameter::CHANNEL_ID:
                 return StringUtils::truncateOverReference(commandParameter, ClientLimits::MAX_CHANNEL_ID_LENGTH);
-            case CommandParameter::SECRET:
+            case MessageParameter::SECRET:
                 return StringUtils::truncateOverReference(commandParameter, ClientLimits::MAX_SECRET_LENGTH);
-            case CommandParameter::DISPLAY_NAME:
+            case MessageParameter::DISPLAY_NAME:
                 return StringUtils::truncateOverReference(commandParameter, ClientLimits::MAX_DISPLAY_NAME_LENGTH);
-            case CommandParameter::MESSAGE_CONTENT:
+            case MessageParameter::MESSAGE_CONTENT:
                 return StringUtils::truncateOverReference(commandParameter, ClientLimits::MAX_MESSAGE_CONTENT_LENGTH);
             default:
                 logger("Invalid parameter type for truncation: %s", CastUtils::castEnumToString(parameterType).c_str());

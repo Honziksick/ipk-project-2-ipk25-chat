@@ -28,7 +28,7 @@
 #include "Enums/Mapping/EnumMaps.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
-#include "Enums/CommandParameters.hpp"
+#include "Enums/MessageParameters.hpp"
 #include "Enums/MessageTypes.hpp"
 #include "Enums/ValidatorResults.hpp"
 #include <unordered_map>  // std::unordered_map
@@ -116,7 +116,7 @@ namespace IPK25ChatClient::Enums::Mapping
      * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf
      */
     template <>
-    inline const std::unordered_map<CommandParameter, std::string> &EnumMappers::getEnumToStringMap<CommandParameter>() {
+    inline const std::unordered_map<MessageParameter, std::string> &EnumMappers::getEnumToStringMap<MessageParameter>() {
         return getMessageParameterMap();
     }
 
