@@ -51,6 +51,7 @@ namespace IPK25ChatClient::Messaging::Parser
 
     private:
         constexpr static auto END_OF_MESSAGE_DELIMITER = "\r\n";  /**< The delimiter used to identify the end of a message. */
+        constexpr static auto TOKEN_DELIMITER = " ";              /**< The delimiter used to separate fields of the message. */
         std::string mBuffer;  /**< A buffer to store incomplete message data. */
 
         /**

@@ -97,8 +97,8 @@ namespace IPK25ChatClient::Messaging::Parser
     } // TcpMessageParser::tryToExtractCompletedMessages
 
     ParsedMessage TcpMessageParser::tokenizeMessage(const string &message) {
-        // We split
-        const vector<string> tokens = StringUtils::splitBySpaces(message);
+        // We split the message using 'splitByDelimiter()' to cause multiple spaces create empty tokens
+        const vector<string> tokens = StringUtils::splitByDelimiter(message, TOKEN_DELIMITER);
 
         if(tokens.empty()) {
             ClientOutput::printClientInternalError(
@@ -124,7 +124,6 @@ namespace IPK25ChatClient::Messaging::Parser
                 parsedMessage.mFields.emplace_back(tokens[iToken]);
             }
         }
-
         return parsedMessage;
     } // TcpMessageParser::tokenizeMessage
 } // IPK25ChatClient::Messaging::Parser
