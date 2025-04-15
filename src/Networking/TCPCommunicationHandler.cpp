@@ -65,7 +65,12 @@ namespace IPK25ChatClient::Networking
 
         if(!pResult) {
             logger("NULL pointer returned by 'resolveHostname(): hostname resolution failed.");
-            throw ConnectionErrorException(
+            ClientOutput::printClientInternalError(
+                "At the moment, we are unable to connect to the server due to host resolution. "
+                "failure. The connection to the server is not established, so the client can't inform "
+                "the server about the error. The application will now terminate."
+                );
+            throw HostnameResolutionErrorException(
                     "NULL pointer returned by 'resolveHostname(): hostname resolution failed."
                     );
         }
@@ -119,6 +124,7 @@ namespace IPK25ChatClient::Networking
             contentToSend = get<string>(messageContent);
         }
         else {
+            logger("sendMessage() error for TCP: The custom variant data type 'MessageContent' is not a string.");
             throw InternalErrorException(
                     "sendMessage() error for TCP: The custom variant data type 'MessageContent' is not a string. "
                     );
@@ -127,7 +133,12 @@ namespace IPK25ChatClient::Networking
         // Check if the connection is established
         if(!mIsConnected) {
             logger("Trying to send message %s while not connected.", contentToSend.c_str());
-            throw InternalErrorException(
+            ClientOutput::printClientInternalError(
+                "Failed to send data to the server. The client will now attempt to inform "
+                "the server about the error. If the server is not reachable, application will "
+                "terminate gracefully."
+                );
+            throw ConnectionErrorException(
                     "Trying to send message while not connected. Content " + contentToSend
                     );
         }
