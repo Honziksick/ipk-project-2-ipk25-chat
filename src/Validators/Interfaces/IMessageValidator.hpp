@@ -77,9 +77,9 @@ namespace IPK25ChatClient::Validators
          *
          * @return `true` if the post-processing validation is successful, `false` otherwise.
          */
-        virtual bool postProccessValidation(Enums::MessageParameter parameterType,
-                                            Enums::ValidatorResult validationResult,
-                                            std::string &commandParameter) = 0;
+        virtual bool postProcessValidation(Enums::MessageParameter parameterType,
+                                           Enums::ValidatorResult validationResult,
+                                           std::string &commandParameter) = 0;
     }; // IMessageValidator
 } // IPK25ChatClient::Validators
 

@@ -10,17 +10,20 @@
  * Created:      10.04.2025                                                    *
  * Last edit:    15.04.2025                                                    *
  *                                                                             *
- * Description:  This file contains the implementation of the                  *
- *               `MessageValidatorBase` class, which provides methods for     *
+ * Description:  This source file contains the implementation of the           *
+ *               `MessageValidatorBase` class, which provides methods for      *
  *               validating various message parameters used in the IPK25       *
- *               Chat Client application.                                      *
+ *               Chat Client application. These methods ensure that parameters *
+ *               meet specific constraints such as allowed symbols, length     *
+ *               limits, and regex patterns.                                   *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file MessageValidatorBase.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation of the class `MessageValidatorBase` for message
- *         validation in the IPK25 Chat Client.
+ * @brief Implementation of the `MessageValidatorBase` class, which provides
+ *        common validation methods for message parameters in the IPK25 Chat
+ *        Client application.
  */
 
 #include "Validators/MessageValidatorBase.hpp"
@@ -98,7 +101,7 @@ namespace IPK25ChatClient::Validators
         }
     } // MessageValidatorBase::validateMessageParameter
 
-    bool MessageValidatorBase::postProccessValidation(const MessageParameter parameterType,
+    bool MessageValidatorBase::postProcessValidation(const MessageParameter parameterType,
                                                       const ValidatorResult validationResult, string &commandParameter) {
         logger("Post-processing of the validation started: parameterType: %s, "
                "validationResult: %s, commandParameter: %s", CastUtils::castEnumToString(parameterType).c_str(),
@@ -116,11 +119,11 @@ namespace IPK25ChatClient::Validators
                 logger("Message parameter post-proccessing FAILED due to invalid result type: %s",
                        CastUtils::castEnumToString(validationResult).c_str());
                 throw InternalErrorException(
-                        "postProccessValidation() error: Invalid command validation result type "
+                        "postProcessValidation() error: Invalid command validation result type "
                         "type passed: " + CastUtils::castEnumToString(validationResult)
                         );
         }
-    } // MessageValidatorBase::postProccessValidation
+    } // MessageValidatorBase::postProcessValidation
 
     bool MessageValidatorBase::validateContainingOnlyAllowedSymbols(const string_view commandParameter, const bool whiteCharsAllowed) {
         logger("Deep validation called with commandParameter: %s", string(commandParameter).c_str());
