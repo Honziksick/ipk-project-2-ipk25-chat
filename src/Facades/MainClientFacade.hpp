@@ -13,7 +13,7 @@
  * Description:  Declaration of the `MainClientFacade` class, which serves as  *
  *               the main entry point for the IPK25 Chat Client application.   *
  *               It handles initialization, configuration parsing, and         *
- *               managing the client FSM facade.                               *
+ *               managing the client FSM.                                      *
  *                                                                             *
  ******************************************************************************/
 /**
@@ -27,7 +27,7 @@
 #define MAIN_CLIENT_FACADE_HPP
 
 #include "Common/CommandLineOptions.hpp"
-#include "Facades/ClientFSMFacade.hpp"
+#include "Client/Interfaces/IClientFSM.hpp"
 #include <memory>  // std::unique_ptr
 
 namespace IPK25ChatClient::Facades
@@ -37,7 +37,7 @@ namespace IPK25ChatClient::Facades
      * @brief Main entry point for the IPK25 Chat Client application.
      *
      * @details This class is responsible for initializing the application,
-     *          parsing command line options, and managing the client FSM facade.
+     *          parsing command line options, and managing the client FSM.
      */
     class MainClientFacade final {
     public:
@@ -58,8 +58,8 @@ namespace IPK25ChatClient::Facades
         void runChatClient(int argc, char *argv[]);
 
     private:
-        Common::CommandLineOptions mCommandLineOptions;     /**< Stores the parsed command line options. */
-        std::unique_ptr<ClientFsmFacade> mClientFsmFacade;  /**< Manages the client FSM operations.      */
+        Common::CommandLineOptions mCommandLineOptions;  /**< Stores the parsed command line options.     */
+        std::unique_ptr<Client::FSM::IClientFsm> mFsm;   /**< Pointer to the client's FSM implementation. */
 
         /**
          * @brief Parses the command line options.
@@ -73,12 +73,21 @@ namespace IPK25ChatClient::Facades
         void getCommandLineOptions(int argc, char *argv[]);
 
         /**
-         * @brief Initializes the client FSM facade.
-         * @details This method creates an instance of the `ClientFsmFacade`
-         *          using the parsed command line options and stores it in the
-         *          member variable `mClientFsmFacade`.
+         * @brief Initializes the client FSM (Finite State Machine).
+         * @details This method creates an instance of the appropriate FSM
+         *          implementation (TCP or UDP) based on the transport protocol
+         *          specified in the command line options. If an invalid protocol
+         *          type is provided, an exception is thrown.
          */
-        void initializeClientFsmFacade();
+        void initializeClientFsm();
+
+        /**
+         * @brief Runs the client FSM (Finite State Machine).
+         * @details This method executes the finite state machine (FSM) logic
+         *          for the chat client. It ensures the proper functioning
+         *          of the client by managing its states and transitions.
+         */
+        void runClientFsm() const;
     }; // MainClientFacade
 } // IPK25ChatClient::Facades
 
