@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    09.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  This file defines the `ICommunicationHandler` interface,      *
  *               which provides an abstraction for managing both TCP and UDP   *
@@ -75,7 +75,7 @@ namespace IPK25ChatClient::Networking
          *
          * @return The content of the received message.
          */
-        virtual Common::ParsedMessage receiveMessage() = 0;
+        virtual std::vector<Common::ParsedMessage> receiveMessages() = 0;
 
         /**
          * @brief Checks if the connection is currently active.
