@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the ChatBaseException class used in   *
  *               the IPK25 Chat Client project.                                *
@@ -102,7 +102,7 @@ namespace IPK25ChatClient::Exceptions
 
     UserInterruptionException::UserInterruptionException(string detail) noexcept
         : ChatBaseException{
-            ExitCode::USER_INTERRUPTION_ERROR,
+            ExitCode::SUCCESS,
             ExceptionMessages::USER_INTERRUPTION_MSG,
             move(detail)
         } {}

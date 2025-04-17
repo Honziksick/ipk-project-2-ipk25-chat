@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `ExitCode` enum class, which is used to    *
  *               represent error and other exit codes in the IPK25 Chat        *
@@ -43,7 +43,6 @@ namespace IPK25ChatClient::Enums
         PROTOCOL_ERROR            = 76,  /**< Protocol error (EPROTO).                       */
         UNKNOWN_ERROR             = 78,  /**< Unknown error code (EX_CONFIG).                */
         TIMEOUT_ERROR             = 116, /**< Connection timed out (ETIMEDOUT).              */
-        USER_INTERRUPTION_ERROR   = 130  /**< Interrupted by user error code (128 + SIGINT). */
     }; // ExitCode
 } // IPK25ChatClient::Enums
 

@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `EnumMaps` class, which provides static *
  *               mapping utilities for converting enum values to their         *
@@ -69,8 +69,7 @@ namespace IPK25ChatClient::Enums::Mapping
             {ExitCode::CONNECTION_ERROR, "Socket Error"},
             {ExitCode::PROTOCOL_ERROR, "Protocol Error"},
             {ExitCode::UNKNOWN_ERROR, "Unknown Error"},
-            {ExitCode::TIMEOUT_ERROR, "Timeout Error"},
-            {ExitCode::USER_INTERRUPTION_ERROR, "User Interruption Error"}
+            {ExitCode::TIMEOUT_ERROR, "Timeout Error"}
         };
         return cMap;
     } // EnumMaps::getExitCodeMap
