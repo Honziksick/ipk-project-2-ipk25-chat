@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  This source file implements the `MessageParametersValidator`  *
  *               class, which provides validation logic for message parameters *
@@ -194,7 +194,7 @@ namespace IPK25ChatClient::Validators
     ValidatorResult MessageParametersValidator::validateChannelId(const string_view channelId) {
         logger("Validation of channelId: %s", string(channelId).c_str());
 
-        static const regex cChannelIdRegex(RegexPatterns::CHANNEL_REGEX_ID_PATTERN);
+        static const regex cChannelIdRegex(RegexPatterns::CHANNEL_REGEX_ID_PATTERN_WITH_DOT);
         if(!regex_match(channelId.begin(), channelId.end(), cChannelIdRegex)) {
             logger("ChannelId validation failed, performing deep validation.");
             return deepChannelIdValidation(channelId);
@@ -275,17 +275,6 @@ namespace IPK25ChatClient::Validators
     ValidatorResult MessageParametersValidator::validateMessageContent(const string_view messageContent) {
         logger("Validation of messageContent: %s", string(messageContent).c_str());
 
-        static const regex cMessageContentRegex(RegexPatterns::MESSAGE_CONTENT_REGEX_PATTERN);
-        if(!regex_match(messageContent.begin(), messageContent.end(), cMessageContentRegex)) {
-            logger("MessageContent validation failed, performing deep validation.");
-            return deepMessageContentValidation(messageContent);
-        }
-
-        logger("MessageContent validation passed.");
-        return ValidatorResult::OK;
-    } // MessageParametersValidator::validateMessageContent
-
-    ValidatorResult MessageParametersValidator::deepMessageContentValidation(const string_view messageContent) {
         if(!validateContainingOnlyAllowedSymbols(messageContent, true)) {
             return ValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
@@ -296,8 +285,9 @@ namespace IPK25ChatClient::Validators
             return ValidatorResult::PARAMETER_TOO_LONG;
         }
 
-        return ValidatorResult::UNKNOWN;
-    } // MessageParametersValidator::deepMessageContentValidation
+        logger("MessageContent validation passed.");
+        return ValidatorResult::OK;
+    } // MessageParametersValidator::validateMessageContent
 } // IPK25ChatClient::Validators
 
 /*** end of file MessageParametersValidator.cpp ***/

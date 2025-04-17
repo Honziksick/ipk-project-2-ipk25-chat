@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  This header file defines the `MessageParametersValidator`     *
  *               class, which implements validation logic for message          *
@@ -150,15 +150,6 @@ namespace IPK25ChatClient::Validators
          * @return A CommandValidatorsResult indicating the validation outcome.
          */
         static Enums::ValidatorResult deepDisplayNameValidation(std::string_view displayName);
-
-        /**
-         * @brief Performs deep validation of a message content parameter.
-         *
-         * @param messageContent The message content to validate.
-         *
-         * @return A CommandValidatorsResult indicating the validation outcome.
-         */
-        static Enums::ValidatorResult deepMessageContentValidation(std::string_view messageContent);
 
         /**
          * @brief Validates that the parameter contains only allowed symbols.
