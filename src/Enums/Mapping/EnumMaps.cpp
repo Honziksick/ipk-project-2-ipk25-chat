@@ -41,6 +41,7 @@ namespace IPK25ChatClient::Enums::Mapping
             {UserCommandType::UNKNOWN, "/unknown"},
             {UserCommandType::INVALID, "/invalid"},
             {UserCommandType::MESSAGE, "/message"},
+            {UserCommandType::BYE, "/bye"},
             {UserCommandType::AUTH, "/auth"},
             {UserCommandType::JOIN, "/join"},
             {UserCommandType::RENAME, "/rename"},
