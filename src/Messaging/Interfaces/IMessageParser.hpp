@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      14.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `IMessageParser` interface, which defines  *
  *               the contract for parsing messages in the chat client.         *
@@ -42,13 +42,21 @@ namespace IPK25ChatClient::Messaging::Parser
         virtual ~IMessageParser() = default;
 
         /**
-         * @brief Parses raw message content into a `ParsedMessage` object.
+         * @brief Parses incoming messages and returns a collection of parsed
+         *        messages.
+         * @details This method processes the incoming message content, appends
+         *          it to the internal buffer,  and attempts to extract and
+         *          tokenize complete messages. If no complete messages are
+         *          found, it returns an empty optional. If the message content
+         *          is invalid, an exception is thrown.
          *
-         * @param messageContent The raw message content to be parsed.
-         * @return std::optional<ParsedMessage> If a complete message is available,
-         *         its parsed representation is returned; otherwise, std::nullopt.
+         * @param messageContent The incoming message content to be parsed.
+         *
+         * @return An optional vector of `ParsedMessage` objects if complete
+         *         messages are successfully parsed, or `std::nullopt` if no
+         *         complete messages are available.
          */
-        virtual std::optional<Common::ParsedMessage> parseIncomingMessage(const Common::MessageContent &messageContent) = 0;
+        virtual std::optional<std::vector<Common::ParsedMessage>> parseIncomingMessages(const Common::MessageContent &messageContent) = 0;
     }; // IMessageParser
 } // IPK25ChatClient::Messaging::Parser
 
