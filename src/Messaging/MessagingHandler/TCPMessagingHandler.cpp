@@ -59,6 +59,8 @@ namespace IPK25ChatClient::Messaging::Handler
                 ClientOutput::printClientIncomingError(parsedMessage.mFields[MessageFields::TCP_ERR_DISPLAY_NAME_INDEX],
                                                        parsedMessage.mFields[MessageFields::TCP_ERR_MESSAGE_CONTENT_INDEX]);
                 break;
+            case MessageType::BYE:
+                break;
             default:
                 logger("Unrecognized message type: %s", CastUtils::castEnumToString(parsedMessage.mType).c_str());
                 throw InternalErrorException(
