@@ -72,18 +72,14 @@ namespace IPK25ChatClient::Networking
 
         /**
          * @brief Receives a message from the server.
+         * @details This method handled the reception of messages from the
+         *          server. It processes the incoming data and returns them in
+         *          a structured format.
          *
-         * @return The content of the received message.
+         * @return A vector of `Common::ParsedMessage` objects representing the
+         *         content of the received messages.
          */
         virtual std::vector<Common::ParsedMessage> receiveMessages() = 0;
-
-        /**
-         * @brief Checks if the connection is currently active.
-         *
-         * @return `true` if the connection is active, `false` otherwise.
-         */
-        [[nodiscard]]
-        virtual bool isConnected() const = 0;
     }; // ICommunicationHandler
 } // IPK25ChatClient::Networking
 
