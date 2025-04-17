@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Interface for messaging handlers in the IPK25 Chat Client.    *
  *               Provides methods for processing incoming messages and         *
@@ -45,22 +45,30 @@ namespace IPK25ChatClient::Messaging::Handler
         virtual ~IMessagingHandler() = default;
 
         /**
-         * @brief Processes an incoming message.
-         * @details This method is responsible for handling a parsed message
-         *          and performing the appropriate action based on its type.
-         *
-         * @param parsedMessage The parsed message to process.
+         * @brief Opens a connection to the server.
+         * @details This method establishes a connection to the specified
+         *          server and prepares the handler for communication.
          */
-        virtual void processIncomingMessage(const Common::ParsedMessage &parsedMessage) = 0;
+        virtual void openConnection() = 0;
 
         /**
-         * @brief Sets the display name for the messaging handler.
-         * @details Updates the display name used by the handler for outgoing
-         *          messages.
-         *
-         * @param displayName The display name to set.
+         * @brief Closes the active connection.
+         * @details This method gracefully terminates the connection and release
+         *          any associated resources.
          */
-        virtual void setDisplayName(const std::string &displayName) = 0;
+        virtual void closeConnection() = 0;
+
+        /**
+         * @brief Receives a message from the server and processes it.
+         * @details This method is responsible for receiving a message from the
+         *          server through the communication handler, parsing the message,
+         *          and returning its content in a structured format. The
+         *          implementation of this method is provided in the derived classes.
+         *
+         * @return std::vector<Common::ParsedMessage> Vector of parsed content
+         *         of the received message.
+         */
+        virtual std::vector<Common::ParsedMessage> receiveMessages() = 0;
 
         /**
          * @brief Sends an authentication message.
@@ -81,21 +89,27 @@ namespace IPK25ChatClient::Messaging::Handler
          *          specified channel ID and display name.
          *
          * @param channelId The ID of the channel to join.
-         * @param displayName The display name of the user.
          */
-        virtual void sendJoinMessage(const std::string &channelId,
-                                     const std::string &displayName) = 0;
+        virtual void sendJoinMessage(const std::string &channelId) = 0;
 
         /**
          * @brief Sends a message to a channel or user.
          * @details Constructs and sends a message containing the specified
          *          content to the target channel or user.
          *
-         * @param displayName The display name of the sender.
          * @param messageContent The content of the message to send.
          */
-        virtual void sendMsgMessage(const std::string &displayName,
-                                    const std::string &messageContent) = 0;
+        virtual void sendMsgMessage(const std::string &messageContent) = 0;
+
+        /**
+         * @brief Sends an error message.
+         * @details Constructs and sends an error message with the specified
+         *          content. This method "swallows" any exceptions thrown during
+         *          the sending process.
+         *
+         * @param messageContent The content of the error message.
+         */
+        virtual void sendErrMessage(const std::string &messageContent) = 0;
 
         /**
          * @brief Sends a goodbye message.
