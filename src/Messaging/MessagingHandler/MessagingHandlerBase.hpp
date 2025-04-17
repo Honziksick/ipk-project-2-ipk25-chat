@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Base class for messaging handlers in the IPK25 Chat Client.   *
  *               Provides common functionality for derived messaging handler   *
@@ -28,9 +28,11 @@
 #include "Messaging/Interfaces/IMessagingHandler.hpp"
 #include "Messaging/Interfaces/IMessageBuilder.hpp"
 #include "Networking/Interfaces/ICommunicationHandler.hpp"
+#include "Client/CommandParser/DisplayNameProvider.hpp"
 #include "Common/CommandLineOptions.hpp"
+#include "Validators/Interfaces/IMessageValidator.hpp"
 #include <string>  // std::string
-#include <memory>  // std::unique_ptr
+#include <memory>  // std::unique_ptr, std::shared_ptr
 
 namespace IPK25ChatClient::Messaging::Handler
 {
@@ -50,8 +52,12 @@ namespace IPK25ChatClient::Messaging::Handler
          *          command line options passed to constructors other submodules.
          *
          * @param commandLineOptions The command line options for the application.
+         * @param socketFd The socket file descriptor for communication.
+         * @param displayNameProvider The shared user display name provider.
          */
-        explicit MessagingHandlerBase(const Common::CommandLineOptions &commandLineOptions);
+        explicit MessagingHandlerBase(const Common::CommandLineOptions &commandLineOptions,
+                                      const std::shared_ptr<int> &socketFd,
+                                      const std::shared_ptr<Client::CommandParser::DisplayNameProvider> &displayNameProvider);
 
         /**
          * @brief Virtual destructor for the base class.
@@ -59,13 +65,30 @@ namespace IPK25ChatClient::Messaging::Handler
         ~MessagingHandlerBase() override = default;
 
         /**
-         * @brief Sets the display name for the messaging handler.
-         * @details Updates the display name used by the handler for outgoing
-         *          messages.
-         *
-         * @param displayName The display name to set.
+         * @brief Opens a connection to the server.
+         * @details This method establishes a connection to the specified
+         *          server and prepares the handler for communication.
          */
-        void setDisplayName(const std::string &displayName) override;
+        void openConnection() override;
+
+        /**
+         * @brief Closes the active connection.
+         * @details This method gracefully terminates the connection and release
+         *          any associated resources.
+         */
+        void closeConnection() override;
+
+        /**
+         * @brief Receives a message from the server and processes it.
+         * @details This method is responsible for receiving a message from the
+         *          server through the communication handler, parsing the message,
+         *          and returning its content in a structured format. The
+         *          implementation of this method is provided in the derived classes.
+         *
+         * @return std::vector<Common::ParsedMessage> Vector of parsed content
+         *         of the received message.
+         */
+        std::vector<Common::ParsedMessage> receiveMessages() override;
 
         /**
          * @brief Sends an authentication message.
@@ -86,21 +109,17 @@ namespace IPK25ChatClient::Messaging::Handler
          *          specified channel ID and display name.
          *
          * @param channelId The ID of the channel to join.
-         * @param displayName The display name of the user.
          */
-        void sendJoinMessage(const std::string &channelId,
-                             const std::string &displayName) override;
+        void sendJoinMessage(const std::string &channelId) override;
 
         /**
          * @brief Sends a message to a channel or user.
          * @details Constructs and sends a message containing the specified
          *          content to the target channel or user.
          *
-         * @param displayName The display name of the sender.
          * @param messageContent The content of the message to send.
          */
-        void sendMsgMessage(const std::string &displayName,
-                            const std::string &messageContent) override;
+        void sendMsgMessage(const std::string &messageContent) override;
 
         /**
          * @brief Sends a goodbye message.
@@ -108,11 +127,6 @@ namespace IPK25ChatClient::Messaging::Handler
          *          is leaving the chat or channel.
          */
         void sendByeMessage() override;
-
-    private:
-        std::unique_ptr<Networking::ICommunicationHandler> mCommunicationHandler;  /**< Handles communication over the network. */
-        std::unique_ptr<Builder::IMessageBuilder> mMessageBuilder;  /**< Builds messages for sending. */
-        std::string mUserDisplayName;  /**< The display name of the user. */
 
         /**
          * @brief Sends an error message.
@@ -122,7 +136,22 @@ namespace IPK25ChatClient::Messaging::Handler
          *
          * @param messageContent The content of the error message.
          */
-        void sendErrMessage(const std::string &messageContent) const;
+        void sendErrMessage(const std::string &messageContent) override;
+
+    protected:
+        std::unique_ptr<Networking::ICommunicationHandler> mCommunicationHandler;          /**< Handles communication over the network. */
+        std::unique_ptr<Builder::IMessageBuilder> mMessageBuilder;                         /**< Builds messages for sending.            */
+        std::shared_ptr<Client::CommandParser::DisplayNameProvider> mDisplayNameProvider;  /**< Shared display name of the user.        */
+        std::unique_ptr<Validators::IMessageValidator> mMessageValidator;                  /**< Validates received messages.            */
+
+        /**
+         * @brief Processes an incoming message.
+         * @details This method is responsible for handling a parsed message
+         *          and performing the appropriate action based on its type.
+         *
+         * @param parsedMessage The parsed message to process.
+         */
+        virtual void processIncomingMessage(const Common::ParsedMessage &parsedMessage) = 0;
     }; // MessagingHandlerBase
 } // IPK25ChatClient::Messaging::Handler
 

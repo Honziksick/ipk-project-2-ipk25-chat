@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `MessagingHandlerBase` class, which     *
  *               provides common functionality for messaging handlers in the   *
@@ -27,18 +27,21 @@
 #include "Messaging/MessageBuilder/UDPMessageBuilder.hpp"
 #include "Networking/TCPCommunicationHandler.hpp"
 #include "Networking/UDPCommunicationHandler.hpp"
-#include "Client/CommandParser/UserCommandParser.hpp"
+#include "Validators/TCPMessageValidator.hpp"
+#include "Validators/UDPMessageValidator.hpp"
+#include "Client/CommandParser/DisplayNameProvider.hpp"
 #include "Common/CommandLineOptions.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
 #include <string>  // std::string
-#include <memory>  // std::make_unique
+#include <memory>  // std::make_unique, std::shared_ptr
 
 using namespace IPK25ChatClient::Messaging::Builder;
 using namespace IPK25ChatClient::Networking;
 using namespace IPK25ChatClient::Client::CommandParser;
+using namespace IPK25ChatClient::Validators;
 using namespace IPK25ChatClient::Common;
 using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Exceptions;
@@ -47,16 +50,21 @@ using namespace std;
 
 namespace IPK25ChatClient::Messaging::Handler
 {
-    MessagingHandlerBase::MessagingHandlerBase(const CommandLineOptions &commandLineOptions) {
+    MessagingHandlerBase::MessagingHandlerBase(const CommandLineOptions &commandLineOptions, const shared_ptr<int> &socketFd,
+                                               const shared_ptr<DisplayNameProvider> &displayNameProvider)
+        : mDisplayNameProvider{displayNameProvider} {
+        // Initialized the CommunicationHandler, MessageBuilder and MessageValidator based on the transport protocol type
         if(commandLineOptions.mTransportProtocol == TransportProtocolType::TCP) {
-            mCommunicationHandler = make_unique<TcpCommunicationHandler>(commandLineOptions);
+            mCommunicationHandler = make_unique<TcpCommunicationHandler>(commandLineOptions, socketFd);
             mMessageBuilder = make_unique<TcpMessageBuilder>();
-            logger("Initialized ComunicationHandler and MessageBuilder: TCP");
+            mMessageValidator = make_unique<TcpMessageValidator>();
+            logger("Initialized CommunicationHandler, MessageBuilder and MessageValidator: TCP");
         }
         else if(commandLineOptions.mTransportProtocol == TransportProtocolType::UDP) {
-            mCommunicationHandler = make_unique<UdpCommunicationHandler>(commandLineOptions);
+            mCommunicationHandler = make_unique<UdpCommunicationHandler>(commandLineOptions, socketFd);
             mMessageBuilder = make_unique<UdpMessageBuilder>();
-            logger("Initialized ComunicationHandler and MessageBuilder: UDP");
+            mMessageValidator = make_unique<UdpMessageValidator>();
+            logger("Initialized CommunicationHandler, MessageBuilder and MessageValidator: UDP");
         }
         else {
             throw InternalErrorException(
@@ -66,14 +74,38 @@ namespace IPK25ChatClient::Messaging::Handler
         }
     } // MessagingHandlerBase::MessagingHandlerBase
 
-    void MessagingHandlerBase::setDisplayName(const string &displayName) {
-        logger("Users display name set to: %s", displayName.c_str());
-        mUserDisplayName = displayName;
-    } // MessagingHandlerBase::setDisplayName
+    void MessagingHandlerBase::openConnection() {
+        mCommunicationHandler->openConnection();
+    } // MessagingHandlerBase::openConnection
+
+    void MessagingHandlerBase::closeConnection() {
+        mCommunicationHandler->closeConnection();
+    } // MessagingHandlerBase::closeConnection
+
+    vector<ParsedMessage> MessagingHandlerBase::receiveMessages() {
+        logger("receiveMessages() called. Receiving messages from communication handler.");
+
+        // Get a vector of parsed messages from the communication handler
+        const vector<ParsedMessage> parsedMessages = mCommunicationHandler->receiveMessages();
+        logger("Received %zu message(s) from communication handler.", parsedMessages.size());
+
+        // Validate parsed messages one-by-one
+        for(auto &message : parsedMessages) {
+            logger("Validating message type: %s", message.mFields[0].c_str());
+            mMessageValidator->validateMessage(message);
+
+            logger("Processing message type: %s", message.mFields[0].c_str());
+            processIncomingMessage(message);
+        }
+
+        logger("receiveMessages() completed. Returning %zu parsed message(s).", parsedMessages.size());
+        return parsedMessages;
+    } // MessagingHandlerBase::receiveMessages
 
     void MessagingHandlerBase::sendAuthMessage(const string &username, const string &displayName, const string &secret) {
         logger("sendAuthMessage() called with username: %s, displayName: %s", username.c_str(), displayName.c_str());
 
+        // Build and send the AUTH message
         try {
             const UserCommand userCommand{
                 .mUsername = username,
@@ -83,6 +115,7 @@ namespace IPK25ChatClient::Messaging::Handler
             const auto message = mMessageBuilder->buildMessage(MessageType::AUTH, userCommand);
             mCommunicationHandler->sendMessage(message);
         }
+        // Something went wrong, so we try to send an error message
         catch(const ConnectionErrorException &e) {
             sendErrMessage(e.detail());
             logger("sendAuthMessage() error: type: %s, detail: %s", e.what(), e.detail().c_str());
@@ -92,17 +125,20 @@ namespace IPK25ChatClient::Messaging::Handler
         logger("sendAuthMessage() completed successfully");
     } // MessagingHandlerBase::sendAuthMessage
 
-    void MessagingHandlerBase::sendJoinMessage(const string &channelId, const string &displayName) {
-        logger("sendJoinMessage() called with channelId: %s, displayName: %s", channelId.c_str(), displayName.c_str());
+    void MessagingHandlerBase::sendJoinMessage(const string &channelId) {
+        logger("sendJoinMessage() called with channelId: %s, displayName: %s",
+               channelId.c_str(), mDisplayNameProvider->getDisplayName().c_str());
 
+        // Build and send the JOIN message
         try {
             const UserCommand userCommand{
-                .mDisplayName = displayName,
+                .mDisplayName = mDisplayNameProvider->getDisplayName(),
                 .mChannelId = channelId
             };
             const auto message = mMessageBuilder->buildMessage(MessageType::JOIN, userCommand);
             mCommunicationHandler->sendMessage(message);
         }
+        // Something went wrong, so we try to send an error message
         catch(const ConnectionErrorException &e) {
             sendErrMessage(e.detail());
             logger("sendJoinMessage() error: type: %s, detail: %s", e.what(), e.detail().c_str());
@@ -112,17 +148,20 @@ namespace IPK25ChatClient::Messaging::Handler
         logger("sendJoinMessage() completed successfully");
     } // MessagingHandlerBase::sendJoinMessage
 
-    void MessagingHandlerBase::sendMsgMessage(const string &displayName, const string &messageContent) {
-        logger("sendMsgMessage() called with displayName: %s, messageContent: %s", displayName.c_str(), messageContent.c_str());
+    void MessagingHandlerBase::sendMsgMessage(const string &messageContent) {
+        logger("sendMsgMessage() called with displayName: %s, messageContent: %s",
+               mDisplayNameProvider->getDisplayName().c_str(), messageContent.c_str());
 
+        // Build and send the MSG message
         try {
             const UserCommand userCommand{
-                .mDisplayName = displayName,
+                .mDisplayName = mDisplayNameProvider->getDisplayName(),
                 .mMessageContent = messageContent
             };
             const auto message = mMessageBuilder->buildMessage(MessageType::MSG, userCommand);
             mCommunicationHandler->sendMessage(message);
         }
+        // Something went wrong, so we try to send an error message
         catch(const ConnectionErrorException &e) {
             sendErrMessage(e.detail());
             logger("sendMsgMessage() error: type: %s, detail: %s", e.what(), e.detail().c_str());
@@ -133,15 +172,17 @@ namespace IPK25ChatClient::Messaging::Handler
     } // MessagingHandlerBase::sendMsgMessage
 
     void MessagingHandlerBase::sendByeMessage() {
-        logger("sendByeMessage() with mUserDisplayName: %s", mUserDisplayName.c_str());
+        logger("sendByeMessage() with mUserDisplayName: %s", mDisplayNameProvider->getDisplayName().c_str());
 
+        // Build and send the BYE message
         try {
             const UserCommand userCommand{
-                .mDisplayName = mUserDisplayName
+                .mDisplayName = mDisplayNameProvider->getDisplayName(),
             };
             const auto message = mMessageBuilder->buildMessage(MessageType::BYE, userCommand);
             mCommunicationHandler->sendMessage(message);
         }
+        // Something went wrong, so we try to send an error message
         catch(const ConnectionErrorException &e) {
             sendErrMessage(e.detail());
             logger("sendBye() error: type: %s, detail: %s", e.what(), e.detail().c_str());
@@ -151,18 +192,20 @@ namespace IPK25ChatClient::Messaging::Handler
         logger("sendByeMessage() completed successfully");
     } // MessagingHandlerBase::sendByeMessage
 
-    void MessagingHandlerBase::sendErrMessage(const string &messageContent) const {
+    void MessagingHandlerBase::sendErrMessage(const string &messageContent) {
         logger("sendErrMessage() called with mUserDisplayName: %s, messageContent: %s",
-               mUserDisplayName.c_str(), messageContent.c_str());
+               mDisplayNameProvider->getDisplayName().c_str(), messageContent.c_str());
 
+        // Build and send the ERR message
         try {
             const UserCommand userCommand{
-                .mDisplayName = mUserDisplayName,
+                .mDisplayName = mDisplayNameProvider->getDisplayName(),
                 .mMessageContent = messageContent
             };
             const auto message = mMessageBuilder->buildMessage(MessageType::ERR, userCommand);
             mCommunicationHandler->sendMessage(message);
         }
+        // Something went wrong, so we try to send an error message
         catch(...) {
             logger("sendErrMessage() error thrown while sending error message");
         }
