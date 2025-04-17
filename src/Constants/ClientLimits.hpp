@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  This file defines various limits and constants used in the    *
  *               chat client.                                                  *
@@ -17,13 +17,15 @@
 /**
  * @file ClientLimits.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file defining various limits and constants used in the chat client.
+ * @brief Header file defining various limits and constants used in the chat
+ *        client.
  */
 
 #ifndef CLIENT_LIMITS_HPP
 #define CLIENT_LIMITS_HPP
 
 #include <limits>   // std::numeric_limits
+#include <cstdint>  // std::uint16_t, std::uint8_t
 
 namespace IPK25ChatClient::Constants
 {
@@ -35,7 +37,7 @@ namespace IPK25ChatClient::Constants
     public:
         // Server port range
         static constexpr size_t MIN_SERVER_PORT = 1;  /**< Minimum server port number (port 0 is reserved and thus not allowed). */
-        static constexpr size_t MAX_SERVER_PORT = std::numeric_limits<uint16_t>::max();  /**< Maximum server port number. */
+        static constexpr size_t MAX_SERVER_PORT = std::numeric_limits<uint16_t>::max();  /**< Maximum server port number.        */
 
         // Maximum number of UDP retransmissions
         static constexpr size_t MIN_UDP_RETRANSMIT = std::numeric_limits<uint8_t>::min();   /**< Minimum number of UDP retransmissions. */
