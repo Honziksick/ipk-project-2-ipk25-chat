@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  This file declares the `TcpCommunicationHandler` class,       *
  *               which implements TCP-based communication for the IPK25 Chat   *
@@ -50,20 +50,23 @@ namespace IPK25ChatClient::Networking
         using CommunicationHandlerBase::CommunicationHandlerBase;
 
         /**
+         * @brief Destructor for the `TcpCommunicationHandler` class.
+         * @details The destructor closes the TCP connection if it is still open.
+         */
+        ~TcpCommunicationHandler() override;
+
+        /**
          * @brief Opens a TCP connection to the server.
-         *
          * @details This method resolves the server's hostname or IPv4 address
          *          and attempts to establish a TCP connection. If the connection
          *          is already established, it logs the status and returns without
          *          performing any action. If the connection fails for all resolved
          *          addresses, it throws a `ConnectionErrorException`.
-         *
          */
         void openConnection() override;
 
         /**
          * @brief Sends a message to the server.
-         *
          * @details This method sends the provided message content to the server
          *          over an established TCP connection. If the connection is not
          *          established, it throws an `InternalErrorException`. If the
@@ -75,19 +78,18 @@ namespace IPK25ChatClient::Networking
 
         /**
          * @brief Receives a message from the server.
+         * @details This method handled the reception of messages from the
+         *          server. It processes the incoming data and returns them in
+         *          a structured format.
          *
-         * @details This method receives data from the server over an established
-         *          TCP connection. If the connection is not established or the
-         *          receive operation fails, it throws an `InternalErrorException`.
-         *
-         * @return The content of the received message.
+         * @return A vector of `Common::ParsedMessage` objects representing the
+         *         content of the received messages.
          */
-        Common::ParsedMessage receiveMessage() override;
+        std::vector<Common::ParsedMessage> receiveMessages() override;
 
     private:
         /**
          * @brief Performs a graceful shutdown of the TCP connection.
-         *
          * @details This method attempts to terminate the TCP connection
          *          gracefully by sending a TCP FIN packet. If the shutdown
          *          operation fails, it throws a `ConnectionErrorException`.

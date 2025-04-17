@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `TcpCommunicationHandler` class, which is responsible for     *
@@ -21,7 +21,7 @@
 /**
  * @file TCPCommunicationHandler.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation of the `TcpCommunicationHandler` class for TCP specific
+ * @brief Implementation of the `TcpCommunicationHandler` class for TCP-specific
  *        communication methods.
  */
 
@@ -51,6 +51,10 @@ using namespace std;
 
 namespace IPK25ChatClient::Networking
 {
+    TcpCommunicationHandler::~TcpCommunicationHandler() {
+        TcpCommunicationHandler::closeConnection();
+    } // TcpCommunicationHandler::~TcpCommunicationHandler
+
     void TcpCommunicationHandler::openConnection() {
         logger("Starting TCP connection process to server: %s on port: %d", mServerAddress.c_str(), mServerPort);
 
@@ -66,10 +70,10 @@ namespace IPK25ChatClient::Networking
         if(!pResult) {
             logger("NULL pointer returned by 'resolveHostname(): hostname resolution failed.");
             ClientOutput::printClientInternalError(
-                "At the moment, we are unable to connect to the server due to host resolution. "
-                "failure. The connection to the server is not established, so the client can't inform "
-                "the server about the error. The application will now terminate."
-                );
+                    "At the moment, we are unable to connect to the server due to host resolution. "
+                    "failure. The connection to the server is not established, so the client can't inform "
+                    "the server about the error. The application will now terminate."
+                    );
             throw HostnameResolutionErrorException(
                     "NULL pointer returned by 'resolveHostname(): hostname resolution failed."
                     );
@@ -90,7 +94,7 @@ namespace IPK25ChatClient::Networking
             // Connect to the server
             if(connect(tcpSocketFd, iResolvedAddress->ai_addr, iResolvedAddress->ai_addrlen) == 0) {
                 logger("Successfully connected to server. Socket 'FD = %d'.", tcpSocketFd);
-                mSocketFd = tcpSocketFd;
+                *mSocketFd = tcpSocketFd;
                 mIsConnected = CONNECTED;
                 freeaddrinfo(pResult);
                 return;
@@ -134,10 +138,10 @@ namespace IPK25ChatClient::Networking
         if(!mIsConnected) {
             logger("Trying to send message %s while not connected.", contentToSend.c_str());
             ClientOutput::printClientInternalError(
-                "Failed to send data to the server. The client will now attempt to inform "
-                "the server about the error. If the server is not reachable, application will "
-                "terminate gracefully."
-                );
+                    "Failed to send data to the server. The client will now attempt to inform "
+                    "the server about the error. If the server is not reachable, application will "
+                    "terminate gracefully."
+                    );
             throw ConnectionErrorException(
                     "Trying to send message while not connected. Content " + contentToSend
                     );
@@ -147,13 +151,13 @@ namespace IPK25ChatClient::Networking
         ssize_t bytesSentTotal = 0;
         const auto bytesToSend = static_cast<ssize_t>(contentToSend.size());
         while(bytesSentTotal < bytesToSend) {
-            const ssize_t bytesSent = send(mSocketFd, contentToSend.data() + bytesSentTotal, bytesToSend - bytesSentTotal, 0);
+            const ssize_t bytesSent = send(*mSocketFd, contentToSend.data() + bytesSentTotal, bytesToSend - bytesSentTotal, 0);
 
             // If the send() function returns an error
             if(bytesSent < 0) {
                 mIsConnected = DISCONNECTED;
                 logger("send() returned error: Failed to send message. Content: %s, "
-                       "Socket 'FD = %d', error: %s", contentToSend.c_str(), mSocketFd, strerror(errno));
+                       "Socket 'FD = %d', error: %s", contentToSend.c_str(), *mSocketFd, strerror(errno));
                 ClientOutput::printClientInternalError(
                         "Failed to send data to the server. The client will now attempt to inform "
                         "the server about the error. If the server is not reachable, application will "
@@ -183,67 +187,74 @@ namespace IPK25ChatClient::Networking
         logger("Message sent successfully: %s", contentToSend.c_str());
     } // TcpCommunicationHandler::sendMessage
 
-    ParsedMessage TcpCommunicationHandler::receiveMessage() {
+    vector<ParsedMessage> TcpCommunicationHandler::receiveMessages() {
         // Check if the connection is established
         if(!mIsConnected) {
             logger("Attempted to receive data while not connected.");
             throw InternalErrorException("Attempted to receive data while not connected.");
         }
 
-        // Allocate a buffer for receiving data (+1 to indicate possible overflow afterwrds)
+        // Allocate a buffer for receiving data (+1 to indicate possible overflow afterwards)
         constexpr size_t bufferSize{ClientLimits::MAX_MESSAGE_CONTENT_LENGTH + 1};
         char receiveBuffer[bufferSize];
+        string accumulator;
 
-        // Receive data from the server (this approach correctly handle fragmanted messages)
-        while(true) {
-            const ssize_t bytesReceived = recv(mSocketFd, receiveBuffer, bufferSize, 0);
+        // Receive data from the server
+        const ssize_t bytesReceived = recv(*mSocketFd, receiveBuffer, bufferSize, 0);
 
-            // If the recv() function returns an error
-            if(bytesReceived < 0) {
-                mIsConnected = DISCONNECTED;
-                logger("recv() returned error: Failed to receive data. Socket 'FD = %d', "
-                       "error: %s", mSocketFd, strerror(errno));
-                ClientOutput::printClientInternalError(
-                        "Failed to receive data from the server. The client will now attempt to inform "
-                        "the server about the error. If the server is not reachable, application will "
-                        "terminate gracefully."
-                        );
-                throw ConnectionErrorException(
-                        "Failed to receive data from the server due to recv() error: " + string(strerror(errno))
-                        );
-            }
+        // If the recv() function returns an error
+        if(bytesReceived < 0) {
+            mIsConnected = DISCONNECTED;
+            logger("recv() returned error: Failed to receive data. Socket 'FD = %d', "
+                   "error: %s", *mSocketFd, strerror(errno));
+            ClientOutput::printClientInternalError(
+                    "Failed to receive data from the server. The client will now attempt to inform "
+                    "the server about the error. If the server is not reachable, application will "
+                    "terminate gracefully."
+                    );
+            throw ConnectionErrorException(
+                    "Failed to receive data from the server due to recv() error: " + string(strerror(errno))
+                    );
+        }
 
-            // If the recv() function returns 0, it means the connection has been closed
-            if(bytesReceived == 0) {
-                mIsConnected = DISCONNECTED;
-                logger("recv() returned 0: Connection closed by server");
-                ClientOutput::printClientInternalError(
-                        "Connection closed by server. No data received. No further communication "
-                        "available. The application will now terminate gracefully."
-                        );
-                throw ServerDisconnectedException(
-                        "Connection closed by server. No data received."
-                        );
-            }
+        // If the recv() function returns 0, it means the connection has been closed
+        if(bytesReceived == 0) {
+            mIsConnected = DISCONNECTED;
+            logger("recv() returned 0: Connection closed by server");
+            ClientOutput::printClientInternalError(
+                    "Connection closed by server. No data received. No further communication "
+                    "available. The application will now terminate gracefully."
+                    );
+            throw ServerDisconnectedException(
+                    "Connection closed by server. No data received."
+                    );
+        }
 
-            // Cast the received data to a string and make it he message content
-            string dataReceived(receiveBuffer, bytesReceived);
-            MessageContent messageContent{dataReceived};
+        // Append received data to the accumulated buffer
+        logger("Appending received data to the accumulator. Data: %s", string(receiveBuffer, bytesReceived).c_str());
+        accumulator.append(receiveBuffer, bytesReceived);
 
-            // Check if the message is complete (if not, continue receiving)
-            optional<ParsedMessage> maybeParsedMessage = mMessageParser->parseIncomingMessage(messageContent);
-            if(maybeParsedMessage.has_value()) {
-                logger("Message received successfully");
-                return maybeParsedMessage.value();
+        // Process the received data
+        logger("Attempting to parse the messages from the accumulator. Current accumulator: %s", accumulator.c_str());
+
+        vector<ParsedMessage> receivedMessages;
+        if(optional<vector<ParsedMessage>> parsedMessages = mMessageParser->parseIncomingMessages(accumulator)) {
+            logger("All incomming messages parsed. Total messages received: %zu", receivedMessages.size());
+            for(const auto &message : *parsedMessages) {
+                receivedMessages.emplace_back(message);
             }
         }
-    } // TcpCommunicationHandler::receiveMessage
+        else {
+            logger("No complete message found in the accumulator.");
+        }
 
+        return receivedMessages;
+    } // TcpCommunicationHandler::receiveMessages
 
     void TcpCommunicationHandler::gracefulShutdown() {
         // Attempt a graceful shutdown by sending a TCP FIN packet.
-        if(shutdown(mSocketFd, SHUT_WR) < 0) {
-            logger("Graceful shutdown failed on socket 'FD = %d', error: %s", mSocketFd, strerror(errno));
+        if(shutdown(*mSocketFd, SHUT_WR) < 0) {
+            logger("Graceful shutdown failed on socket 'FD = %d', error: %s", *mSocketFd, strerror(errno));
             throw ConnectionErrorException(
                     "Graceful connection termination failed. The communication protocol is set to TCP, "
                     "so no additional attempts to gracefully terminate the connection won't be made, "
@@ -251,7 +262,7 @@ namespace IPK25ChatClient::Networking
                     );
         }
         else {
-            logger("Graceful shutdown successful on socket 'FD = %d'", mSocketFd);
+            logger("Graceful shutdown successful on socket 'FD = %d'", *mSocketFd);
         }
     } // TcpCommunicationHandler::gracefulShutdown
 } // IPK25ChatClient::Networking
