@@ -8,27 +8,34 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `SignalHandler` class, which is         *
- *               responsible for handling system signals.                      *
+ *               responsible for handling system signals in a safe and         *
+ *               controlled manner.                                            *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file SignalHandler.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation file for the `SignalHandler` class.
+ * @brief Implementation of the `SignalHandler` class, which provides functionality
+ *        for handling system signals (e.g., SIGINT, SIGSEGV) in a thread-safe way.
  */
 
 #include "Utilities/SignalHandler.hpp"
-#include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/Logger.hpp"
+#include "Exceptions/ChatExceptions.hpp"
+#include <atomic>   // std::atomic
 #include <csignal>  // signal
 
 using namespace IPK25ChatClient::Exceptions;
 
 namespace IPK25ChatClient::Utilities
 {
+    // Initialize static atomic flags
+    std::atomic<bool> SignalHandler::mSigintReceived{false};
+    std::atomic<bool> SignalHandler::mSigsegvReceived{false};
+
     void SignalHandler::registerHandlers() {
         logger("Registering signal handlers");
 
@@ -40,12 +47,21 @@ namespace IPK25ChatClient::Utilities
         logger("Handling signal: %d", signal);
 
         if(signal == SIGINT) {
-            throw UserInterruptionException("SIGINT: User interrupted the program.");
+            mSigintReceived = true;
         }
         if(signal == SIGSEGV) {
-            throw InternalErrorException("SIGSEGV: Segmentation fault occurred.");
+            mSigsegvReceived = true;
         }
-    } // SignalHandler::handleSignal()
+    } // SignalHandler::handleSignal
+
+    void SignalHandler::checkSignals() {
+        if(mSigintReceived) {
+            throw UserInterruptionException("Signal SIGINT received.");
+        }
+        if(mSigsegvReceived) {
+            throw InternalErrorException("Signal SIGSEGV received.");
+        }
+    } // SignalHandler::checkSignals
 } // IPK25ChatClient::Utilities
 
 /*** end of file SignalHandler.cpp ***/
