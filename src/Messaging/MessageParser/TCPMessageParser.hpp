@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      14.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the `TcpMessageParser` class, which provides  *
  *               functionality for parsing TCP messages into structured data.  *
@@ -24,7 +24,7 @@
 #ifndef TCP_MESSAGE_PARSER_HPP
 #define TCP_MESSAGE_PARSER_HPP
 
-#include "Messaging/Interfaces/IMessageParser.hpp"
+#include "Messaging/MessageParser/MessageParserBase.hpp"
 #include "Common/ParsedMessage.hpp"
 #include "Common/ChatDataTypes.hpp"
 #include <string>    // std::string
@@ -38,20 +38,27 @@ namespace IPK25ChatClient::Messaging::Parser
      * @brief A final class for parsing raw TCP message content into structured
      *        `ParsedMessage` objects.
      */
-    class TcpMessageParser final : public IMessageParser {
+    class TcpMessageParser final : public MessageParserBase {
     public:
         /**
-         * @brief Parses raw message content into a `ParsedMessage` object.
+         * @brief Parses incoming messages and returns a collection of parsed
+         *        messages.
+         * @details This method processes the incoming message content, appends
+         *          it to the internal buffer,  and attempts to extract and
+         *          tokenize complete messages. If no complete messages are
+         *          found, it returns an empty optional. If the message content
+         *          is invalid, an exception is thrown.
          *
-         * @param messageContent The raw message content to be parsed.
-         * @return std::optional<ParsedMessage> If a complete message is available,
-         *         its parsed representation is returned; otherwise, std::nullopt.
+         * @param messageContent The incoming message content to be parsed.
+         *
+         * @return An optional vector of `ParsedMessage` objects if complete
+         *         messages are successfully parsed, or `std::nullopt` if no
+         *         complete messages are available.
          */
-        std::optional<Common::ParsedMessage> parseIncomingMessage(const Common::MessageContent &messageContent) override;
+        std::optional<std::vector<Common::ParsedMessage>> parseIncomingMessages(const Common::MessageContent &messageContent) override;
 
     private:
-        constexpr static auto END_OF_MESSAGE_DELIMITER = "\r\n";  /**< The delimiter used to identify the end of a message. */
-        constexpr static auto TOKEN_DELIMITER = " ";              /**< The delimiter used to separate fields of the message. */
+        constexpr static auto TOKEN_DELIMITER = " ";  /**< Delimiter used to separate fields of the messages. */
         std::string mBuffer;  /**< A buffer to store incomplete message data. */
 
         /**
