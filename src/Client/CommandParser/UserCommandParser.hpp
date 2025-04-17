@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      12.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `UserCommandParser` class, which provides  *
  *               functionality for parsing user input commands into structured *
@@ -25,8 +25,11 @@
 #ifndef USER_COMMAND_PARSER_HPP
 #define USER_COMMAND_PARSER_HPP
 
+#include "Client/Interfaces/IUserCommandParser.hpp"
+#include "Client/CommandParser/DisplayNameProvider.hpp"
 #include "Validators/MessageParametersValidator.hpp"
 #include "Common/UserCommand.hpp"
+#include "Constants/ClientLimits.hpp"
 #include <string>  // std::string
 #include <vector>  // std::vector
 #include <memory>  // std::unique_ptr
@@ -38,8 +41,19 @@ namespace IPK25ChatClient::Client::CommandParser
      * @brief Provides methods for parsing user input commands into structured
      *        `UserCommand` objects directly from command line.
      */
-    class UserCommandParser {
+    class UserCommandParser final : public IUserCommandParser {
     public:
+        /**
+         * @brief Constructs a `UserCommandParser` object.
+         * @param displayNameProvider A shared pointer to a `DisplayNameProvider` object.
+         */
+        explicit UserCommandParser(const std::shared_ptr<DisplayNameProvider> &displayNameProvider);
+
+        /**
+         * @brief Destructor for the `UserCommandParser` class.
+         */
+        ~UserCommandParser() override = default;
+
         /**
          * @brief Parses a command line entered by the user.
          * @details Reads a line of input from `STDIN`, processes it, and converts
@@ -51,10 +65,20 @@ namespace IPK25ChatClient::Client::CommandParser
          *         If the input is invalid, the returned object will have
          *         `UserCommandType::INVALID`.
          */
-        static Common::UserCommand parseCommandLine();
+        Common::UserCommand parseCommandLine() override;
 
     private:
-        static std::unique_ptr<Validators::MessageParametersValidator> mMessageParametersValidator; /**< Validate message parameters. */
+        static constexpr size_t MAX_COMMAND_LENGTH
+        {
+            Constants::ClientLimits::MAX_USERNAME_LENGTH +
+            Constants::ClientLimits::MAX_CHANNEL_ID_LENGTH +
+            Constants::ClientLimits::MAX_SECRET_LENGTH +
+            Constants::ClientLimits::MAX_DISPLAY_NAME_LENGTH +
+            Constants::ClientLimits::MAX_MESSAGE_CONTENT_LENGTH
+        }; /**< Maximum length of a command. */
+
+        std::unique_ptr<Validators::MessageParametersValidator> mMessageParametersValidator; /**< Validate message parameters. */
+        std::shared_ptr<DisplayNameProvider> mDisplayNameProvider;  /**< Thread-safe getter and setter of displayName.         */
 
         /**
          * @brief Reads a line of input from the user.
@@ -89,7 +113,8 @@ namespace IPK25ChatClient::Client::CommandParser
          *
          * @return A `UserCommand` object representing the parsed client command.
          */
-        static Common::UserCommand parseClientCommand(const std::string &line);
+        [[nodiscard]]
+        Common::UserCommand parseClientCommand(const std::string &line) const;
 
         /**
          * @brief Parses a chat message command from a given input line.
@@ -100,7 +125,8 @@ namespace IPK25ChatClient::Client::CommandParser
          *
          * @return A `UserCommand` object representing the parsed chat message.
          */
-        static Common::UserCommand parseChatMessage(const std::string &line);
+        [[nodiscard]]
+        Common::UserCommand parseChatMessage(const std::string &line) const;
 
         /**
          * @brief Determines the type of command based on the command token.
@@ -123,7 +149,8 @@ namespace IPK25ChatClient::Client::CommandParser
          *
          * @return A `UserCommand` object representing the parsed authentication command.
          */
-        static Common::UserCommand parseAuthCommand(const std::vector<std::string> &commandParameters);
+        [[nodiscard]]
+        Common::UserCommand parseAuthCommand(const std::vector<std::string> &commandParameters) const;
 
         /**
          * @brief Parses a join command.
@@ -135,7 +162,8 @@ namespace IPK25ChatClient::Client::CommandParser
          *
          * @return A `UserCommand` object representing the parsed join command.
          */
-        static Common::UserCommand parseJoinCommand(const std::vector<std::string> &commandParameters);
+        [[nodiscard]]
+        Common::UserCommand parseJoinCommand(const std::vector<std::string> &commandParameters) const;
 
         /**
          * @brief Parses a rename command.
@@ -147,7 +175,8 @@ namespace IPK25ChatClient::Client::CommandParser
          *
          * @return A `UserCommand` object representing the parsed rename command.
          */
-        static Common::UserCommand parseRenameCommand(const std::vector<std::string> &commandParameters);
+        [[nodiscard]]
+        Common::UserCommand parseRenameCommand(const std::vector<std::string> &commandParameters) const;
 
         /**
          * @brief Parses a help command.

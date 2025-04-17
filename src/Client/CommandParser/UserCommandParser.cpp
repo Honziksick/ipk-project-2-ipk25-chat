@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      12.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    17.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `UserCommandParser` class, which        *
  *               provides functionality for parsing user input commands into   *
@@ -23,6 +23,7 @@
  */
 
 #include "Client/CommandParser/UserCommandParser.hpp"
+#include "Client/CommandParser/DisplayNameProvider.hpp"
 #include "Validators/MessageParametersValidator.hpp"
 #include "Client/ClientOutput/ClientOutput.hpp"
 #include "Common/UserCommand.hpp"
@@ -32,10 +33,13 @@
 #include "Enums/MessageParameters.hpp"
 #include "Utilities/StringUtils.hpp"
 #include "Utilities/CastUtils.hpp"
+#include "Utilities/Logger.hpp"
 #include <string>    // std::string, std::getline(), std::to_string()
 #include <vector>    // std::vector
 #include <memory>    // std::make_unique
 #include <iostream>  // std::cin
+#include <unistd.h>  // read()
+#include <cstring>   // strerror
 
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Client::Output;
@@ -49,21 +53,18 @@ using namespace std;
 
 namespace IPK25ChatClient::Client::CommandParser
 {
-    // Inicialize the static members of the UserCommandParser class
-    unique_ptr<MessageParametersValidator> UserCommandParser::mMessageParametersValidator{make_unique<MessageParametersValidator>()};
+    UserCommandParser::UserCommandParser(const std::shared_ptr<DisplayNameProvider> &displayNameProvider)
+        : mMessageParametersValidator{make_unique<MessageParametersValidator>()}, mDisplayNameProvider{displayNameProvider} {}
 
     UserCommand UserCommandParser::parseCommandLine() {
+        logger("Parsing command line started.");
+
         // Read a line from the standard input ('\n' is read but not included)
         const string line{readLine()};
 
-        // Check if the command wasn't stand-alone '\n'
+        // Check if full line was read
         if(line.empty()) {
-            ClientOutput::printClientInternalError(
-                    "It seems you may have accidentally pressed 'Enter' which "
-                    "resulted in proccesing an empty command/message. If you are "
-                    "unsure how to enter a command or a message, you may enter the "
-                    "'/help' command for more information about this topic."
-                    );
+            logger("Line is empty.");
             return UserCommand{
                 .mCommandType = UserCommandType::INVALID
             };
@@ -71,10 +72,12 @@ namespace IPK25ChatClient::Client::CommandParser
 
         // If the line starts with '/', parse it as a client command
         if(line[0] == '/') {
+            logger("Line identified as a client command.");
             return parseClientCommand(line);
         }
         // Else, parse it as a chat message
         else {
+            logger("Line identified as a chat message.");
             return parseChatMessage(line);
         }
     } // UserCommandParser::parseCommandLine
@@ -93,12 +96,15 @@ namespace IPK25ChatClient::Client::CommandParser
         }
     } // UserCommandParser::readLine
 
-    UserCommand UserCommandParser::parseClientCommand(const string &line) {
+    UserCommand UserCommandParser::parseClientCommand(const string &line) const {
+        logger("Parsing client command: %s", line.c_str());
+
         // Split the command line into tokens by spaces
         const auto tokens{StringUtils::splitBySpaces(line)};
 
         // Check if the tokenization was successful
         if(tokens.empty()) {
+            logger("Tokenization failed, no tokens found.");
             ClientOutput::printClientInternalError(
                     "An unexpected error occurred while proccesing your command. "
                     "Please try entering your command again."
@@ -115,14 +121,19 @@ namespace IPK25ChatClient::Client::CommandParser
         // Parse the command based on its type
         switch(commandType) {
             case UserCommandType::AUTH:
+                logger("Command type identified as AUTH.");
                 return parseAuthCommand(commandParameters);
             case UserCommandType::JOIN:
+                logger("Command type identified as JOIN.");
                 return parseJoinCommand(commandParameters);
             case UserCommandType::RENAME:
+                logger("Command type identified as RENAME.");
                 return parseRenameCommand(commandParameters);
             case UserCommandType::HELP:
+                logger("Command type identified as HELP.");
                 return parseHelpCommand(commandParameters);
             default:
+                logger("Invalid command type: %s", tokens[0].c_str());
                 ClientOutput::printClientInternalError(
                         "The provided command '" + tokens[0] + "' is not recognized by the "
                         "client. You may enter the '/help' command to list valid client "
@@ -134,7 +145,9 @@ namespace IPK25ChatClient::Client::CommandParser
         }
     } // UserCommandParser::parseClientCommand
 
-    UserCommand UserCommandParser::parseChatMessage(const string &line) {
+    UserCommand UserCommandParser::parseChatMessage(const string &line) const {
+        logger("Parsing chat message: %s", line.c_str());
+
         // Copy the message content to a local variable
         string messageContent{line};
 
@@ -144,6 +157,7 @@ namespace IPK25ChatClient::Client::CommandParser
 
         // Truncate the message content if necessary
         if(mMessageParametersValidator->postProcessValidation(MessageParameter::MESSAGE_CONTENT, messageContentResult, messageContent)) {
+            logger("Chat message validation successful.");
             return UserCommand{
                 .mCommandType{UserCommandType::MESSAGE},
                 .mMessageContent{messageContent}
@@ -151,6 +165,7 @@ namespace IPK25ChatClient::Client::CommandParser
         }
         // If any validation resulted in CommandValidatiorsResult::INVALID
         else {
+            logger("Chat message validation failed.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID},
             };
@@ -158,6 +173,8 @@ namespace IPK25ChatClient::Client::CommandParser
     } // UserCommandParser::parseChatMessage
 
     UserCommandType UserCommandParser::determineCommandType(const string &commandToken) {
+        logger("Determining command type for token: %s", commandToken.c_str());
+
         // '/auth' command
         if(StringUtils::toLower(commandToken) == CastUtils::castEnumToString(UserCommandType::AUTH)) {
             return UserCommandType::AUTH;
@@ -180,9 +197,12 @@ namespace IPK25ChatClient::Client::CommandParser
         }
     } // UserCommandParser::determineCommandType
 
-    UserCommand UserCommandParser::parseAuthCommand(const vector<string> &commandParameters) {
+    UserCommand UserCommandParser::parseAuthCommand(const vector<string> &commandParameters) const {
+        logger("Parsing AUTH command.");
+
         // Check if the command has the correct number of parameters
         if(!checkCorrectNumberOfParameters(commandParameters, ClientLimits::EXPECTED_NUMBER_OF_AUTH_PARAMS)) {
+            logger("Incorrect number of parameters for AUTH command.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID}
             };
@@ -202,6 +222,8 @@ namespace IPK25ChatClient::Client::CommandParser
         if(mMessageParametersValidator->postProcessValidation(MessageParameter::USERNAME, usernameResult, username) &&
             mMessageParametersValidator->postProcessValidation(MessageParameter::SECRET, secretResult, secret) &&
             mMessageParametersValidator->postProcessValidation(MessageParameter::DISPLAY_NAME, displayNameResult, displayName)) {
+            mDisplayNameProvider->setDisplayName(displayName);  // Update the user's display name
+            logger("AUTH command validation successful.");
             return UserCommand{
                 .mCommandType{UserCommandType::AUTH},
                 .mUsername{username},
@@ -211,15 +233,19 @@ namespace IPK25ChatClient::Client::CommandParser
         }
         // If any validation resulted in CommandValidatiorsResult::INVALID
         else {
+            logger("AUTH command validation failed.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID},
             };
         }
     } // UserCommandParser::parseAuthCommand
 
-    UserCommand UserCommandParser::parseJoinCommand(const vector<string> &commandParameters) {
+    UserCommand UserCommandParser::parseJoinCommand(const vector<string> &commandParameters) const {
+        logger("Parsing JOIN command.");
+
         // Check if the command has the correct number of parameters
         if(!checkCorrectNumberOfParameters(commandParameters, ClientLimits::EXPECTED_NUMBER_OF_JOIN_PARAMS)) {
+            logger("Incorrect number of parameters for JOIN command.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID}
             };
@@ -233,6 +259,7 @@ namespace IPK25ChatClient::Client::CommandParser
 
         // Truncate the parameter if necessary
         if(mMessageParametersValidator->postProcessValidation(MessageParameter::CHANNEL_ID, channelIdResult, channelId)) {
+            logger("JOIN command validation successful.");
             return UserCommand{
                 .mCommandType{UserCommandType::JOIN},
                 .mChannelId{channelId},
@@ -240,15 +267,20 @@ namespace IPK25ChatClient::Client::CommandParser
         }
         // If the validation resulted in CommandValidatiorsResult::INVALID
         else {
+            logger("JOIN command validation failed.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID},
             };
         }
     } // UserCommandParser::parseJoinCommand
 
-    UserCommand UserCommandParser::parseRenameCommand(const vector<string> &commandParameters) {
+    UserCommand UserCommandParser::parseRenameCommand(const vector<string> &commandParameters) const {
+        logger("Parsing RENAME command.");
+
         // Check if the command has the correct number of parameters
         if(!checkCorrectNumberOfParameters(commandParameters, ClientLimits::EXPECTED_NUMBER_OF_RENAME_PARAMS)) {
+            logger("Incorrect number of parameters for RENAME command.");
+
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID}
             };
@@ -262,13 +294,20 @@ namespace IPK25ChatClient::Client::CommandParser
 
         // Truncate the parameter if necessary
         if(mMessageParametersValidator->postProcessValidation(MessageParameter::DISPLAY_NAME, displayNameResult, displayName)) {
+            logger("RENAME command validation successful.");
+
+            // Update the user's display name
+            mDisplayNameProvider->setDisplayName(displayName);
+            logger("User renamed itself to: %s", mDisplayNameProvider->getDisplayName().c_str());
+
             return UserCommand{
                 .mCommandType{UserCommandType::RENAME},
-                .mDisplayName{commandParameters[2]}
+                .mDisplayName{commandParameters[0]}
             };
         }
         // If the validation resulted in CommandValidatiorsResult::INVALID
         else {
+            logger("RENAME command validation failed.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID},
             };
@@ -276,24 +315,31 @@ namespace IPK25ChatClient::Client::CommandParser
     } // UserCommandParser::parseRenameCommand
 
     UserCommand UserCommandParser::parseHelpCommand(const vector<string> &commandParameters) {
+        logger("Parsing HELP command.");
+
         // Check if the command has the correct number of parameters
         if(!checkCorrectNumberOfParameters(commandParameters, ClientLimits::EXPECTED_NUMBER_OF_HELP_PARAMS)) {
+            logger("Incorrect number of parameters for HELP command.");
             return UserCommand{
                 .mCommandType{UserCommandType::INVALID}
             };
         }
 
         // Help command has no parameters
+        logger("HELP command validation successful.");
         return UserCommand{
             .mCommandType{UserCommandType::HELP},
         };
     } // UserCommandParser::parseHelpCommand
 
     bool UserCommandParser::checkCorrectNumberOfParameters(const vector<string> &commandParameters, const size_t expectedCount) {
+        logger("Checking number of parameters: has %zu, expected %zu.", commandParameters.size(), expectedCount);
+
         if(commandParameters.size() == expectedCount) {
             return true;
         }
         else {
+            logger("Incorrect number of parameters.");
             ClientOutput::printClientInternalError(
                     "The provided command has an incorrect number of parameters "
                     "(has: " + to_string(commandParameters.size()) + ", expected: " +
