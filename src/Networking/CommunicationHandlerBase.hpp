@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  This file declares the `CommunicationHandlerBase` class,      *
  *               which serves as a base class for handling both TCP and UDP    *
@@ -31,7 +31,7 @@
 #include "Messaging/Interfaces/IMessageParser.hpp"
 #include "Common/CommandLineOptions.hpp"
 #include <string>   // std::string
-#include <memory>   // std::unique_ptr
+#include <memory>   // std::unique_ptr, std::shared_ptr
 
 namespace IPK25ChatClient::Networking
 {
@@ -50,13 +50,15 @@ namespace IPK25ChatClient::Networking
          * @brief Constructs a `CommunicationHandlerBase` object.
          *
          * @param commandLineOptions Command-line options for configuring the handler.
+         * @param socketFd Shared file descriptor for the socket connection.
          */
-        explicit CommunicationHandlerBase(const Common::CommandLineOptions &commandLineOptions);
+        explicit CommunicationHandlerBase(const Common::CommandLineOptions &commandLineOptions,
+                                          const std::shared_ptr<int> &socketFd);
 
         /**
          * @brief Destroys the `CommunicationHandlerBase` object.
          */
-        ~CommunicationHandlerBase() override;
+        ~CommunicationHandlerBase() override = default;
 
         /**
          * @brief Closes the current connection.
@@ -66,24 +68,16 @@ namespace IPK25ChatClient::Networking
          */
         void closeConnection() override;
 
-        /**
-         * @brief Checks if the handler is currently connected.
-         *
-         * @return `true` if connected, `false` otherwise.
-         */
-        [[nodiscard]]
-        bool isConnected() const override;
-
     protected:
         static constexpr int SOCKET_CLOSED{-1};     /**< Constant representing a closed socket.      */
         static constexpr bool CONNECTED{true};      /**< Constant representing a connected state.    */
         static constexpr bool DISCONNECTED{false};  /**< Constant representing a disconnected state. */
 
         std::unique_ptr<Messaging::Parser::IMessageParser> mMessageParser;  /**< Message parser used for processing incoming messages. */
-        int mSocketFd;               /**< File descriptor for the socket connection. */
-        bool mIsConnected;           /**< Connection status flag.    */
-        std::string mServerAddress;  /**< Address of the server.     */
-        uint16_t mServerPort;        /**< Port number of the server. */
+        std::shared_ptr<int> mSocketFd;  /**< Shared file descriptor of the network socket. */
+        bool mIsConnected;               /**< Connection status flag.    */
+        std::string mServerAddress;      /**< Address of the server.     */
+        uint16_t mServerPort;            /**< Port number of the server. */
 
         /**
          * @brief Performs a graceful shutdown of the connection.

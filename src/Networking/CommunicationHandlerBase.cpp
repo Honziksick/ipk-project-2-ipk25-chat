@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `CommunicationHandlerBase class, which serves as a base       *
@@ -33,6 +33,7 @@
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
+#include <memory>    // std::unique_ptr, std::shared_ptr
 #include <unistd.h>  // close()
 
 using namespace IPK25ChatClient::Messaging::Parser;
@@ -44,8 +45,8 @@ using namespace std;
 
 namespace IPK25ChatClient::Networking
 {
-    CommunicationHandlerBase::CommunicationHandlerBase(const CommandLineOptions &commandLineOptions)
-        : mSocketFd{SOCKET_CLOSED}, mIsConnected{DISCONNECTED}, mServerAddress{commandLineOptions.mTargetServer},
+    CommunicationHandlerBase::CommunicationHandlerBase(const CommandLineOptions &commandLineOptions, const shared_ptr<int> &socketFd)
+        : mSocketFd{socketFd}, mIsConnected{DISCONNECTED}, mServerAddress{commandLineOptions.mTargetServer},
           mServerPort{commandLineOptions.mServerPort} {
         // Initialize the incoming message parser based on the protocol type
         if(commandLineOptions.mTransportProtocol == TransportProtocolType::TCP) {
@@ -62,31 +63,22 @@ namespace IPK25ChatClient::Networking
                     CastUtils::castEnumToString(commandLineOptions.mTransportProtocol)
                     );
         }
-    }
-
-    CommunicationHandlerBase::~CommunicationHandlerBase() {
-        CommunicationHandlerBase::closeConnection();
-    } // CommunicationHandlerBase::~CommunicationHandlerBase
+    } // CommunicationHandlerBase::CommunicationHandlerBase
 
     void CommunicationHandlerBase::closeConnection() {
         // Check if the socket isn't already closed
-        if(mSocketFd > SOCKET_CLOSED) {
-            logger("Performing graceful shutdown on socket 'FD = %d`", mSocketFd);
+        if(*mSocketFd > SOCKET_CLOSED) {
+            logger("Performing graceful shutdown on socket 'FD = %d`", *mSocketFd);
 
             gracefulShutdown(); // polymorphic (for UDP and TCP)
-            close(mSocketFd);
-            mSocketFd = SOCKET_CLOSED;
+            close(*mSocketFd);
+            *mSocketFd = SOCKET_CLOSED;
             mIsConnected = DISCONNECTED;
 
-            logger("Socket 'FD = %d' has been closed.", mSocketFd);
+            logger("Socket 'FD = %d' has been closed.", *mSocketFd);
             logger("Connection state set to: DISCONNECTED.");
         }
     } // CommunicationHandlerBase::closeConnection
-
-    bool CommunicationHandlerBase::isConnected() const {
-        logger("Connection state is: %s", mIsConnected ? "CONNECTED" : "DISCONNECTED");
-        return mIsConnected;
-    } // CommunicationHandlerBase::isConnected
 } // IPK25ChatClient::Networking
 
 /*** end of file CommunicationHandlerBase.cpp ***/
