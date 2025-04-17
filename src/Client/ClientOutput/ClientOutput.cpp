@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    12.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the ClientOutput class, which         *
  *               provides static methods for printing various types of         *
@@ -55,6 +55,10 @@ namespace IPK25ChatClient::Client::Output
             cout << "Action Failure: " << messageContent << '\n';
         }
     } // ClientOutput::printClientReply
+
+    void ClientOutput::printClientHelp() {
+        cout << CLIENT_HELP_MESSAGE;
+    } // ClientOutput::printClientHelp
 } // IPK25ChatClient::Client::Output
 
 /*** end of file ClientOutput.cpp ***/

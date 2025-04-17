@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    16.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the ClientOutput class, which provides        *
  *               static methods for printing various types of client           *
@@ -73,6 +73,50 @@ namespace IPK25ChatClient::Client::Output
          */
         static void printClientReply(const std::string &result,
                                      const std::string &messageContent);
+
+        /**
+         * @brief Prints the help message for the client.
+         * @details This method outputs a detailed help message to the standard
+         *          output, describing the usage of various client commands and
+         *          their examples.
+         */
+        static void printClientHelp();
+
+    private:
+        /**
+         * @brief A constant string containing the help message for the client.
+         * @details The message includes usage instructions, descriptions of commands,
+         *          and examples for interacting with the chat client.
+         *
+         * @note Used ChatGPT for grammar and spelling check.
+         */
+        static constexpr auto CLIENT_HELP_MESSAGE = R"(
+Usage:
+/auth <username> <secret> <displayName>
+    Authenticate with the chat server using your account name, password (secret) and the display name you wish to use.
+
+/join <channelId>
+    Join or switch to the specified channel. If you omit this, you stay in the default channel assigned after AUTH.
+
+/rename <newDisplayName>
+    Change your display name for subsequent messages.
+
+/help
+    Show this help message.
+
+/bye
+    Exit the chat client gracefully (sends BYE to server and closes connection).
+
+Chatting:
+    To send a message to the current channel, just type your text without a leading slash and press Enter.
+    Messages longer than the protocol‐allowed maximum will be truncated and you will see a local warning.
+
+Examples:
+    /auth alice p@ssw0rd AliceWonder
+    /join general
+    Hello everyone!
+    /rename Alice
+    /bye)"; // CLIENT_HELP_MESSAGE
     }; // ClientOutput
 } // IPK25ChatClient::Client::Output
 
