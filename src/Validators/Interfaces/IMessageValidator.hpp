@@ -36,7 +36,7 @@ namespace IPK25ChatClient::Validators
      *
      * @details This interface provides a method for validating parsed messages
      *          represented by the `ParsedMessage` class. Implementing classes
-     *          must define the behavior for ensuring messages meet specific
+     *          must define the behaviour for ensuring messages meet specific
      *          validation criteria.
      */
     class IMessageValidator {

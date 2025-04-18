@@ -41,7 +41,7 @@ namespace IPK25ChatClient::Client::FSM
         /**
          * @brief Executes the finite state machine logic.
          * @details This pure virtual method must be implemented by derived classes
-         *          to define the behavior of the finite state machine. It is
+         *          to define the behaviour of the finite state machine. It is
          *          responsible for managing state transitions and executing
          *          state-specific logic.
          */

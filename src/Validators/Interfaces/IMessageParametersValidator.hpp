@@ -36,7 +36,7 @@ namespace IPK25ChatClient::Validators
      * @brief Interface for validating message parameters.
      *
      * @details This interface provides a method for validating message parameters
-     *          based on their type. Implementing classes must define the behavior
+     *          based on their type. Implementing classes must define the behaviour
      *          for ensuring parameters meet specific constraints.
      */
     class IMessageParametersValidator {
