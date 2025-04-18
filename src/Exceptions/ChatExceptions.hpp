@@ -8,22 +8,23 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
- * Description:  Header file for the ChatExceptions classes used in the        *
+ * Description:  Header file for the `ChatExceptions` classes used in the      *
  *               IPK25 Chat Client project.                                    *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file ChatExceptions.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file for the ChatExceptions classes.
+ * @brief Header file for the `ChatExceptions` classes.
  */
 
 #ifndef CHAT_EXCEPTIONS_HPP
 #define CHAT_EXCEPTIONS_HPP
 
 #include "Exceptions/ChatBaseException.hpp"
+#include "Enums/ClientInternalErrorMessages.hpp"
 #include <string> // std::string
 
 namespace IPK25ChatClient::Exceptions
@@ -36,9 +37,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for HelpRequestedException.
+         *
          * @param detail Additional information if needed.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit HelpRequestedException(std::string detail = "") noexcept;
+        explicit HelpRequestedException(std::string detail = "",
+                                        Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // HelpRequestedException
 
     /**
@@ -49,9 +53,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for EndOfFileException.
+         *
          * @param detail Additional information if needed.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit EndOfFileException(std::string detail = "") noexcept;
+        explicit EndOfFileException(std::string detail = "",
+                                    Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // EndOfFileException
 
     /**
@@ -62,22 +69,29 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for ServerDisconnectedException.
+         *
          * @param detail Additional information if needed.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit ServerDisconnectedException(std::string detail = "") noexcept;
+        explicit ServerDisconnectedException(std::string detail = "",
+                                             Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // ServerDisconnectedException
 
     /**
      * @class InvalidArgumentException
      * @brief Exception class for invalid arguments.
+     * @param clientInternalError Client internal error message code.
      */
     class InvalidArgumentException final : public ChatBaseException {
     public:
         /**
          * @brief Constructor for InvalidArgumentException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit InvalidArgumentException(std::string detail = "") noexcept;
+        explicit InvalidArgumentException(std::string detail = "",
+                                          Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // InvalidArgumentException
 
     /**
@@ -88,9 +102,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for HostnameResolutionException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit HostnameResolutionErrorException(std::string detail = "") noexcept;
+        explicit HostnameResolutionErrorException(std::string detail = "",
+                                                  Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // HostnameResolutionErrorException
 
     /**
@@ -101,10 +118,29 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for InternalErrorException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit InternalErrorException(std::string detail = "") noexcept;
+        explicit InternalErrorException(std::string detail = "",
+                                        Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // InternalErrorException
+
+    /**
+     * @class ConstructorErrorException
+     * @brief Exception class used when error occurs during the construction of an object.
+     */
+    class ConstructorErrorException final : public ChatBaseException {
+    public:
+        /**
+         * @brief Constructor for ConstructorErrorException.
+         *
+         * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
+         */
+        explicit ConstructorErrorException(std::string detail = "",
+                                           Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
+    }; // ConstructorErrorException
 
     /**
      * @class ConnectionErrorException
@@ -114,9 +150,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for ConnectionErrorException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit ConnectionErrorException(std::string detail = "") noexcept;
+        explicit ConnectionErrorException(std::string detail = "",
+                                          Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // ConnectionErrorException
 
     /**
@@ -127,9 +166,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for ProtocolErrorException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit ProtocolErrorException(std::string detail = "") noexcept;
+        explicit ProtocolErrorException(std::string detail = "",
+                                        Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // ProtocolErrorException
 
     /**
@@ -140,10 +182,29 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for UknownErrorException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit UknownErrorException(std::string detail = "") noexcept;
+        explicit UknownErrorException(std::string detail = "",
+                                      Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // UknownErrorException
+
+    /**
+     * @class UnestablishedConnectionErrorException
+     * @brief Exception class for errors caused by unestablished connection.
+     */
+    class UnestablishedConnectionErrorException final : public ChatBaseException {
+    public:
+        /**
+         * @brief Constructor for UnestablishedConnectionErrorException.
+         *
+         * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
+         */
+        explicit UnestablishedConnectionErrorException(std::string detail = "",
+                                                       Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
+    }; // UnestablishedConnectionErrorException
 
     /**
      * @class TimeoutErrorException
@@ -153,9 +214,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for TimeoutErrorException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit TimeoutErrorException(std::string detail = "") noexcept;
+        explicit TimeoutErrorException(std::string detail = "",
+                                       Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // TimeoutErrorException
 
     /**
@@ -166,9 +230,12 @@ namespace IPK25ChatClient::Exceptions
     public:
         /**
          * @brief Constructor for UserInterruptionException.
+         *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
          */
-        explicit UserInterruptionException(std::string detail = "") noexcept;
+        explicit UserInterruptionException(std::string detail = "",
+                                           Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // UserInterruptionException
 } // IPK25ChatClient::Exceptions
 

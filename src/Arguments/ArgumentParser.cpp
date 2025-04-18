@@ -8,16 +8,16 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    06.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
- * Description:  Implementation of the ArgumentParser class, which is          *
+ * Description:  Implementation of the `ArgumentParser` class, which is        *
  *               responsible for parsing command line arguments and options.   *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file ArgumentParser.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation of the ArgumentParser class for parsing command line
+ * @brief Implementation of the `ArgumentParser` class for parsing command line
  *        arguments and options.
  */
 
@@ -63,7 +63,7 @@ namespace IPK25ChatClient::Arguments
         }
         catch(const CLI::CallForHelp &e) {
             if(const auto exitCode{app.exit(e)}; exitCode == EXIT_SUCCESS) {
-                throw HelpRequestedException("Help successfully printed.");
+                throw HelpRequestedException();
             }
             else {
                 throw InternalErrorException(

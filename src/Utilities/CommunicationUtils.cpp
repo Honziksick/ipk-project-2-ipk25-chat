@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    10.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `CommunicationUtils` class, which provides utility functions  *
@@ -20,8 +20,8 @@
 /**
  * @file CommunicationUtils.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief  Implementation of utility methods for communication in the
- *         IPK25 Chat Client.
+ * @brief  Implementation of `CommunicationUtils` class providing the utility
+ *         methods for establishing communication in the IPK25 Chat Client.
  */
 
 #include "Utilities/CommunicationUtils.hpp"
@@ -61,15 +61,9 @@ namespace IPK25ChatClient::Utilities
                                                  &hints, &pResult);
         if(getaddrinfoError != 0) {
             logger("getaddrinfo() error: %s", gai_strerror(getaddrinfoError));
-            ClientOutput::printClientInternalError(
-                    "Critical error occurred. Failed to resolve the specified "
-                    "hostname. Please check the address for correctness and try "
-                    "launching the IPK25 Chat Client again. The connection to the "
-                    "server is not established, so the client can't inform the "
-                    "server about the error. The application will now terminate."
-                    );
             throw HostnameResolutionErrorException(
-                    "getaddrinfo() error: " + string(gai_strerror(getaddrinfoError))
+                    "getaddrinfo() error: " + string(gai_strerror(getaddrinfoError)),
+                    Enums::ClientInternalErrorMessage::CLIENT_HOST_RESOLUTION_FAILURE
                     );
         }
 

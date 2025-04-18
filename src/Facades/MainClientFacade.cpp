@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `MainClientFacade` class, which serves  *
  *               as the main entry point for running the IPK25 Chat Client.    *
@@ -83,7 +83,7 @@ namespace IPK25ChatClient::Facades
             logger("Initialized FSM: UDP");
         }
         else {
-            throw InternalErrorException(
+            throw ConstructorErrorException(
                     "Invalid protocol type was given to when initializing FSM: " +
                     CastUtils::castEnumToString(mCommandLineOptions.mTransportProtocol)
                     );

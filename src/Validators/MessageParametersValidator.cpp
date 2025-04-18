@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This source file implements the `MessageParametersValidator`  *
  *               class, which provides validation logic for message parameters *
@@ -45,7 +45,7 @@ using namespace std;
 namespace IPK25ChatClient::Validators
 {
     ValidatorResult MessageParametersValidator::validateMessageParameter(const MessageParameter parameterType,
-                                                                   const string_view commandParameter) {
+                                                                         const string_view commandParameter) {
         logger("Message parameter validation started: parameterType: %s, commandParameter: %s",
                CastUtils::castEnumToString(parameterType).c_str(), string(commandParameter).c_str());
 
@@ -70,7 +70,8 @@ namespace IPK25ChatClient::Validators
             default:
                 throw InternalErrorException(
                         "validateMessageParameter() error: Invalid message parameter "
-                        "type passed: " + CastUtils::castEnumToString(parameterType)
+                        "type passed: " + CastUtils::castEnumToString(parameterType),
+                        ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         }
 
@@ -117,10 +118,7 @@ namespace IPK25ChatClient::Validators
         // If the match failed, print an error message
         if(!isValid) {
             logger("Deep validation failed: parameter contains invalid symbols.");
-            ClientOutput::printClientInternalError(
-                    "Given message parameter '" + string(commandParameter) + "' contains invalid symbols. "
-                    "Allowed symbols are: " + RegexPatterns::ALLOWED_SYMBOLS_REGEX_PATTERN
-                    );
+            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_CHARACTERS);
             return false;
         }
 
@@ -133,11 +131,7 @@ namespace IPK25ChatClient::Validators
 
         if(commandParameter.length() < minLength) {
             logger("Deep validation failed: parameter length is %zu, which is less than %u", commandParameter.length(), minLength);
-            ClientOutput::printClientInternalError(
-                    "Given message parameter '" + string(commandParameter) + "' has invalid length. Message "
-                    "parameters must be between at least 1 characters long, but the given parameter is " +
-                    to_string(commandParameter.length()) + "characters long."
-                    );
+            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_LENGTH);
             return false;
         }
 
@@ -151,11 +145,7 @@ namespace IPK25ChatClient::Validators
         if(commandParameter.length() > maxLength) {
             logger("Deep alidation failed: parameter length is %zu, which exceeds %u", commandParameter.length(), maxLength);
             ClientOutput::printClientInternalError(
-                    "Given message paramter '" + string(commandParameter) + "' is too long. This message parameter "
-                    "can be at most " + to_string(maxLength) + "characters long, but given parameter is " +
-                    to_string(commandParameter.length()) + "characters long." + "Given parameter will be truncated "
-                    "to the maximum allowed length of " + to_string(maxLength) + "characters." +
-                    "Truncated parameter: '" + string(commandParameter.substr(0, maxLength)) + "'."
+                    ClientInternalErrorMessage::CLIENT_BAD_LENGTH_TRUNCATE, string(commandParameter.substr(0, maxLength))
                     );
             return false;
         }

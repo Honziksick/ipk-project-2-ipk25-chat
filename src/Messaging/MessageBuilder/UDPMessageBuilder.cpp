@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      14.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the `UdpMessageBuilder` class,        *
  *               which provides methods for constructing various types         *
@@ -55,7 +55,8 @@ namespace IPK25ChatClient::Messaging::Builder
                 logger("Invalid message type passed: %s", CastUtils::castEnumToString(messageType).c_str());
                 throw InternalErrorException(
                         "buildMessage() error for UDP: Invalid message type "
-                        "passed: " + CastUtils::castEnumToString(messageType)
+                        "passed: " + CastUtils::castEnumToString(messageType),
+                        ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         }
     } // UdpMessageBuilder::buildMessage

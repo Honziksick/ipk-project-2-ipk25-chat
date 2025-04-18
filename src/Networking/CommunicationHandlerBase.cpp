@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `CommunicationHandlerBase class, which serves as a base       *
@@ -58,7 +58,7 @@ namespace IPK25ChatClient::Networking
             logger("Initialized incoming MessageParser: UDP");
         }
         else {
-            throw InternalErrorException(
+            throw ConstructorErrorException(
                     "Invalid protocol type was given to CommunicationHandlerBase: " +
                     CastUtils::castEnumToString(commandLineOptions.mTransportProtocol)
                     );

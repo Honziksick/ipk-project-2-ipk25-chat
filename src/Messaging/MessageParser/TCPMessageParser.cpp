@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      14.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `TCPMessageParser` class, which         *
  *               handles parsing of TCP messages in the chat client.           *
@@ -52,7 +52,8 @@ namespace IPK25ChatClient::Messaging::Parser
         if(!holds_alternative<string>(messageContent)) {
             logger("Invalid MessageContent type. Expected string, but got: %s", typeid(messageContent).name());
             throw InternalErrorException(
-                    "Expected string in MessageContent, but got " + string(typeid(messageContent).name())
+                    "Expected string in MessageContent, but got " + string(typeid(messageContent).name()),
+                    ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                     );
         }
 
@@ -121,12 +122,9 @@ namespace IPK25ChatClient::Messaging::Parser
         const size_t firstDelimiterPosition = message.find(TOKEN_DELIMITER);
         if(firstDelimiterPosition == string::npos) {
             logger("Malformed message: missing token delimiter. Message: %s", message.c_str());
-            ClientOutput::printClientInternalError(
-                    "Client received a malformed message from the server. The client will try "
-                    "to send an error message to the server and will gracefully terminate if possible."
-                    );
             throw ProtocolErrorException(
-                    "Client received a malformed message from the server: missing delimiter"
+                    "Client received a malformed message from the server: missing delimiter",
+                    ClientInternalErrorMessage::CLIENT_MALFORMED_MESSAGE
                     );
         }
         const string messageTypeToken = message.substr(0, firstDelimiterPosition);
@@ -140,12 +138,9 @@ namespace IPK25ChatClient::Messaging::Parser
         }
         catch(...) {
             logger("Malformed message: unknown message type. Message: %s", message.c_str());
-            ClientOutput::printClientInternalError(
-                    "Client received a malformed message from the server. The client will try "
-                    "to send an error message to the server and will gracefully terminate if possible."
-                    );
             throw ProtocolErrorException(
-                    "Client received a malformed message from the server: unknown message type."
+                    "Client received a malformed message from the server: unknown message type.",
+                    ClientInternalErrorMessage::CLIENT_MALFORMED_MESSAGE
                     );
         }
 
@@ -208,13 +203,9 @@ namespace IPK25ChatClient::Messaging::Parser
             }
             default: {
                 logger("Malformed message: unknown message type. Message: %s", message.c_str());
-
-                ClientOutput::printClientInternalError(
-                        "Client received a malformed message from the server. The client will try "
-                        "to send an error message to the server and will gracefully terminate if possible."
-                        );
                 throw ProtocolErrorException(
-                        "Client received a malformed message from the server: unknown message type."
+                        "Client received a malformed message from the server: unknown message type.",
+                        ClientInternalErrorMessage::CLIENT_MALFORMED_MESSAGE
                         );
             }
         } // switch(commandTokenType)

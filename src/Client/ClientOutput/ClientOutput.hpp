@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the ClientOutput class, which provides        *
  *               static methods for printing various types of client           *
@@ -25,6 +25,7 @@
 #ifndef CLIENT_OUTPUT_HPP
 #define CLIENT_OUTPUT_HPP
 
+#include "Enums/ClientInternalErrorMessages.hpp"
 #include <string>       // std::string
 #include <string_view>  // std::string_view
 
@@ -60,9 +61,21 @@ namespace IPK25ChatClient::Client::Output
          * @brief Prints an internal error message.
          * @details Format: `ERROR: {MessageContent}\n`
          *
-         * @param messageContent The content of the internal error message.
+         * @param internalErrorType The type of client internal error that
+         *                          should be displayed to the user.
          */
-        static void printClientInternalError(const std::string_view &messageContent);
+        static void printClientInternalError(Enums::ClientInternalErrorMessage internalErrorType);
+
+        /**
+         * @brief Prints an internal error message.
+         * @details Format: `ERROR: {MessageContent}\n`
+         *
+         * @param internalErrorType The type of client internal error that
+         *                          should be displayed to the user.
+         * @param detail Additional information about the error.
+         */
+        static void printClientInternalError(Enums::ClientInternalErrorMessage internalErrorType,
+                                             const std::string &detail);
 
         /**
          * @brief Prints a reply message from the server.
@@ -108,15 +121,30 @@ Usage:
     Exit the chat client gracefully (sends BYE to server and closes connection).
 
 Chatting:
-    To send a message to the current channel, just type your text without a leading slash and press Enter.
-    Messages longer than the protocol‐allowed maximum will be truncated and you will see a local warning.
+    To send a message to the current channel, just type your text without a leading slash and press Enter. Messages longer than the protocol‐allowed maximum will be truncated, and you will see a local warning. Maximum length of a message is 60000 characters and only these characters are allowed: Printable characters with space and new line (enter).
+
+Parameter Limits:
+    - <username>: Max. length 20, allowed characters: [a-zA-Z0-9_-] (e.g., Abc_00-7)
+    - <channelId>: Max. length 20, allowed characters: [a-zA-Z0-9_-] (e.g., Abc_00-7)
+    - <secret>: Max. length 128, allowed characters: [a-zA-Z0-9_-] (e.g., Abc_00-7)
+    - <displayName>: Max. length 20, allowed characters: Printable characters (0x21-7E)
+    - MessageContent: Max. length 60000, allowed characters: Printable characters with space and line feed (0x0A, 0x20-7E)
+
 
 Examples:
-    /auth alice p@ssw0rd AliceWonder
+    /help
+    /auth myNameIsJohn password John_TheIPKMaster00
     /join general
-    Hello everyone!
-    /rename Alice
-    /bye)"; // CLIENT_HELP_MESSAGE
+    /rename let-the-points-rain
+    Hello world!)"; // CLIENT_HELP_MESSAGE
+
+        /**
+         * @brief Prints an internal error message.
+         * @details Format: `ERROR: {MessageContent}\n`
+         *
+         * @param messageContent The content of the error message.
+         */
+        static void printError(const std::string &messageContent);
     }; // ClientOutput
 } // IPK25ChatClient::Client::Output
 

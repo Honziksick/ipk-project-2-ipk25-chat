@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      12.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `UserCommandParser` class, which        *
  *               provides functionality for parsing user input commands into   *
@@ -31,6 +31,7 @@
 #include "Constants/ClientLimits.hpp"
 #include "Enums/UserCommandTypes.hpp"
 #include "Enums/MessageParameters.hpp"
+#include "Enums/ClientInternalErrorMessages.hpp"
 #include "Utilities/StringUtils.hpp"
 #include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
@@ -90,7 +91,7 @@ namespace IPK25ChatClient::Client::CommandParser
         else {
             // Check if the end of file (EOF) was reached
             if(cin.eof()) {
-                throw EndOfFileException("End of file reached.");
+                throw EndOfFileException();
             }
             return string{};
         }
@@ -105,13 +106,11 @@ namespace IPK25ChatClient::Client::CommandParser
         // Check if the tokenization was successful
         if(tokens.empty()) {
             logger("Tokenization failed, no tokens found.");
-            ClientOutput::printClientInternalError(
+            throw InternalErrorException(
                     "An unexpected error occurred while proccesing your command. "
-                    "Please try entering your command again."
+                    "Please try entering your command again.",
+                    ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                     );
-            return UserCommand{
-                .mCommandType{UserCommandType::INVALID}
-            };
         }
 
         // First token represents the command name (type) and the rest are parameters
@@ -134,11 +133,7 @@ namespace IPK25ChatClient::Client::CommandParser
                 return parseHelpCommand(commandParameters);
             default:
                 logger("Invalid command type: %s", tokens[0].c_str());
-                ClientOutput::printClientInternalError(
-                        "The provided command '" + tokens[0] + "' is not recognized by the "
-                        "client. You may enter the '/help' command to list valid client "
-                        "commands and how to use them."
-                        );
+                ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_COMMAND);
                 return UserCommand{
                     .mCommandType{UserCommandType::INVALID}
                 };
@@ -340,12 +335,7 @@ namespace IPK25ChatClient::Client::CommandParser
         }
         else {
             logger("Incorrect number of parameters.");
-            ClientOutput::printClientInternalError(
-                    "The provided command has an incorrect number of parameters "
-                    "(has: " + to_string(commandParameters.size()) + ", expected: " +
-                    to_string(expectedCount) + "). You may enter the '/help' command "
-                    "to list valid client commands and how to use them."
-                    );
+            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_COMMAND);
             return false;
         }
     } // UserCommandParser::checkCorrectNumberOfParameters

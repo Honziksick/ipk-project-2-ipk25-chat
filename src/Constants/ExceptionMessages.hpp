@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains constant exception messages used in the    *
  *               IPK25 Chat Client project.                                    *
@@ -76,6 +76,16 @@ namespace IPK25ChatClient::Constants
          * @brief Error message for unknown error.
          */
         static constexpr auto UNKNOWN_ERROR_MSG = "An unexpected unknown error occurred. Please report this issue to the developers.";
+
+        /**
+         * @brief Error message for unestablished connection error.
+         */
+        static constexpr auto UNESTABLISHED_ERROR_MSG = "The connection is not established even though it should be.";
+
+        /**
+         * @brief Error message for object constructor error.
+         */
+        static constexpr auto CONSTRUCTOR_ERROR_MSG = "An error occurred during the object construction process.";
 
         /**
          * @brief Error message for timeout error.

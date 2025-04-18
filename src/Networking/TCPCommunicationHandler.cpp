@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `TcpCommunicationHandler` class, which is responsible for     *
@@ -44,6 +44,7 @@
 using namespace IPK25ChatClient::Client::Output;
 using namespace IPK25ChatClient::Messaging;
 using namespace IPK25ChatClient::Common;
+using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Constants;
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Utilities;
@@ -69,13 +70,9 @@ namespace IPK25ChatClient::Networking
 
         if(!pResult) {
             logger("NULL pointer returned by 'resolveHostname(): hostname resolution failed.");
-            ClientOutput::printClientInternalError(
-                    "At the moment, we are unable to connect to the server due to host resolution. "
-                    "failure. The connection to the server is not established, so the client can't inform "
-                    "the server about the error. The application will now terminate."
-                    );
             throw HostnameResolutionErrorException(
-                    "NULL pointer returned by 'resolveHostname(): hostname resolution failed."
+                    "NULL pointer returned by 'resolveHostname(): hostname resolution failed.",
+                    ClientInternalErrorMessage::CLIENT_HOST_RESOLUTION_FAILURE
                     );
         }
 
@@ -109,15 +106,9 @@ namespace IPK25ChatClient::Networking
         freeaddrinfo(pResult);
 
         logger("Failed to connect to any resolved address. Throwing ConnectionErrorException.");
-        ClientOutput::printClientInternalError(
-                "At the moment, we are unable to connect to the server. Please check "
-                "the correctness of the provided address and port, and try again later. "
-                "If the problem persists, contact support. The connection to the server "
-                "is not established, so the client can't inform the server about the error. "
-                "The application will now terminate."
-                );
-        throw ConnectionErrorException(
-                "Failed to connect to any of the resolved IPv4 address."
+        throw UnestablishedConnectionErrorException(
+                "Failed to connect to any of the resolved IPv4 address.",
+                ClientInternalErrorMessage::CLIENT_CONNECTION_ERROR
                 );
     } // TcpCommunicationHandler::openConnection
 
@@ -130,20 +121,17 @@ namespace IPK25ChatClient::Networking
         else {
             logger("sendMessage() error for TCP: The custom variant data type 'MessageContent' is not a string.");
             throw InternalErrorException(
-                    "sendMessage() error for TCP: The custom variant data type 'MessageContent' is not a string. "
+                    "sendMessage() error for TCP: The custom variant data type 'MessageContent' is not a string. ",
+                    ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                     );
         }
 
         // Check if the connection is established
         if(!mIsConnected) {
             logger("Trying to send message %s while not connected.", contentToSend.c_str());
-            ClientOutput::printClientInternalError(
-                    "Failed to send data to the server. The client will now attempt to inform "
-                    "the server about the error. If the server is not reachable, application will "
-                    "terminate gracefully."
-                    );
-            throw ConnectionErrorException(
-                    "Trying to send message while not connected. Content " + contentToSend
+            throw UnestablishedConnectionErrorException(
+                    "Trying to send message while not connected. Content " + contentToSend,
+                    ClientInternalErrorMessage::CLIENT_CONNECTION_ERROR
                     );
         }
 
@@ -158,13 +146,9 @@ namespace IPK25ChatClient::Networking
                 mIsConnected = DISCONNECTED;
                 logger("send() returned error: Failed to send message. Content: %s, "
                        "Socket 'FD = %d', error: %s", contentToSend.c_str(), *mSocketFd, strerror(errno));
-                ClientOutput::printClientInternalError(
-                        "Failed to send data to the server. The client will now attempt to inform "
-                        "the server about the error. If the server is not reachable, application will "
-                        "terminate gracefully."
-                        );
                 throw ConnectionErrorException(
-                        "Failed to send data to the server due to send() error: " + string(strerror(errno))
+                        "Failed to send data to the server due to send() error: " + string(strerror(errno)),
+                        ClientInternalErrorMessage::CLIENT_SEND_FAILURE
                         );
             }
 
@@ -172,12 +156,9 @@ namespace IPK25ChatClient::Networking
             if(bytesSent == 0) {
                 mIsConnected = DISCONNECTED;
                 logger("send() returned 0: Connection closed by server");
-                ClientOutput::printClientInternalError(
-                        "Connection closed by server. No data received. No further communication "
-                        "available. The application will now terminate gracefully."
-                        );
                 throw ServerDisconnectedException(
-                        "Connection closed by server. No data sent."
+                        "Connection closed by server. No data sent.",
+                        ClientInternalErrorMessage::CLIENT_SERVER_CLOSURE
                         );
             }
 
@@ -191,7 +172,10 @@ namespace IPK25ChatClient::Networking
         // Check if the connection is established
         if(!mIsConnected) {
             logger("Attempted to receive data while not connected.");
-            throw InternalErrorException("Attempted to receive data while not connected.");
+            throw UnestablishedConnectionErrorException(
+                    "Attempted to receive data while not connected.",
+                    ClientInternalErrorMessage::CLIENT_CONNECTION_ERROR
+                    );
         }
 
         // Allocate a buffer for receiving data (+1 to indicate possible overflow afterwards)
@@ -207,13 +191,9 @@ namespace IPK25ChatClient::Networking
             mIsConnected = DISCONNECTED;
             logger("recv() returned error: Failed to receive data. Socket 'FD = %d', "
                    "error: %s", *mSocketFd, strerror(errno));
-            ClientOutput::printClientInternalError(
-                    "Failed to receive data from the server. The client will now attempt to inform "
-                    "the server about the error. If the server is not reachable, application will "
-                    "terminate gracefully."
-                    );
             throw ConnectionErrorException(
-                    "Failed to receive data from the server due to recv() error: " + string(strerror(errno))
+                    "Failed to receive data from the server due to recv() error: " + string(strerror(errno)),
+                    ClientInternalErrorMessage::CLIENT_RECEIVE_FAILURE
                     );
         }
 
@@ -221,12 +201,9 @@ namespace IPK25ChatClient::Networking
         if(bytesReceived == 0) {
             mIsConnected = DISCONNECTED;
             logger("recv() returned 0: Connection closed by server");
-            ClientOutput::printClientInternalError(
-                    "Connection closed by server. No data received. No further communication "
-                    "available. The application will now terminate gracefully."
-                    );
             throw ServerDisconnectedException(
-                    "Connection closed by server. No data received."
+                    "Connection closed by server. No data received.",
+                    ClientInternalErrorMessage::CLIENT_SERVER_CLOSURE
                     );
         }
 
@@ -255,11 +232,6 @@ namespace IPK25ChatClient::Networking
         // Attempt a graceful shutdown by sending a TCP FIN packet.
         if(shutdown(*mSocketFd, SHUT_WR) < 0) {
             logger("Graceful shutdown failed on socket 'FD = %d', error: %s", *mSocketFd, strerror(errno));
-            throw ConnectionErrorException(
-                    "Graceful connection termination failed. The communication protocol is set to TCP, "
-                    "so no additional attempts to gracefully terminate the connection won't be made, "
-                    "and the application will successfully exit."
-                    );
         }
         else {
             logger("Graceful shutdown successful on socket 'FD = %d'", *mSocketFd);

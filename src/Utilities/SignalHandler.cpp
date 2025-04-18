@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `SignalHandler` class, which is         *
  *               responsible for handling system signals in a safe and         *
@@ -28,11 +28,12 @@
 #include <atomic>   // std::atomic
 #include <csignal>  // signal
 
+using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Exceptions;
 
 namespace IPK25ChatClient::Utilities
 {
-    // Initialize static atomic flags
+    // Initialization of the static atomic flags
     std::atomic<bool> SignalHandler::mSigintReceived{false};
     std::atomic<bool> SignalHandler::mSigsegvReceived{false};
 
@@ -59,7 +60,10 @@ namespace IPK25ChatClient::Utilities
             throw UserInterruptionException("Signal SIGINT received.");
         }
         if(mSigsegvReceived) {
-            throw InternalErrorException("Signal SIGSEGV received.");
+            throw InternalErrorException(
+                    "Signal SIGSEGV received.",
+                    ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
+                    );
         }
     } // SignalHandler::checkSignals
 } // IPK25ChatClient::Utilities

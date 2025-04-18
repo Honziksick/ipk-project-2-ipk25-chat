@@ -8,22 +8,24 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    03.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
- * Description:  Header file for the ChatBaseException class used in the       *
+ * Description:  Header file for the `ChatBaseException` class used in the     *
  *               IPK25 Chat Client project.                                    *
  *                                                                             *
  ******************************************************************************/
 /**
  * @file ChatBaseException.hpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Header file for the ChatBaseException class.
+ * @brief Header file declaring the `ChatBaseException` class used in the
+ *        IPK25 Chat Client project.
  */
 
 #ifndef CHAT_BASE_EXCEPTION_HPP
 #define CHAT_BASE_EXCEPTION_HPP
 
 #include "Enums/ExitCodes.hpp"
+#include "Enums/ClientInternalErrorMessages.hpp"
 #include <exception> // std::exception
 #include <string>    // std::string
 
@@ -40,8 +42,10 @@ namespace IPK25ChatClient::Exceptions
          * @param code The error code.
          * @param message The error message.
          * @param detail Additional details about the error.
+         * @param clientInternalError The client internal error message code.
          */
-        ChatBaseException(Enums::ExitCode code, std::string message, std::string detail = "");
+        ChatBaseException(Enums::ExitCode code, std::string message, std::string detail,
+                          Enums::ClientInternalErrorMessage clientInternalError);
 
         /**
          * @brief Returns the error message.
@@ -64,10 +68,32 @@ namespace IPK25ChatClient::Exceptions
         [[nodiscard]]
         std::string detail() const noexcept;
 
-    private:
-        const Enums::ExitCode mCode; /**< The error code.                     */
-        const std::string mMessage;   /**< The error message.                  */
+        /**
+         * @brief Retrieves the client internal error message code of the error
+         *        message to be displayed to the user.
+         *
+         * @return Enums::ClientInternalErrorMessage The client internal error message code.
+         */
+        [[nodiscard]]
+        Enums::ClientInternalErrorMessage clientInternalError() const noexcept;
+
+    protected:
+        /**
+         * @brief Imports all values from the `Enums::ExitCode` enumeration into
+         *        the current namespace.
+         */
+        using enum Enums::ExitCode;
+
+        /**
+         * @brief Imports all values from the `Enums::ClientInternalErrorMessage`
+         *        enumeration into the current namespace.
+         */
+        using enum Enums::ClientInternalErrorMessage;
+
+        const Enums::ExitCode mCode;  /**< The error code.    */
+        const std::string mMessage;   /**< The error message. */
         std::string mDetail;          /**< Additional details about the error. */
+        Enums::ClientInternalErrorMessage mClientInternalError;  /**< Client internal error message for the user. */
     }; // ChatBaseException
 } // IPK25ChatClient::Exceptions
 

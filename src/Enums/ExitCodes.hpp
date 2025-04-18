@@ -35,14 +35,15 @@ namespace IPK25ChatClient::Enums
      *          project.
      */
     enum class ExitCode {
-        SUCCESS                   = 0,   /**< Success exit code (EX_OK).                     */
-        INVALID_ARGUMENT_ERROR    = 64,  /**< Command line usage error (EX_USAGE).           */
-        HOSTNAME_RESOLUTION_ERROR = 68,  /**< Hostname resolution error code (EX_NOHOST).    */
-        INTERNAL_ERROR            = 70,  /**< Internal error code (EX_SOFTWARE).             */
-        CONNECTION_ERROR          = 71,  /**< Socket error code (EX_OSERR).                  */
-        PROTOCOL_ERROR            = 76,  /**< Protocol error (EPROTO).                       */
-        UNKNOWN_ERROR             = 78,  /**< Unknown error code (EX_CONFIG).                */
-        TIMEOUT_ERROR             = 116, /**< Connection timed out (ETIMEDOUT).              */
+        SUCCESS                   = 0,    /**< Success exit code (EX_OK).                             */
+        INVALID_ARGUMENT_ERROR    = 64,   /**< Command line usage error (EX_USAGE).                   */
+        HOSTNAME_RESOLUTION_ERROR = 68,   /**< Hostname resolution error code (EX_NOHOST).            */
+        INTERNAL_ERROR            = 70,   /**< Internal error code (EX_SOFTWARE).                     */
+        CONNECTION_ERROR          = 71,   /**< Socket error code (EX_OSERR).                          */
+        PROTOCOL_ERROR            = 76,   /**< Protocol error (EPROTO).                               */
+        UNKNOWN_ERROR             = 78,   /**< Unknown error code (EX_CONFIG).                        */
+        UNESTABLISHED_ERROR       = 107,  /**< Connection is unexpectedly not established (ENOTCONN). */
+        TIMEOUT_ERROR             = 116,  /**< Connection timed out (ETIMEDOUT).                      */
     }; // ExitCode
 } // IPK25ChatClient::Enums
 

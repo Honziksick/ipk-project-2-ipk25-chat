@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the declaration of the `CastUtils`         *
  *               class, which provides utility methodss for type casting,      *
@@ -107,7 +107,8 @@ namespace IPK25ChatClient::Utilities
             // Throw an exception if the value is not found
             throw Exceptions::InternalErrorException(
                     "Enum value not found in the map. Enum type: " + std::string(typeid(EnumType).name()) +
-                    ", value: " + std::to_string(static_cast<int>(enumValue))
+                    ", value: " + std::to_string(static_cast<int>(enumValue)),
+                    Enums::ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                     );
         } // CastUtils::castEnumToString
 
@@ -142,7 +143,8 @@ namespace IPK25ChatClient::Utilities
             // Throw an exception if the string is not found
             throw Exceptions::InternalErrorException(
                     "String value not found in the reverse lookup. Enum type: " +
-                    std::string(typeid(EnumType).name()) + ", value: " + strValue
+                    std::string(typeid(EnumType).name()) + ", value: " + strValue,
+                    Enums::ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                     );
         } // CastUtils::castStringToEnum
     }; // CastUtils

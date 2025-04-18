@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `EnumMaps` class, which provides static    *
  *               mapping utilities for converting enum values to their         *
@@ -26,11 +26,13 @@
 
 #include "Enums/UserCommandTypes.hpp"
 #include "Enums/ClientFsmStates.hpp"
+#include "Enums/ClientInternalErrorMessages.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/MessageParameters.hpp"
 #include "Enums/MessageTypes.hpp"
 #include "Enums/ValidatorResults.hpp"
+#include "Constants/ClientInternalErrorPhrases.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -48,7 +50,7 @@ namespace IPK25ChatClient::Enums::Mapping
      *
      * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf (p. 160)
      */
-    class EnumMaps {
+    class EnumMaps : public ClientInternalErrorPhrases {
     protected:
         /**
          * @brief Retrieves the mapping for `UserCommandType` to strings.
@@ -91,6 +93,12 @@ namespace IPK25ChatClient::Enums::Mapping
          * @return A constant reference to the map of `MessageType` to strings.
          */
         static const std::unordered_map<MessageType, std::string> &getMessageTypeMap();
+
+        /**
+         * @brief Retrieves the mapping for `ClientInternalErrorMessage` to strings.
+         * @return A constant reference to the map of `ClientInternalErrorMessage` to strings.
+         */
+        static const std::unordered_map<ClientInternalErrorMessage, std::string> &getClientInternalErrorMessageMap();
     }; // EnumMaps
 } // IPK25ChatClient::Enums
 

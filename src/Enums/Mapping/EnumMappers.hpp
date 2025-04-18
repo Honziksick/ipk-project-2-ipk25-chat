@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `EnumMappers` class, which provides        *
  *               static template mapping methods for converting enum values    *
@@ -140,6 +140,17 @@ namespace IPK25ChatClient::Enums::Mapping
     template <>
     inline const std::unordered_map<MessageType, std::string> &EnumMappers::getEnumToStringMap<MessageType>() {
         return getMessageTypeMap();
+    }
+
+    /**
+     * @brief Specialization of the template method to retrieve the mapping for `ClientInternalErrorMessage`.
+     * @return A constant reference to the map of `ClientInternalErrorMessage` to strings.
+     *
+     * @note Inspired by: https://www.fit.vut.cz/person/peringer/public/ICP/Prednasky/ICP.pdf
+     */
+    template <>
+    inline const std::unordered_map<ClientInternalErrorMessage, std::string> &EnumMappers::getEnumToStringMap<ClientInternalErrorMessage>() {
+        return getClientInternalErrorMessageMap();
     }
 } // IPK25ChatClient::Enums
 

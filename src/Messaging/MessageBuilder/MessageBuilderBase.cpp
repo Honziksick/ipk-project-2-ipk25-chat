@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      14.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the base class `MessageBuilderBase` for     *
  *               constructing various types of messages used in the IPK25      *
@@ -67,7 +67,8 @@ namespace IPK25ChatClient::Messaging::Builder
                 logger("Invalid message type passed: %s", CastUtils::castEnumToString(messageType).c_str());
                 throw InternalErrorException(
                         "buildMessage() error: Invalid message type passed: " +
-                        CastUtils::castEnumToString(messageType)
+                        CastUtils::castEnumToString(messageType),
+                        ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         } // switch(messageType)
     } // MessageBuilderBase::buildMessage

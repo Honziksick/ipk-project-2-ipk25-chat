@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      11.04.2025                                                    *
- * Last edit:    14.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the `TcpMessageBuilder` class, which  *
  *               provides static methods for constructing various types of     *
@@ -39,7 +39,10 @@ using namespace std;
 namespace IPK25ChatClient::Messaging::Builder
 {
     MessageContent TcpMessageBuilder::buildMessage(MessageType messageType, uint16_t refMessageId) {
-        throw InternalErrorException("buildMessage() is not supported for TcpMessageBuilder.");
+        throw InternalErrorException(
+                "buildMessage(MessageType messageType, uint16_t refMessageId) is not supported for TcpMessageBuilder.",
+                ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
+                );
     } // TcpMessageBuilder::buildMessage
 
     MessageContent TcpMessageBuilder::buildAuthMessage(const string &username, const string &displayName, const string &secret) {

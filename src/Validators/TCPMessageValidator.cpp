@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `TcpMessageValidator` class, which      *
  *               implements validation logic for TCP messages in the IPK25     *
@@ -63,7 +63,8 @@ namespace IPK25ChatClient::Validators
             default:
                 throw InternalErrorException(
                         "validateMessage() error: Invalid message parameter type "
-                        "passed: " + CastUtils::castEnumToString(parsedMessage.mType)
+                        "passed: " + CastUtils::castEnumToString(parsedMessage.mType),
+                        ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         } // switch(parsedMessage.mType)
     } // TcpMessageValidator::validateMessage
@@ -209,7 +210,7 @@ namespace IPK25ChatClient::Validators
         }
         // 2) {"OK"|"NOK"}
         if(!StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_RESULT_KEYWORD_INDEX], MessageKeywordsLowerCase::OK_LC) &&
-           !StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_RESULT_KEYWORD_INDEX], MessageKeywordsLowerCase::NOK_LC)) {
+            !StringUtils::compareKeywordsCaseInsesitive(parsedMessage.mFields[MessageFields::TCP_REPLY_RESULT_KEYWORD_INDEX], MessageKeywordsLowerCase::NOK_LC)) {
             return ValidatorResult::INVALID;
         }
         // 3) "IS"

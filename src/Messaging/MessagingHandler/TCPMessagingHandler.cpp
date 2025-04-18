@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `TcpMessagingHandler` class, which      *
  *               handles TCP-based messaging operations in the IPK25 Chat      *
@@ -65,7 +65,7 @@ namespace IPK25ChatClient::Messaging::Handler
                 logger("Unrecognized message type: %s", CastUtils::castEnumToString(parsedMessage.mType).c_str());
                 throw InternalErrorException(
                         "processIncomingMessage(): trying to proccess unsupported message type: " +
-                        CastUtils::castEnumToString(parsedMessage.mType)
+                        CastUtils::castEnumToString(parsedMessage.mType), ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         } // switch(parsedMessage.mType)
 

@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `MessagingHandlerBase` class, which     *
  *               provides common functionality for messaging handlers in the   *
@@ -67,7 +67,7 @@ namespace IPK25ChatClient::Messaging::Handler
             logger("Initialized CommunicationHandler, MessageBuilder and MessageValidator: UDP");
         }
         else {
-            throw InternalErrorException(
+            throw ConstructorErrorException(
                     "Invalid protocol type was given to MessagingHandlerBase: " +
                     CastUtils::castEnumToString(commandLineOptions.mTransportProtocol)
                     );

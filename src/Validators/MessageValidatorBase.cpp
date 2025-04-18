@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      10.04.2025                                                    *
- * Last edit:    15.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  This source file implements the `MessageValidatorBase`        *
  *               class, which provides common validation methods for message   *
@@ -61,7 +61,8 @@ namespace IPK25ChatClient::Validators
                        CastUtils::castEnumToString(validationResult).c_str());
                 throw InternalErrorException(
                         "postProcessValidation() error: Invalid command validation result type "
-                        "type passed: " + CastUtils::castEnumToString(validationResult)
+                        "type passed: " + CastUtils::castEnumToString(validationResult),
+                        ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         }
     } // MessageValidatorBase::postProcessValidation
@@ -83,7 +84,8 @@ namespace IPK25ChatClient::Validators
                 logger("Invalid parameter type for truncation: %s", CastUtils::castEnumToString(parameterType).c_str());
                 throw InternalErrorException(
                         "truncateMessageParameter() error: Invalid command parameter "
-                        "type passed for truncation: " + CastUtils::castEnumToString(parameterType)
+                        "type passed for truncation: " + CastUtils::castEnumToString(parameterType),
+                        ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         }
     } // MessageValidatorBase::truncateMessageParameter

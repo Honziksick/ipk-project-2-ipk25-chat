@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    18.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `EnumMaps` class, which provides static *
  *               mapping utilities for converting enum values to their         *
@@ -24,11 +24,13 @@
 #include "Enums/Mapping/EnumMaps.hpp"
 #include "Enums/UserCommandTypes.hpp"
 #include "Enums/ClientFsmStates.hpp"
+#include "Enums/ClientInternalErrorMessages.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/MessageParameters.hpp"
 #include "Enums/MessageTypes.hpp"
 #include "Enums/TransportProtocolTypes.hpp"
 #include "Enums/ValidatorResults.hpp"
+#include "Constants/ClientInternalErrorPhrases.hpp"
 #include <unordered_map>  // std::unordered_map
 #include <string>         // std::string
 
@@ -41,6 +43,7 @@ namespace IPK25ChatClient::Enums::Mapping
             {UserCommandType::UNKNOWN, "/unknown"},
             {UserCommandType::INVALID, "/invalid"},
             {UserCommandType::MESSAGE, "/message"},
+            {UserCommandType::ERR, "/err"},
             {UserCommandType::BYE, "/bye"},
             {UserCommandType::AUTH, "/auth"},
             {UserCommandType::JOIN, "/join"},
@@ -68,6 +71,7 @@ namespace IPK25ChatClient::Enums::Mapping
             {ExitCode::HOSTNAME_RESOLUTION_ERROR, "Hostname Resolution Error"},
             {ExitCode::INTERNAL_ERROR, "Internal Error"},
             {ExitCode::CONNECTION_ERROR, "Socket Error"},
+            {ExitCode::UNESTABLISHED_ERROR, "Unestablished connection"},
             {ExitCode::PROTOCOL_ERROR, "Protocol Error"},
             {ExitCode::UNKNOWN_ERROR, "Unknown Error"},
             {ExitCode::TIMEOUT_ERROR, "Timeout Error"}
@@ -124,6 +128,26 @@ namespace IPK25ChatClient::Enums::Mapping
         };
         return cMap;
     } // EnumMaps::getTransportProtocolTypeMap
+
+    const unordered_map<ClientInternalErrorMessage, string> &EnumMaps::getClientInternalErrorMessageMap() {
+        static const unordered_map<ClientInternalErrorMessage, string> cMap = {
+            {ClientInternalErrorMessage::CLIENT_UNKNOWN, string{}},
+            {ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR, string(INTERNAL_ERROR) + string(SEND_ERROR_TERMINATE) + string(APOLOGY)},
+            {ClientInternalErrorMessage::CLIENT_CONNECTION_ERROR, string(CONNECTION_ISSUE) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_BAD_COMMAND, string(BAD_COMMAND) + string(HELP_PROMPT)},
+            {ClientInternalErrorMessage::CLIENT_BAD_CHARACTERS, string(BAD_CHARACTERS) + string(HELP_PROMPT)},
+            {ClientInternalErrorMessage::CLIENT_BAD_LENGTH, string(BAD_LENGTH) + string(HELP_PROMPT)},
+            {ClientInternalErrorMessage::CLIENT_BAD_LENGTH_TRUNCATE, string(BAD_LENGTH) + string(HELP_PROMPT) + string(TRUNCATION)},
+            {ClientInternalErrorMessage::CLIENT_MALFORMED_MESSAGE, string(MALFORMED_MESSAGE) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_HOST_RESOLUTION_FAILURE, string(HOST_RESOLUTION_FAILURE) + string(DONT_SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_SEND_FAILURE, string(SEND_FAILURE) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_RECEIVE_FAILURE, string(RECEIVE_FAILURE) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_SERVER_CLOSURE, string(SERVER_CLOSURE) + string(JUST_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_AUTH_AGAIN, string(AUTH_AGAIN)},
+            {ClientInternalErrorMessage::CLIENT_NOT_AUTH, string(NOT_AUTH)}
+        };
+        return cMap;
+    } // EnumMaps::getClientInternalErrorMessagesMap
 } // IPK25ChatClient::Enums
 
 /*** end of file EnumMaps.cpp ***/
