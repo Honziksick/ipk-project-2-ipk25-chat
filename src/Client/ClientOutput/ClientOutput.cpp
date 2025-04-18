@@ -54,11 +54,12 @@ namespace IPK25ChatClient::Client::Output
     } // ClientOutput::printClientInternalError
 
     void ClientOutput::printClientInternalError(const ClientInternalErrorMessage internalErrorType,
-                                                const std::string &detail) {
+                                                const string &detail) {
         if(internalErrorType != ClientInternalErrorMessage::CLIENT_UNKNOWN) {
             string messageContent;
 
-            if(internalErrorType == ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR) {
+            if(internalErrorType == ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR ||
+                internalErrorType == ClientInternalErrorMessage::CLIENT_BAD_LENGTH_TRUNCATE) {
                 messageContent = CastUtils::castEnumToString(internalErrorType) + detail;
             }
             else {

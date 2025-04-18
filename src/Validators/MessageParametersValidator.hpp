@@ -165,6 +165,37 @@ namespace IPK25ChatClient::Validators
         static bool validateContainingOnlyAllowedSymbols(std::string_view commandParameter, bool whiteCharsAllowed = false);
 
         /**
+         * @brief Validates that the given message content contains only allowed
+         *        symbols.
+         * @details This method checks if all characters in the provided message
+         *          content are within the allowed range of ASCII characters
+         *          (0x0A to 0x7E). It uses a lambda function to dynamically
+         *          create an unordered set of allowed characters. Each character
+         *          in the input is then validated against this set. If any
+         *          invalid character is found, an error is logged, and the
+         *          function returns false.
+         *
+         * @note To me known limitation of the `validateContainingOnlyAllowedSymbols`
+         *       method was that it used regex to validate the message content.
+         *       Using regex was extremely inefficient when validating long
+         *       messages with tens of thousands of characters. I looked for a
+         *       solution online but had no luck. So, I decided to consult ChatGPT,
+         *       which gave me this very interesting idea of using an unordered
+         *       set of allowed characters with lookup time of O(1) to validate
+         *       one character. Then I decided to implement a lambda function
+         *       based on explanation on the C++ seminar, because filling the
+         *       set with fixed range of characters is much more efficient that
+         *       way. Actually, I am realy ustound how well and fast this works,
+         *       compared to the regex solution.
+         *
+         * @param messgaContent The message content to validate.
+         *
+         * @return `true` if the message content contains only allowed symbols,
+         *          `false` otherwise.
+         */
+        static bool validateMessageContentAllowedSymbols(std::string_view messgaContent);
+
+        /**
          * @brief Validates that the parameter meets the minimum length requirement.
          *
          * @param commandParameter The parameter to validate.

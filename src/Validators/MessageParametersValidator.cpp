@@ -31,9 +31,10 @@
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
-#include <string>       // std::string
-#include <regex>        // std::regex, std::regex_match
-#include <string_view>  // std::string_view
+#include <string>        // std::string
+#include <regex>         // std::regex, std::regex_match
+#include <string_view>   // std::string_view
+#include <unordered_set> // std::unordered_set
 
 using namespace IPK25ChatClient::Client::Output;
 using namespace IPK25ChatClient::Enums;
@@ -125,6 +126,31 @@ namespace IPK25ChatClient::Validators
         logger("Deep validation passed: parameter contains only allowed symbols.");
         return true;
     } // MessageParametersValidator::validateContainingOnlyAllowedSymbols
+
+    bool MessageParametersValidator::validateMessageContentAllowedSymbols(const string_view messgaContent) {
+        logger("Deep validation called with commandParameter: %s", string(messgaContent).c_str());
+
+        // We define the allowed characters as a set of characters from 0x0A to 0x7E
+        const auto allowedSymbols = [] {
+            unordered_set<char> set;
+            for (char c = 0x0A; c <= 0x7E; ++c) {
+                set.insert(c);
+            }
+            return set;
+        }();
+
+        // We check every character in the message content one-by-one
+        for (const char &symbol : messgaContent) {
+            if (!allowedSymbols.contains(symbol)) {
+                logger("Deep validation failed: parameter contains invalid symbols.");
+                ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_CHARACTERS);
+                return false;
+            }
+        }
+
+        logger("Deep validation passed: parameter contains only allowed symbols.");
+        return true;
+    } // MessageParametersValidator::validateMessageContentAllowedSymbols
 
     bool MessageParametersValidator::validateMinParameterLength(const string_view commandParameter, const unsigned int minLength) {
         logger("Deep validation called with commandParameter: %s, minLength: %u", string(commandParameter).c_str(), minLength);
@@ -265,7 +291,7 @@ namespace IPK25ChatClient::Validators
     ValidatorResult MessageParametersValidator::validateMessageContent(const string_view messageContent) {
         logger("Validation of messageContent: %s", string(messageContent).c_str());
 
-        if(!validateContainingOnlyAllowedSymbols(messageContent, true)) {
+        if(!validateMessageContentAllowedSymbols(messageContent)) {
             return ValidatorResult::PARAMETER_CONTAINS_INVALID_SYMBOLS;
         }
         if(!validateMinParameterLength(messageContent, ClientLimits::MIN_MESSAGE_CONTENT_LENGTH)) {
