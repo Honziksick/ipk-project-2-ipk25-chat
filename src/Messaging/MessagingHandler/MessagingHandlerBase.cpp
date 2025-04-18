@@ -93,9 +93,6 @@ namespace IPK25ChatClient::Messaging::Handler
         for(auto &message : parsedMessages) {
             logger("Validating message type: %s", message.mFields[0].c_str());
             mMessageValidator->validateMessage(message);
-
-            logger("Processing message type: %s", message.mFields[0].c_str());
-            processIncomingMessage(message);
         }
 
         logger("receiveMessages() completed. Returning %zu parsed message(s).", parsedMessages.size());

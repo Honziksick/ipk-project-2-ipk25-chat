@@ -117,6 +117,16 @@ namespace IPK25ChatClient::Messaging::Handler
          *          is leaving the chat or channel.
          */
         virtual void sendByeMessage() = 0;
+
+        /**
+         * @brief Handles an incoming message from the server.
+         * @details This method processes a parsed message and performs the
+         *          appropriate action based on its type, such as displaying a
+         *          reply, message, or an error.
+         *
+         * @param parsedMessage The parsed message to be processed.
+         */
+        virtual void displayIncomingMessage(const Common::ParsedMessage &parsedMessage) = 0;
     }; // IMessagingHandler
 } // IPK25ChatClient::Messaging::Handler
 

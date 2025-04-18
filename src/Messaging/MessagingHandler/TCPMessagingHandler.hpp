@@ -47,13 +47,14 @@ namespace IPK25ChatClient::Messaging::Handler
         using MessagingHandlerBase::MessagingHandlerBase;
 
         /**
-         * @brief Processes an incoming message.
-         * @details This method is responsible for handling a parsed message
-         *          and performing the appropriate action based on its type.
+         * @brief Handles an incoming message from the server.
+         * @details This method processes a parsed message and performs the
+         *          appropriate action based on its type, such as displaying a
+         *          reply, message, or an error.
          *
-         * @param parsedMessage The parsed message to process.
+         * @param parsedMessage The parsed message to be processed.
          */
-        void processIncomingMessage(const Common::ParsedMessage &parsedMessage) override;
+        void displayIncomingMessage(const Common::ParsedMessage &parsedMessage) override;
     }; // TCPMessagingHandler
 } // IPK25ChatClient::Messaging::Handler
 

@@ -143,15 +143,6 @@ namespace IPK25ChatClient::Messaging::Handler
         std::unique_ptr<Builder::IMessageBuilder> mMessageBuilder;                         /**< Builds messages for sending.            */
         std::shared_ptr<Client::CommandParser::DisplayNameProvider> mDisplayNameProvider;  /**< Shared display name of the user.        */
         std::unique_ptr<Validators::IMessageValidator> mMessageValidator;                  /**< Validates received messages.            */
-
-        /**
-         * @brief Processes an incoming message.
-         * @details This method is responsible for handling a parsed message
-         *          and performing the appropriate action based on its type.
-         *
-         * @param parsedMessage The parsed message to process.
-         */
-        virtual void processIncomingMessage(const Common::ParsedMessage &parsedMessage) = 0;
     }; // MessagingHandlerBase
 } // IPK25ChatClient::Messaging::Handler
 

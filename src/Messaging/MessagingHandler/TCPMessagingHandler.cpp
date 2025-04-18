@@ -42,8 +42,8 @@ using namespace std;
 
 namespace IPK25ChatClient::Messaging::Handler
 {
-    void TcpMessagingHandler::processIncomingMessage(const ParsedMessage &parsedMessage) {
-        logger("processIncomingMessage() called with message type: %s", CastUtils::castEnumToString(parsedMessage.mType).c_str());
+    void TcpMessagingHandler::displayIncomingMessage(const ParsedMessage &parsedMessage) {
+        logger("displayIncomingMessage() called with message type: %s", CastUtils::castEnumToString(parsedMessage.mType).c_str());
 
         // React appropriately to received message
         switch(parsedMessage.mType) {
@@ -64,13 +64,13 @@ namespace IPK25ChatClient::Messaging::Handler
             default:
                 logger("Unrecognized message type: %s", CastUtils::castEnumToString(parsedMessage.mType).c_str());
                 throw InternalErrorException(
-                        "processIncomingMessage(): trying to proccess unsupported message type: " +
+                        "displayIncomingMessage(): trying to proccess unsupported message type: " +
                         CastUtils::castEnumToString(parsedMessage.mType), ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
                         );
         } // switch(parsedMessage.mType)
 
-        logger("processIncomingMessage() completed successfully");
-    } // TcpMessagingHandler::processIncomingMessage
+        logger("displayIncomingMessage() completed successfully");
+    } // TcpMessagingHandler::displayIncomingMessage
 } // IPK25ChatClient::Messaging::Handler
 
 /*** end of file TCPMessagingHandler.cpp ***/
