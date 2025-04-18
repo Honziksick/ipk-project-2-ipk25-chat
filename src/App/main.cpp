@@ -23,6 +23,7 @@
 
 #include "Facades/MainClientFacade.hpp"
 #include "Utilities/ExceptionHandler.hpp"
+#include "Utilities/SignalHandler.hpp"
 #include "Utilities/Logger.hpp"
 #include <exception>  // std::exception
 
@@ -32,6 +33,10 @@ using namespace std;
 int main(const int argc, char *argv[]) {
     logger("Starting IPK25 Chat Client application");
     try {
+        // Registers the signal handlers (SIGINT. SIGSEGV)
+        Utilities::SignalHandler::registerHandlers();
+
+        // Gives the flow control to the MainClientFacade
         Facades::MainClientFacade appFacade;
         appFacade.runChatClient(argc, argv);
     }
