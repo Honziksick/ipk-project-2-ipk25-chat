@@ -69,6 +69,11 @@ namespace IPK25ChatClient::Enums
         static constexpr auto INTERNAL_ERROR = "An unexpected internal error occurred during your chat session: ";
 
         /**
+         * @brief Phrase indicating the user is trying to enter another /auth command before server reply.
+         */
+        static constexpr auto AUTH_NO_REPLY = "It is not possible to enter another /auth command before receiving a reply on the previous command from the server first. ";
+
+        /**
          * @brief Phrase indicating the user is already authenticated.
          */
         static constexpr auto AUTH_AGAIN = "The user is already authenticated and cannot authenticate again. ";
@@ -132,6 +137,23 @@ namespace IPK25ChatClient::Enums
          * @brief Phrase indicating a parameter will be truncated to the maximum allowed length.
          */
         static constexpr auto TRUNCATION = "The invalid parameter will be shortened to the maximum allowed length. The truncated parameter is: ";
+
+        /**
+         * @brief Phrase indicating that the server isn't behaving properly.
+         */
+        static constexpr auto NOT_PROPER_BEHAVIOUR = "This is not a proper behaviour, which means the connection might be compromised. ";
+
+        /**
+         * @brief Phrase indicating a server reply was received in OPEN state, which isn't a proper behaviour.
+         */
+        static constexpr auto REPLY_IN_OPEN = "The client received an unexpected reply from the server while in OPEN state. ";
+
+        /**
+         * @brief Phrase indicating a server message was received in AUTH state, which isn't a proper behaviour.
+         */
+        static constexpr auto MSG_IN_AUTH = "The client received an unexpected message from the server while in AUTH state. ";
+
+
     }; // ClientInternalErrorPhrases
 } // IPK25ChatClient::Enums
 

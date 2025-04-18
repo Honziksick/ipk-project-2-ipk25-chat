@@ -143,8 +143,11 @@ namespace IPK25ChatClient::Enums::Mapping
             {ClientInternalErrorMessage::CLIENT_SEND_FAILURE, string(SEND_FAILURE) + string(SEND_ERROR_TERMINATE)},
             {ClientInternalErrorMessage::CLIENT_RECEIVE_FAILURE, string(RECEIVE_FAILURE) + string(SEND_ERROR_TERMINATE)},
             {ClientInternalErrorMessage::CLIENT_SERVER_CLOSURE, string(SERVER_CLOSURE) + string(JUST_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_AUTH_NO_REPLY, string(AUTH_NO_REPLY)},
             {ClientInternalErrorMessage::CLIENT_AUTH_AGAIN, string(AUTH_AGAIN)},
-            {ClientInternalErrorMessage::CLIENT_NOT_AUTH, string(NOT_AUTH)}
+            {ClientInternalErrorMessage::CLIENT_NOT_AUTH, string(NOT_AUTH)},
+            {ClientInternalErrorMessage::CLIENT_REPLY_IN_OPEN, string(REPLY_IN_OPEN) + string(NOT_PROPER_BEHAVIOUR) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_MSG_IN_AUTH, string(MSG_IN_AUTH) + string(NOT_PROPER_BEHAVIOUR) + string(SEND_ERROR_TERMINATE)}
         };
         return cMap;
     } // EnumMaps::getClientInternalErrorMessagesMap
