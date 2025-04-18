@@ -42,6 +42,11 @@ namespace IPK25ChatClient::Common
      */
     class ParsedMessage final {
     public:
+        /**
+         * @brief Default constructor for the `ParsedMessage` class.
+         * @details This constructor initializes the `mType` member with
+         *          the value `MessageType::UNKNOWN` and `mRefMessageId` with `0`.
+         */
         explicit ParsedMessage();
 
         Enums::MessageType mType;          /**< The type of the message (e.g., AUTH, MSG, BYE).                      */
