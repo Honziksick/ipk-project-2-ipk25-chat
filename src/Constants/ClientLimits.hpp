@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      06.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  This file defines various limits and constants used in the    *
  *               chat client.                                                  *
@@ -66,6 +66,9 @@ namespace IPK25ChatClient::Constants
         // Message content length
         static constexpr size_t MIN_MESSAGE_CONTENT_LENGTH = 1;        /**< Minimum length of the message content. */
         static constexpr size_t MAX_MESSAGE_CONTENT_LENGTH = 60000;    /**< Maximum length of the message content. */
+
+        static constexpr size_t MAX_TCP_PACKET_SIZE = 65535;           /**< Theoretical maximum size of TCP packet. */
+        static constexpr size_t MAX_UDP_PACKET_SIZE = 65535;           /**< Theoretical maximum size of UDP packet. */
 
         // Command structure
         static constexpr size_t EXPECTED_NUMBER_OF_AUTH_PARAMS = 3;    /**< Expected number of parameters for the /auth command (`/auth {Username} {Secret} {DisplayName}`). */
