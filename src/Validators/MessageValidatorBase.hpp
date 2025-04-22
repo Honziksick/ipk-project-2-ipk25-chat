@@ -57,7 +57,19 @@ namespace IPK25ChatClient::Validators
                                    Enums::ValidatorResult validationResult,
                                    std::string &commandParameter) override;
 
-    private:
+    protected:
+        /**
+         * @brief Maps a validation result to a boolean value.
+         *
+         * @details This method converts a `ValidatorResult` to a boolean value.
+         *          If the result is `ValidatorResult::OK`, it returns `true`.
+         *          For any other result, it returns `false`.
+         *
+         * @param partialResult The partial validation result to be mapped.
+         * @return `true` if the result is `ValidatorResult::OK`, otherwise `false`.
+         */
+        static bool mapValidatorResultToBool(Enums::ValidatorResult partialResult);
+
         /**
          * @brief Truncates a message parameter based on its type.
          *

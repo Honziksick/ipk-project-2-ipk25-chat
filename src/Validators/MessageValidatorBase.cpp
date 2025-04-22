@@ -25,6 +25,7 @@
  */
 
 #include "Validators/MessageValidatorBase.hpp"
+#include "Client/ClientOutput/ClientOutput.hpp"
 #include "Enums/MessageParameters.hpp"
 #include "Enums/ValidatorResults.hpp"
 #include "Constants/ClientLimits.hpp"
@@ -34,6 +35,7 @@
 #include "Utilities/Logger.hpp"
 #include <string>  // std::string
 
+using namespace IPK25ChatClient::Client::Output;
 using namespace IPK25ChatClient::Enums;
 using namespace IPK25ChatClient::Constants;
 using namespace IPK25ChatClient::Exceptions;
@@ -53,7 +55,14 @@ namespace IPK25ChatClient::Validators
             case ValidatorResult::OK:
                 return true;
             case ValidatorResult::PARAMETER_TOO_LONG:
-                return truncateMessageParameter(parameterType, commandParameter);
+                if(parameterType != MessageParameter::MESSAGE_CONTENT) {
+                    logger("Parameter is too long but not messageContent: display error message");
+                    ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_LENGTH);
+                    return false;
+                }
+                else {
+                    return truncateMessageParameter(parameterType, commandParameter);
+                }
             case ValidatorResult::INVALID:
                 return false;
             default:
@@ -66,6 +75,19 @@ namespace IPK25ChatClient::Validators
                         );
         }
     } // MessageValidatorBase::postProcessValidation
+
+    bool MessageValidatorBase::mapValidatorResultToBool(const ValidatorResult partialResult) {
+        switch(partialResult) {
+            case ValidatorResult::OK:
+                logger("Message and its message parameters validation SUCCEDDED: result: %s",
+                       CastUtils::castEnumToString(partialResult).c_str());
+                return true;
+            default:
+                logger("Message and its message parameters FAILED, mapping to ValidatorResult::INVALID: "
+                       "result: %s", CastUtils::castEnumToString(partialResult).c_str());
+                return false;
+        } // switch(partialResult)
+    } // MessageValidatorBase::resolvePartialValidatorResult
 
     bool MessageValidatorBase::truncateMessageParameter(const MessageParameter parameterType, string &commandParameter) {
         // Perform truncation based on the parameter type

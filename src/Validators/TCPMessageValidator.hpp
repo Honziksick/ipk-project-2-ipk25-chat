@@ -56,18 +56,6 @@ namespace IPK25ChatClient::Validators
 
     private:
         /**
-         * @brief Maps a validation result to a boolean value.
-         *
-         * @details This method converts a `ValidatorResult` to a boolean value.
-         *          If the result is `ValidatorResult::OK`, it returns `true`.
-         *          For any other result, it returns `false`.
-         *
-         * @param partialResult The partial validation result to be mapped.
-         * @return `true` if the result is `ValidatorResult::OK`, otherwise `false`.
-         */
-        static bool mapValidatorResultToBool(Enums::ValidatorResult partialResult);
-
-        /**
          * @brief Validates an AUTH message.
          *
          * @param parsedMessage The parsed AUTH message to validate.

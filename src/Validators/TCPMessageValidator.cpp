@@ -69,19 +69,6 @@ namespace IPK25ChatClient::Validators
         } // switch(parsedMessage.mType)
     } // TcpMessageValidator::validateMessage
 
-    bool TcpMessageValidator::mapValidatorResultToBool(const ValidatorResult partialResult) {
-        switch(partialResult) {
-            case ValidatorResult::OK:
-                logger("Message and its message parameters validation SUCCEDDED: result: %s",
-                       CastUtils::castEnumToString(partialResult).c_str());
-                return true;
-            default:
-                logger("Message and its message parameters FAILED, mapping to ValidatorResult::INVALID: "
-                       "result: %s", CastUtils::castEnumToString(partialResult).c_str());
-                return false;
-        } // switch(partialResult)
-    } // TcpMessageValidator::resolvePartialValidatorResult
-
     // AUTH message structure: AUTH/0 {Username}/1 AS/2 {DisplayName}/3 USING/4 {Secret}/5
     ValidatorResult TcpMessageValidator::validateAuthMessage(const ParsedMessage &parsedMessage) {
         // Check if the message has the expected number of fields
