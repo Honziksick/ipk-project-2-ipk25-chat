@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    19.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `SignalHandler` class, which is         *
  *               responsible for handling system signals in a safe and         *
@@ -35,7 +35,6 @@ namespace IPK25ChatClient::Utilities
 {
     // Initialization of the static atomic flags
     std::atomic<bool> SignalHandler::mSigintReceived{false};
-    std::atomic<bool> SignalHandler::mSigsegvReceived{false};
 
     void SignalHandler::registerHandlers() {
         logger("Registering signal handlers");
@@ -51,19 +50,16 @@ namespace IPK25ChatClient::Utilities
             mSigintReceived = true;
         }
         if(signal == SIGSEGV) {
-            mSigsegvReceived = true;
+            throw InternalErrorException(
+                    "Signal SIGSEGV received.",
+                    ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
+                    );
         }
     } // SignalHandler::handleSignal
 
     void SignalHandler::checkSignals() {
         if(mSigintReceived) {
             throw UserInterruptionException("Signal SIGINT received.");
-        }
-        if(mSigsegvReceived) {
-            throw InternalErrorException(
-                    "Signal SIGSEGV received.",
-                    ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
-                    );
         }
     } // SignalHandler::checkSignals
 } // IPK25ChatClient::Utilities

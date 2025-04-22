@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    19.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `SignalHandler` class, which is            *
  *               responsible for handling system signals in a safe and         *
@@ -65,7 +65,6 @@ namespace IPK25ChatClient::Utilities
         static void handleSignal(int signal);
 
         static std::atomic<bool> mSigintReceived; /**< Atomic flag for SIGINT signal. */
-        static std::atomic<bool> mSigsegvReceived; /**< Atomic flag for SIGSEGV signal. */
     }; // SignalHandler
 } // IPK25ChatClient::Utilities
 
