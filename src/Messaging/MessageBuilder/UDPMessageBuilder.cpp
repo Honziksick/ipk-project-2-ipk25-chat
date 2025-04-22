@@ -23,7 +23,7 @@
 
 #include "Messaging/Interfaces/IMessageBuilder.hpp"
 #include "Messaging/MessageBuilder/UDPMessageBuilder.hpp"
-#include "Messaging/MessageBuilder/MessageIdProvider.hpp"
+#include "Messaging/MessageBuilder/MessageIDProvider.hpp"
 #include "Common/ChatDataTypes.hpp"
 #include "Enums/MessageTypes.hpp"
 #include "Exceptions/ChatExceptions.hpp"
@@ -62,7 +62,7 @@ namespace IPK25ChatClient::Messaging::Builder
     } // UdpMessageBuilder::buildMessage
 
     void UdpMessageBuilder::appendZeroTerminatedContent(vector<uint8_t> &currentMessageContent, const string &contentToAppend) {
-        logger("Appending a messahe parameter with zero termination, called with contentToAppend=%s", contentToAppend.c_str());
+        logger("Appending a message parameter with zero termination, called with contentToAppend=%s", contentToAppend.c_str());
         currentMessageContent.insert(currentMessageContent.end(), contentToAppend.begin(), contentToAppend.end());
         currentMessageContent.emplace_back(0);
     } // UdpMessageBuilder::appendZeroTerminatedContent
@@ -72,35 +72,33 @@ namespace IPK25ChatClient::Messaging::Builder
 
         const uint16_t messageId = mMessageIdProvider->getNextMessageId();
         logger("Next message ID: %u", messageId);
-        const uint16_t networkByteOrder = htons(messageId); // Convert to network byte order (short)
 
         // Extraction and insertion of the 1st byte
-        const uint16_t shiftedOrder = networkByteOrder >> 8;     // 1) First we shift the value 8 bits right:
-                                                                 //       Before: XXXXXXXX YYYYYYYY
-                                                                 //       After:  00000000 XXXXXXXX
-        auto firstByte = static_cast<uint8_t>(shiftedOrder);     // 2) Then we select only the lower 8 bits: XXXXXXXX
-        currentMessageContent.emplace_back(firstByte);           // 3) Finally, we insert the first byte into the vector
+        const uint16_t shiftedOrder = messageId >> 8;         // 1) First we shift the value 8 bits right:
+                                                              //       Before: XXXXXXXX YYYYYYYY
+                                                              //       After:  00000000 XXXXXXXX
+        auto firstByte = static_cast<uint8_t>(shiftedOrder);  // 2) Then we select only the lower 8 bits: XXXXXXXX
+        currentMessageContent.emplace_back(firstByte);        // 3) Finally, we insert the first byte into the vector
 
 
         // Extraction and insertion of the 2nd byte
-        const uint16_t maskedOrder = networkByteOrder & 0x00FF;  // 1) First we apply a mask to isolate the lower 8 bits
-                                                                 //       Before: XXXXXXXX YYYYYYYY
-                                                                 //       After:  00000000 YYYYYYYY
-        auto secondByte = static_cast<uint8_t>(maskedOrder);     // 2) Then we select only the lower 8 bits: YYYYYYYY
-        currentMessageContent.emplace_back(secondByte);          // 3) Finally, we insert the second byte into the vector
+        const uint16_t maskedOrder = messageId & 0x00FF;      // 1) First we apply a mask to isolate the lower 8 bits
+                                                              //       Before: XXXXXXXX YYYYYYYY
+                                                              //       After:  00000000 YYYYYYYY
+        auto secondByte = static_cast<uint8_t>(maskedOrder);  // 2) Then we select only the lower 8 bits: YYYYYYYY
+        currentMessageContent.emplace_back(secondByte);       // 3) Finally, we insert the second byte into the vector
 
         logger("Message ID appended as network byte order: %u", messageId);
     } // UdpMessageBuilder::appendMessageIdAsNetworkByteOrder
 
     void UdpMessageBuilder::appendRefMessageIdAsNetworkByteOrder(vector<uint8_t> &currentMessageContent, const uint16_t refMessageId) {
         logger("Converting RefMessageId to network byte order, called with refMessageId=%u", refMessageId);
-        const uint16_t networkByteOrder = htons(refMessageId); // Convert to network byte order (short)
 
         // Extraction and insertion of the 1st byte
-        currentMessageContent.emplace_back(static_cast<uint8_t>(networkByteOrder >> 8));
+        currentMessageContent.emplace_back(static_cast<uint8_t>(refMessageId >> 8));
 
         // Extraction and insertion of the 2nd byte
-        currentMessageContent.emplace_back(static_cast<uint8_t>(networkByteOrder & 0x00FF));
+        currentMessageContent.emplace_back(static_cast<uint8_t>(refMessageId & 0x00FF));
 
         logger("Reference Message ID appended as network byte order: %u", refMessageId);
     } // UdpMessageBuilder::appendMessageIdAsNetworkByteOrder
