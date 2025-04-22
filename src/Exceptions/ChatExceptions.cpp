@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation file for the `ChatBaseException` class used    *
  *               in the IPK25 Chat Client project.                             *
@@ -34,7 +34,7 @@ using namespace std;
 namespace IPK25ChatClient::Exceptions
 {
     HelpRequestedException::HelpRequestedException(string detail,
-                                                   ClientInternalErrorMessage clientInternalError) noexcept
+                                                   const ClientInternalErrorMessage clientInternalError) noexcept
         : ChatBaseException{
             SUCCESS,
             ExceptionMessages::HELP_REQUESTED_MSG,
@@ -51,10 +51,19 @@ namespace IPK25ChatClient::Exceptions
             clientInternalError
         } {}
 
+    ServerSendByeException::ServerSendByeException(string detail,
+                                                   const ClientInternalErrorMessage clientInternalError) noexcept
+        : ChatBaseException{
+            SUCCESS,
+            ExceptionMessages::SERVER_SEND_BYE,
+            move(detail),
+            clientInternalError
+        } {}
+
     ServerDisconnectedException::ServerDisconnectedException(string detail,
                                                              const ClientInternalErrorMessage clientInternalError) noexcept
         : ChatBaseException{
-            SUCCESS,
+            SERVER_DISCONNECTED_ERROR,
             ExceptionMessages::SERVER_DISCONNECTED_MSG,
             move(detail),
             clientInternalError
@@ -132,11 +141,11 @@ namespace IPK25ChatClient::Exceptions
             clientInternalError
         } {}
 
-    TimeoutErrorException::TimeoutErrorException(string detail,
-                                                 const ClientInternalErrorMessage clientInternalError) noexcept
+    MessageLostErrorException::MessageLostErrorException(string detail,
+                                                         const ClientInternalErrorMessage clientInternalError) noexcept
         : ChatBaseException{
-            TIMEOUT_ERROR,
-            ExceptionMessages::TIMEOUT_ERROR_MSG,
+            MESSAGE_LOST_ERROR,
+            ExceptionMessages::MESSAGE_LOST_MSG,
             move(detail),
             clientInternalError
         } {}
@@ -146,6 +155,15 @@ namespace IPK25ChatClient::Exceptions
         : ChatBaseException{
             SUCCESS,
             ExceptionMessages::USER_INTERRUPTION_MSG,
+            move(detail),
+            clientInternalError
+        } {}
+
+    TimeoutErrorException::TimeoutErrorException(string detail,
+                                                 const ClientInternalErrorMessage clientInternalError) noexcept
+        : ChatBaseException{
+            TIMEOUT_ERROR,
+            ExceptionMessages::TIMEOUT_ERROR_MSG,
             move(detail),
             clientInternalError
         } {}

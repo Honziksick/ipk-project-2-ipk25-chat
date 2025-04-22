@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Header file for the `ChatExceptions` classes used in the      *
  *               IPK25 Chat Client project.                                    *
@@ -60,6 +60,22 @@ namespace IPK25ChatClient::Exceptions
         explicit EndOfFileException(std::string detail = "",
                                     Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
     }; // EndOfFileException
+
+    /**
+     * @class ServerSendByeException
+     * @brief Exception class used when server sends Bye message in UDP variant.
+     */
+    class ServerSendByeException final : public ChatBaseException {
+    public:
+        /**
+         * @brief Constructor for EndOfFileException.
+         *
+         * @param detail Additional information if needed.
+         * @param clientInternalError Client internal error message code.
+         */
+        explicit ServerSendByeException(std::string detail = "",
+                                        Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
+    }; // ServerSendByeException
 
     /**
      * @class ServerDisconnectedException
@@ -207,15 +223,32 @@ namespace IPK25ChatClient::Exceptions
     }; // UnestablishedConnectionErrorException
 
     /**
-     * @class TimeoutErrorException
+     * @class MessageLostErrorException
      * @brief Exception class for timeout errors.
      */
-    class TimeoutErrorException final : public ChatBaseException {
+    class MessageLostErrorException final : public ChatBaseException {
     public:
         /**
          * @brief Constructor for TimeoutErrorException.
          *
          * @param detail Additional information about the error.
+         * @param clientInternalError Client internal error message code.
+         */
+        explicit MessageLostErrorException(std::string detail = "",
+                                           Enums::ClientInternalErrorMessage clientInternalError = CLIENT_UNKNOWN) noexcept;
+    }; // MessageLostErrorException
+
+
+    /**
+     * @class TimeoutErrorException
+     * @brief Exception class used when reply 5s timeout is reached.
+     */
+    class TimeoutErrorException final : public ChatBaseException {
+    public:
+        /**
+         * @brief Constructor for EndOfFileException.
+         *
+         * @param detail Additional information if needed.
          * @param clientInternalError Client internal error message code.
          */
         explicit TimeoutErrorException(std::string detail = "",

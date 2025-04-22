@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains constant exception messages used in the    *
  *               IPK25 Chat Client project.                                    *
@@ -80,12 +80,22 @@ namespace IPK25ChatClient::Constants
         /**
          * @brief Error message for unestablished connection error.
          */
-        static constexpr auto UNESTABLISHED_ERROR_MSG = "The connection is not established even though it should be.";
+        static constexpr auto UNESTABLISHED_ERROR_MSG = "The connection is not established.";
 
         /**
          * @brief Error message for object constructor error.
          */
         static constexpr auto CONSTRUCTOR_ERROR_MSG = "An error occurred during the object construction process.";
+
+        /**
+         * @brief All retransmission attempts failed error message.
+         */
+        static constexpr auto MESSAGE_LOST_MSG = "All retransmission attempts failed.";
+
+        /**
+         * @brief Server send Bye message notification.
+         */
+        static constexpr auto SERVER_SEND_BYE = "Server send Bye message.";
 
         /**
          * @brief Error message for timeout error.

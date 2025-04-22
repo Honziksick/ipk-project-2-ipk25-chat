@@ -67,15 +67,16 @@ namespace IPK25ChatClient::Enums::Mapping
     const unordered_map<ExitCode, string> &EnumMaps::getExitCodeMap() {
         static const unordered_map<ExitCode, string> cMap = {
             {ExitCode::SUCCESS, "Success"},
-            {ExitCode::INVALID_ARGUMENT_ERROR, "Invalid Argument Error"},
-            {ExitCode::HOSTNAME_RESOLUTION_ERROR, "Hostname Resolution Error"},
             {ExitCode::INTERNAL_ERROR, "Internal Error"},
-            {ExitCode::CONNECTION_ERROR, "Socket Error"},
-            {ExitCode::PROTOCOL_ERROR, "Protocol Error"},
+            {ExitCode::INVALID_ARGUMENT_ERROR, "Invalid Argument Error"},
             {ExitCode::UNKNOWN_ERROR, "Unknown Error"},
-            {ExitCode::UNESTABLISHED_ERROR, "Unestablished connection"},
             {ExitCode::MESSAGE_LOST_ERROR, "Message lost"},
-            {ExitCode::TIMEOUT_ERROR, "Timeout Error"}
+            {ExitCode::PROTOCOL_ERROR, "Protocol Error"},
+            {ExitCode::SERVER_DISCONNECTED_ERROR, "Server disconnected error"},
+            {ExitCode::CONNECTION_ERROR, "General connection problem error"},
+            {ExitCode::UNESTABLISHED_ERROR, "Unestablished connection"},
+            {ExitCode::TIMEOUT_ERROR, "Timeout Error"},
+            {ExitCode::HOSTNAME_RESOLUTION_ERROR, "Hostname Resolution Error"}
         };
         return cMap;
     } // EnumMaps::getExitCodeMap

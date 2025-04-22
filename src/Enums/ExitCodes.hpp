@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      03.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `ExitCode` enum class, which is used to    *
  *               represent error and other exit codes in the IPK25 Chat        *
@@ -35,15 +35,17 @@ namespace IPK25ChatClient::Enums
      *          project.
      */
     enum class ExitCode {
-        SUCCESS                   = 0,    /**< Success exit code (EX_OK).                             */
-        INVALID_ARGUMENT_ERROR    = 64,   /**< Command line usage error (EX_USAGE).                   */
-        HOSTNAME_RESOLUTION_ERROR = 68,   /**< Hostname resolution error code (EX_NOHOST).            */
-        INTERNAL_ERROR            = 70,   /**< Internal error code (EX_SOFTWARE).                     */
-        CONNECTION_ERROR          = 71,   /**< Socket error code (EX_OSERR).                          */
-        PROTOCOL_ERROR            = 76,   /**< Protocol error (EPROTO).                               */
-        UNKNOWN_ERROR             = 78,   /**< Unknown error code (EX_CONFIG).                        */
-        UNESTABLISHED_ERROR       = 107,  /**< Connection is unexpectedly not established (ENOTCONN). */
-        TIMEOUT_ERROR             = 116,  /**< Connection timed out (ETIMEDOUT).                      */
+        SUCCESS                   = 0,     /**< Success exit code (on help, server bye, CTRL+C and CTRL+D).       */
+        INTERNAL_ERROR            = 1,     /**< Internal error code (EPERM).                                      */
+        INVALID_ARGUMENT_ERROR    = 22,    /**< Command line usage error (EINVAL).                                */
+        UNKNOWN_ERROR             = 42,    /**< Unknown error (The Answer to Life, the Universe, and Everything). */
+        MESSAGE_LOST_ERROR        = 61,    /**< Message lost error (ENODATA).                                     */
+        PROTOCOL_ERROR            = 71,    /**< Protocol error (EPROTO).                                          */
+        SERVER_DISCONNECTED_ERROR = 100,   /**< Server disconnected error (ENETDOWN).                             */
+        CONNECTION_ERROR          = 101,   /**< General connection problem error code (ENETUNREACH).              */
+        UNESTABLISHED_ERROR       = 107,   /**< Connection is unexpectedly not established (ENOTCONN).            */
+        TIMEOUT_ERROR             = 110,   /**< Connection timed out (ETIMEDOUT).                                 */
+        HOSTNAME_RESOLUTION_ERROR = 113,   /**< Hostname resolution error code (EHOSTUNREACH).                    */
     }; // ExitCode
 } // IPK25ChatClient::Enums
 
