@@ -33,8 +33,7 @@
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/CastUtils.hpp"
 #include "Utilities/Logger.hpp"
-#include <memory>    // std::unique_ptr, std::shared_ptr
-#include <unistd.h>  // close()
+#include <memory>  // std::unique_ptr, std::shared_ptr
 
 using namespace IPK25ChatClient::Messaging::Parser;
 using namespace IPK25ChatClient::Common;
@@ -64,21 +63,6 @@ namespace IPK25ChatClient::Networking
                     );
         }
     } // CommunicationHandlerBase::CommunicationHandlerBase
-
-    void CommunicationHandlerBase::closeConnection() {
-        // Check if the socket isn't already closed
-        if(*mSocketFd > SOCKET_CLOSED) {
-            logger("Performing graceful shutdown on socket 'FD = %d`", *mSocketFd);
-
-            gracefulShutdown(); // polymorphic (for UDP and TCP)
-            close(*mSocketFd);
-            *mSocketFd = SOCKET_CLOSED;
-            mIsConnected = DISCONNECTED;
-
-            logger("Socket 'FD = %d' has been closed.", *mSocketFd);
-            logger("Connection state set to: DISCONNECTED.");
-        }
-    } // CommunicationHandlerBase::closeConnection
 } // IPK25ChatClient::Networking
 
 /*** end of file CommunicationHandlerBase.cpp ***/

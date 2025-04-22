@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Interface for messaging handlers in the IPK25 Chat Client.    *
  *               Provides methods for processing incoming messages and         *
@@ -55,8 +55,10 @@ namespace IPK25ChatClient::Messaging::Handler
          * @brief Closes the active connection.
          * @details This method gracefully terminates the connection and release
          *          any associated resources.
+         *
+         * @param sendBye Flag indicating whether to send a BYE message before termination.
          */
-        virtual void closeConnection() = 0;
+        virtual void closeConnection(bool sendBye) = 0;
 
         /**
          * @brief Receives a message from the server and processes it.

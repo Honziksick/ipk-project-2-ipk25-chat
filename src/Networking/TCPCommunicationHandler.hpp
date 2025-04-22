@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  This file declares the `TcpCommunicationHandler` class,       *
  *               which implements TCP-based communication for the IPK25 Chat   *
@@ -30,6 +30,7 @@
 #include "Networking/CommunicationHandlerBase.hpp"
 #include "Common/ParsedMessage.hpp"
 #include "Common/ChatDataTypes.hpp"
+#include <vector>  // std::vector
 
 namespace IPK25ChatClient::Networking
 {
@@ -56,14 +57,13 @@ namespace IPK25ChatClient::Networking
         ~TcpCommunicationHandler() override;
 
         /**
-         * @brief Opens a TCP connection to the server.
-         * @details This method resolves the server's hostname or IPv4 address
-         *          and attempts to establish a TCP connection. If the connection
-         *          is already established, it logs the status and returns without
-         *          performing any action. If the connection fails for all resolved
-         *          addresses, it throws a `ConnectionErrorException`.
+         * @brief Closes the current connection.
+         * @details This method checks if the socket is still open and performs
+         *          a graceful shutdown before closing the socket.
+         *
+         * @param sendBye Flag indicating whether to send a BYE message before termination.
          */
-        void openConnection() override;
+        void closeConnection(bool sendBye) override;
 
         /**
          * @brief Sends a message to the server.
@@ -87,15 +87,16 @@ namespace IPK25ChatClient::Networking
          */
         std::vector<Common::ParsedMessage> receiveMessages() override;
 
-    private:
         /**
-         * @brief Performs a graceful shutdown of the TCP connection.
-         * @details This method attempts to terminate the TCP connection
-         *          gracefully by sending a TCP FIN packet. If the shutdown
-         *          operation fails, it throws a `ConnectionErrorException`.
+         * @brief Opens TCP connection to the server.
+         * @details This method resolves the server's hostname or IPv4 address
+         *          and attempts to establish a TCP connection. If the connection
+         *          is already established, it logs the status and returns without
+         *          performing any action. If the connection fails for all resolved
+         *          addresses, it throws a `ConnectionErrorException`.
          */
-        void gracefulShutdown() override;
-    }; // TCPCommunicationHandler
+        void openConnection() override;
+    };
 } // IPK25ChatClient::Networking
 
 #endif // TCP_COMMUNICATION_HANDLER_HPP

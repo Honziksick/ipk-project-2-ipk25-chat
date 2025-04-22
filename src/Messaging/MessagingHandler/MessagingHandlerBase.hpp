@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Base class for messaging handlers in the IPK25 Chat Client.   *
  *               Provides common functionality for derived messaging handler   *
@@ -75,8 +75,10 @@ namespace IPK25ChatClient::Messaging::Handler
          * @brief Closes the active connection.
          * @details This method gracefully terminates the connection and release
          *          any associated resources.
+         *
+         * @param sendBye Flag indicating whether to send a BYE message before termination.
          */
-        void closeConnection() override;
+        void closeConnection(bool sendBye) override;
 
         /**
          * @brief Receives a message from the server and processes it.
@@ -140,7 +142,7 @@ namespace IPK25ChatClient::Messaging::Handler
 
     protected:
         std::unique_ptr<Networking::ICommunicationHandler> mCommunicationHandler;          /**< Handles communication over the network. */
-        std::unique_ptr<Builder::IMessageBuilder> mMessageBuilder;                         /**< Builds messages for sending.            */
+        std::shared_ptr<Builder::IMessageBuilder> mMessageBuilder;                         /**< Builds messages for sending.            */
         std::shared_ptr<Client::CommandParser::DisplayNameProvider> mDisplayNameProvider;  /**< Shared display name of the user.        */
         std::unique_ptr<Validators::IMessageValidator> mMessageValidator;                  /**< Validates received messages.            */
     }; // MessagingHandlerBase

@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    16.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  This file declares the `CommunicationHandlerBase` class,      *
  *               which serves as a base class for handling both TCP and UDP    *
@@ -60,14 +60,6 @@ namespace IPK25ChatClient::Networking
          */
         ~CommunicationHandlerBase() override = default;
 
-        /**
-         * @brief Closes the current connection.
-         *
-         * @details This method checks if the socket is still open and performs
-         *          a graceful shutdown before closing the socket.
-         */
-        void closeConnection() override;
-
     protected:
         static constexpr int SOCKET_CLOSED{-1};     /**< Constant representing a closed socket.      */
         static constexpr bool CONNECTED{true};      /**< Constant representing a connected state.    */
@@ -78,14 +70,6 @@ namespace IPK25ChatClient::Networking
         bool mIsConnected;               /**< Connection status flag.    */
         std::string mServerAddress;      /**< Address of the server.     */
         uint16_t mServerPort;            /**< Port number of the server. */
-
-        /**
-         * @brief Performs a graceful shutdown of the connection.
-         *
-         * @details This method must be implemented by derived classes to handle
-         *          protocol-specific graceful termination procedures.
-         */
-        virtual void gracefulShutdown() = 0;
     }; // CommunicationHandlerBase
 } // IPK25ChatClient::Networking
 

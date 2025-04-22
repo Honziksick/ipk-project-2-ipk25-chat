@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `MessagingHandlerBase` class, which     *
  *               provides common functionality for messaging handlers in the   *
@@ -55,14 +55,14 @@ namespace IPK25ChatClient::Messaging::Handler
         : mDisplayNameProvider{displayNameProvider} {
         // Initialized the CommunicationHandler, MessageBuilder and MessageValidator based on the transport protocol type
         if(commandLineOptions.mTransportProtocol == TransportProtocolType::TCP) {
+            mMessageBuilder = make_shared<TcpMessageBuilder>();
             mCommunicationHandler = make_unique<TcpCommunicationHandler>(commandLineOptions, socketFd);
-            mMessageBuilder = make_unique<TcpMessageBuilder>();
             mMessageValidator = make_unique<TcpMessageValidator>();
             logger("Initialized CommunicationHandler, MessageBuilder and MessageValidator: TCP");
         }
         else if(commandLineOptions.mTransportProtocol == TransportProtocolType::UDP) {
-            mCommunicationHandler = make_unique<UdpCommunicationHandler>(commandLineOptions, socketFd);
-            mMessageBuilder = make_unique<UdpMessageBuilder>();
+            mMessageBuilder = make_shared<UdpMessageBuilder>();
+            mCommunicationHandler = make_unique<UdpCommunicationHandler>(commandLineOptions, socketFd, mMessageBuilder, mDisplayNameProvider);
             mMessageValidator = make_unique<UdpMessageValidator>();
             logger("Initialized CommunicationHandler, MessageBuilder and MessageValidator: UDP");
         }
@@ -78,8 +78,8 @@ namespace IPK25ChatClient::Messaging::Handler
         mCommunicationHandler->openConnection();
     } // MessagingHandlerBase::openConnection
 
-    void MessagingHandlerBase::closeConnection() {
-        mCommunicationHandler->closeConnection();
+    void MessagingHandlerBase::closeConnection(const bool sendBye) {
+        mCommunicationHandler->closeConnection(sendBye);
     } // MessagingHandlerBase::closeConnection
 
     vector<ParsedMessage> MessagingHandlerBase::receiveMessages() {
@@ -91,7 +91,7 @@ namespace IPK25ChatClient::Messaging::Handler
 
         // Validate parsed messages one-by-one
         for(auto &message : parsedMessages) {
-            logger("Validating message type: %s", message.mFields[0].c_str());
+            logger("Validating message type: %s", CastUtils::castEnumToString(message.mType).c_str());
             mMessageValidator->validateMessage(message);
         }
 

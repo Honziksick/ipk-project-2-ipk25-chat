@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  This file contains the implementation of the                  *
  *               `TcpCommunicationHandler` class, which is responsible for     *
@@ -21,8 +21,8 @@
 /**
  * @file TCPCommunicationHandler.cpp
  * @author Jan Kalina \<xkalinj00>
- * @brief Implementation of the `TcpCommunicationHandler` class for TCP-specific
- *        communication methods.
+ * @brief Implementation of the `TcpCommunicationHandler` class for
+ *        TCP-specific communication methods.
  */
 
 #include "Networking/TCPCommunicationHandler.hpp"
@@ -36,10 +36,9 @@
 #include <string>        // std::string
 #include <vector>        // std::vector
 #include <variant>       // std::holds_alternative<>(), std::get<>()
-#include <sys/socket.h>  // socket(), connect(), send(), recv()
-#include <netdb.h>       // addrinfo, freeaddrinfo()
-#include <unistd.h>      // close()
-#include <cstring>       // strerror()
+#include <cstring>       // std::strerror()
+#include <sys/socket.h>  // send(), recv()
+#include <netdb.h>       // addrinfo
 
 using namespace IPK25ChatClient::Client::Output;
 using namespace IPK25ChatClient::Messaging;
@@ -53,13 +52,13 @@ using namespace std;
 namespace IPK25ChatClient::Networking
 {
     TcpCommunicationHandler::~TcpCommunicationHandler() {
-        TcpCommunicationHandler::closeConnection();
+        TcpCommunicationHandler::closeConnection(false);
     } // TcpCommunicationHandler::~TcpCommunicationHandler
 
     void TcpCommunicationHandler::openConnection() {
         logger("Starting TCP connection process to server: %s on port: %d", mServerAddress.c_str(), mServerPort);
 
-        // Check if the connection is already established
+        // Check if the connection isn't already established
         if(mIsConnected) {
             logger("Connection already established. No need to open a new connection.");
             return;
@@ -67,7 +66,6 @@ namespace IPK25ChatClient::Networking
 
         // Resolve the server hostname or IPv4 address
         addrinfo *pResult = CommunicationUtils::resolveHostname(mServerAddress, SOCK_STREAM, mServerPort);
-
         if(!pResult) {
             logger("NULL pointer returned by 'resolveHostname(): hostname resolution failed.");
             throw HostnameResolutionErrorException(
@@ -112,6 +110,29 @@ namespace IPK25ChatClient::Networking
                 );
     } // TcpCommunicationHandler::openConnection
 
+    void TcpCommunicationHandler::closeConnection([[maybe_unused]] const bool sendBye) {
+        // Check if the socket isn't already closed
+        if(*mSocketFd > SOCKET_CLOSED) {
+            logger("Closing socket 'FD = %d`", *mSocketFd);
+
+            // Attempt a graceful shutdown by sending a TCP FIN packet.
+            if(shutdown(*mSocketFd, SHUT_WR) < 0) {
+                logger("Graceful shutdown failed on socket 'FD = %d', error: %s", *mSocketFd, strerror(errno));
+            }
+            else {
+                logger("Graceful shutdown successful on socket 'FD = %d'", *mSocketFd);
+            }
+
+            // Close the socket
+            logger("Socket 'FD = %d' has been closed.", *mSocketFd);
+            close(*mSocketFd);
+            *mSocketFd = SOCKET_CLOSED;
+
+            logger("Connection state set to: DISCONNECTED.");
+            mIsConnected = DISCONNECTED;
+        }
+    } // TcpCommunicationHandler::closeConnection
+
     void TcpCommunicationHandler::sendMessage(const MessageContent messageContent) {
         // Extract the string from the MessageContent variant
         string contentToSend;
@@ -134,6 +155,8 @@ namespace IPK25ChatClient::Networking
                     ClientInternalErrorMessage::CLIENT_CONNECTION_ERROR
                     );
         }
+
+        logger("Sending content: %s", contentToSend.c_str());
 
         // Send the message
         ssize_t bytesSentTotal = 0;
@@ -178,8 +201,8 @@ namespace IPK25ChatClient::Networking
                     );
         }
 
-        // Allocate a buffer for receiving data (+1 to indicate possible overflow afterwards)
-        constexpr size_t bufferSize{ClientLimits::MAX_MESSAGE_CONTENT_LENGTH + 1};
+        // Allocate a buffer for receiving data
+        constexpr size_t bufferSize{ClientLimits::MAX_TCP_PACKET_SIZE};
         char receiveBuffer[bufferSize];
         string accumulator;
 
@@ -215,7 +238,7 @@ namespace IPK25ChatClient::Networking
         logger("Attempting to parse the messages from the accumulator. Current accumulator: %s", accumulator.c_str());
 
         vector<ParsedMessage> receivedMessages;
-        if(optional<vector<ParsedMessage>> parsedMessages = mMessageParser->parseIncomingMessages(accumulator)) {
+        if(const optional<vector<ParsedMessage>> parsedMessages = mMessageParser->parseIncomingMessages(accumulator)) {
             logger("All incomming messages parsed. Total messages received: %zu", receivedMessages.size());
             for(const auto &message : *parsedMessages) {
                 receivedMessages.emplace_back(message);
@@ -227,16 +250,6 @@ namespace IPK25ChatClient::Networking
 
         return receivedMessages;
     } // TcpCommunicationHandler::receiveMessages
-
-    void TcpCommunicationHandler::gracefulShutdown() {
-        // Attempt a graceful shutdown by sending a TCP FIN packet.
-        if(shutdown(*mSocketFd, SHUT_WR) < 0) {
-            logger("Graceful shutdown failed on socket 'FD = %d', error: %s", *mSocketFd, strerror(errno));
-        }
-        else {
-            logger("Graceful shutdown successful on socket 'FD = %d'", *mSocketFd);
-        }
-    } // TcpCommunicationHandler::gracefulShutdown
 } // IPK25ChatClient::Networking
 
 /*** end of file TCPCommunicationHandler.cpp ***/

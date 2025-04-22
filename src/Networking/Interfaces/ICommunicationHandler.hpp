@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    17.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  This file defines the `ICommunicationHandler` interface,      *
  *               which provides an abstraction for managing both TCP and UDP   *
@@ -57,11 +57,12 @@ namespace IPK25ChatClient::Networking
 
         /**
          * @brief Closes the active connection.
-         *
          * @details This method gracefully terminates the connection and release
          *          any associated resources.
+         *
+         * @param sendBye Flag indicating whether to send a BYE message before termination.
          */
-        virtual void closeConnection() = 0;
+        virtual void closeConnection(bool sendBye) = 0;
 
         /**
          * @brief Sends a message to the server.
