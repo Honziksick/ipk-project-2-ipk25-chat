@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `TcpClientFsm` class, which represents  *
  *               the finite state machine (FSM) for managing client-side       *
@@ -31,9 +31,8 @@
 #include "Common/ParsedMessage.hpp"
 #include "Exceptions/ChatBaseException.hpp"
 #include "Exceptions/ChatExceptions.hpp"
-#include "Enums/ClientFsmStates.hpp"
+#include "Enums/ClientFSMStates.hpp"
 #include "Enums/UserCommandTypes.hpp"
-#include "Enums/MessageTypes.hpp"
 #include "Constants/MessageFields.hpp"
 #include "Constants/MessageKeywords.hpp"
 #include "Utilities/CastUtils.hpp"
@@ -72,7 +71,7 @@ namespace IPK25ChatClient::Client::FSM
                 setupPollFd(fdWatcher);
 
                 // Wait for events on the file descriptors
-                const int eventCount = pollEvents(fdWatcher);
+                const int eventCount = pollEvents(fdWatcher, POLL_INFINITE_TIMEOUT_MS);
 
                 // Check if an event occured during poll()
                 if(eventCount == 0) {
@@ -148,145 +147,12 @@ namespace IPK25ChatClient::Client::FSM
         }
     } // TcpClientFsm::run
 
-    void TcpClientFsm::executeUserCommand(const UserCommand &userCommand) {
-        if(mCurrentState != ClientFsmState::END) {
-            switch(userCommand.mCommandType) {
-                case UserCommandType::AUTH:
-                    logger("Processing user /auth userCommand.");
-                    onUserAuthRequested(userCommand);
-                    break;
-                case UserCommandType::JOIN:
-                    logger("Processing user /join userCommand.");
-                    onUserJoinRequested(userCommand);
-                    break;
-                case UserCommandType::RENAME:
-                    logger("User /rename userCommand already processed in `CommandParser`.");
-                // Renaming is done in the CommandParser
-                    break;
-                case UserCommandType::HELP:
-                    logger("Processing user /help userCommand.");
-                    onUserHelpRequested();
-                    break;
-                case UserCommandType::MESSAGE:
-                    logger("Processing user /msg userCommand (user message).");
-                    onUserMsgRequested(userCommand);
-                    break;
-                case UserCommandType::BYE:
-                    logger("Processing user /bye userCommand.");
-                    onUserByeRequested();
-                    break;
-                default:
-                    logger("Processing invalid userCommand: %s",
-                           CastUtils::castEnumToString(userCommand.mCommandType).c_str());
-                    ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_BAD_COMMAND);
-                    break;
-            } // switch(userCommand.mCommandType)
-        } // if(mCurrentState != ClientFsmState::END)
-    } // TcpClientFsm::executeUserCommand
-
-    void TcpClientFsm::processServerMessage(const ParsedMessage &receivedMessage) {
-        switch(receivedMessage.mType) {
-            case MessageType::REPLY:
-                logger("Processing server /reply message.");
-                onServerReply(receivedMessage);
-                break;
-            case MessageType::MSG:
-                logger("Processing server /msg message.");
-                onServerMsg(receivedMessage);
-                break;
-            case MessageType::ERR:
-                logger("Processing server /err message.");
-                onServerErr(receivedMessage);
-                break;
-            case MessageType::BYE:
-                logger("Processing server /bye message.");
-                onServerBye();
-                break;
-            default:
-                logger("Received unrecognized server message type: %s",
-                       CastUtils::castEnumToString(receivedMessage.mType).c_str());
-                break;
-        } // switch(receivedMessage.mType)
-    } // TcpClientFsm::processServerMessage
-
-    void TcpClientFsm::onUserAuthRequested(const UserCommand &userCommand) {
-        logger("/auth userCommand requested.");
-
-        // AUTH userCommand used in an invalid state
-        if(mCurrentState != ClientFsmState::START && mCurrentState != ClientFsmState::AUTH) {
-            logger("/auth userCommand used in an invalid state: %s",
-                   CastUtils::castEnumToString(mCurrentState).c_str());
-            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_AUTH_AGAIN);
-        }
-        // Can't enter another AUTH userCommand without an REPLY from the server first
-        else if(!mReceivedAuthReply) {
-            logger("Can't enter another AUTH userCommand without an REPLY from the server first.");
-            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_AUTH_NO_REPLY);
-        }
-        // Process the AUTH userCommand
-        else {
-            // Send the AUTH message to the server and wait for reply
-            mMessagingHandler->sendAuthMessage(userCommand.mUsername, userCommand.mDisplayName, userCommand.mSecret);
-            mReceivedAuthReply = false;
-            logger("The 'mReceivedAuthReply' flag is set to FALSE. Waiting for server reply.");
-
-            // Set the display name
-            mDisplayNameProvider->setDisplayName(userCommand.mDisplayName);
-            logger("Display name set to: %s", userCommand.mDisplayName.c_str());
-
-            // Transition from START to AUTH
-            if(mCurrentState == ClientFsmState::START) {
-                logger("Transition from START to AUTH state on user /auth userCommand.");
-                updateCurrentState(ClientFsmState::AUTH);
-            }
-            logger("/auth userCommand processed successfully.");
-        }
-    } // TcpClientFsm::onUserAuthRequested
-
-    void TcpClientFsm::onUserJoinRequested(const UserCommand &userCommand) {
-        logger("/join userCommand requested.");
-
-        // Process the JOIN userCommand
-        if(mCurrentState == ClientFsmState::OPEN) {
-            mMessagingHandler->sendJoinMessage(userCommand.mChannelId);
-
-            logger("Transition from OPEN to JOIN state on user /join userCommand.");
-            updateCurrentState(ClientFsmState::JOIN);
-
-            logger("/join userCommand processed successfully.");
-        }
-        // JOIN userCommand used in an invalid state
-        else {
-            logger("/join userCommand used in an invalid state: %s",
-                   CastUtils::castEnumToString(mCurrentState).c_str());
-            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_NOT_AUTH);
-        }
-    } // TcpClientFsm::onUserJoinRequested
-
-    void TcpClientFsm::onUserMsgRequested(const UserCommand &userCommand) {
-        logger("/msg userCommand requested.");
-
-        // Process the MSG userCommand
-        if(mCurrentState == ClientFsmState::OPEN) {
-            mMessagingHandler->sendMsgMessage(userCommand.mMessageContent);
-
-            logger("No transition done. Staying in OPEN state on user /msg userCommand.");
-            logger("/msg userCommand processed successfully.");
-        }
-        // MSG userCommand used in an invalid state
-        else {
-            logger("/msg userCommand used in an invalid state: %s",
-                   CastUtils::castEnumToString(mCurrentState).c_str());
-            ClientOutput::printClientInternalError(ClientInternalErrorMessage::CLIENT_NOT_AUTH);
-        }
-    } // TcpClientFsm::onUserMsgRequested
-
     void TcpClientFsm::onUserByeRequested() {
         logger("/bye command requested.");
 
         // Terminate gracefully
         mMessagingHandler->sendByeMessage();
-        mMessagingHandler->closeConnection();
+        mMessagingHandler->closeConnection(false);
 
         // Transition from current state to END state
         logger("Transition from %s to END state on user /bye command.",
@@ -295,39 +161,6 @@ namespace IPK25ChatClient::Client::FSM
 
         logger("/bye command processed successfully.");
     } // TcpClientFsm::onUserByeRequested
-
-    void TcpClientFsm::onUserHelpRequested() {
-        logger("/help command requested.");
-
-        ClientOutput::printClientHelp();
-
-        logger("/help command processed successfully.");
-    } // TcpClientFsm::onUserHelpRequested
-
-    void TcpClientFsm::onUserErrRequested(const ChatBaseException &e, const bool sendErrMessage) {
-        logger("/err command requested.");
-
-        // Print the error message to the user
-        ClientOutput::printClientInternalError(e.clientInternalError());
-
-        // Send the error message to the server if requested
-        if(mCurrentState != ClientFsmState::START &&
-            mCurrentState != ClientFsmState::JOIN &&
-            mCurrentState != ClientFsmState::END) {
-            // Send the error message to the server if requested
-            if(sendErrMessage) {
-                logger("Error message sent to server.");
-                mMessagingHandler->sendErrMessage(string(e.what()) + " " + e.detail());
-            }
-            else {
-                logger("Error message not sent to server.");
-            }
-
-            // Terminate gracefully
-            mMessagingHandler->closeConnection();
-        }
-        logger("/help command processed successfully.");
-    } // TcpClientFsm::onUserErrRequested
 
     void TcpClientFsm::onServerReply(const ParsedMessage &receivedMessage) {
         const auto result = receivedMessage.mFields[MessageFields::TCP_REPLY_RESULT_KEYWORD_INDEX];
@@ -348,10 +181,10 @@ namespace IPK25ChatClient::Client::FSM
                 logger("The 'mReceivedAuthReply' flag is set to TRUE. Reply on AUTH received.");
 
                 // Displays the reply to the user
-                logger("Displaying message type: %s", receivedMessage.mFields[0].c_str());
+                logger("Displaying message type: %s", CastUtils::castEnumToString(receivedMessage.mType).c_str());
                 mMessagingHandler->displayIncomingMessage(receivedMessage);
 
-                // Resolve teh reply based on the result
+                // Resolve the reply based on the result
                 if(StringUtils::compareKeywordsCaseInsesitive(result, MessageKeywordsLowerCase::OK_LC)) {
                     logger("Transition from AUTH to OPEN state on user /reply OK received.");
                     updateCurrentState(ClientFsmState::OPEN);
@@ -363,7 +196,7 @@ namespace IPK25ChatClient::Client::FSM
             }
             case ClientFsmState::JOIN: {
                 // Displays the reply to the user
-                logger("Displaying message type: %s", receivedMessage.mFields[0].c_str());
+                logger("Displaying message type: %s", CastUtils::castEnumToString(receivedMessage.mType).c_str());
                 mMessagingHandler->displayIncomingMessage(receivedMessage);
 
                 logger("Transition from JOIN to OPEN state on user /reply received.");
@@ -372,7 +205,7 @@ namespace IPK25ChatClient::Client::FSM
             }
             case ClientFsmState::OPEN: {
                 // Displays the reply to the user
-                logger("Displaying message type: %s", receivedMessage.mFields[0].c_str());
+                logger("Displaying message type: %s", CastUtils::castEnumToString(receivedMessage.mType).c_str());
                 mMessagingHandler->displayIncomingMessage(receivedMessage);
 
                 logger("/reply command processed successfully. It is not allowed in the "
@@ -390,46 +223,12 @@ namespace IPK25ChatClient::Client::FSM
         logger("/reply command processed successfully.");
     } // TcpClientFsm::onServerReply
 
-    void TcpClientFsm::onServerMsg(const ParsedMessage &receivedMessage) {
-        logger("Server /msg received in the %s state.",
-               CastUtils::castEnumToString(mCurrentState).c_str());
-
-        // We will react based on current FSM state
-        switch(mCurrentState) {
-            case ClientFsmState::START: {
-                // This is an undefined server behaviour, so i decided to ignore
-                // any messages received in the START state.
-                logger("Server /msg received in START state. Undefined behaviour. Ignoring.");
-                break;
-            }
-            case ClientFsmState::AUTH: {
-                // Displays the message to the user
-                logger("Displaying message type: %s", receivedMessage.mFields[0].c_str());
-                mMessagingHandler->displayIncomingMessage(receivedMessage);
-
-                logger("/msg command processed successfully. It is not allowed "
-                        "in the AUTH state, so exception will be thrown.");
-                throw ProtocolErrorException(
-                        "Server /msg received in AUTH state.",
-                        ClientInternalErrorMessage::CLIENT_MSG_IN_AUTH
-                        );
-            }
-            case ClientFsmState::OPEN:
-            case ClientFsmState::JOIN:
-                // Displays the message to the user
-                logger("Displaying message type: %s", receivedMessage.mFields[0].c_str());
-                mMessagingHandler->displayIncomingMessage(receivedMessage);
-            default:
-                break;
-        } // switch(mCurrentState)
-    } // TcpClientFsm::onServerMsg
-
     void TcpClientFsm::onServerErr(const ParsedMessage &receivedMessage) {
         logger("Server /err received in the %s state.",
                CastUtils::castEnumToString(mCurrentState).c_str());
 
         // Displays the error to the user
-        logger("Displaying message type: %s", receivedMessage.mFields[0].c_str());
+        logger("Displaying message type: %s", CastUtils::castEnumToString(receivedMessage.mType).c_str());
         mMessagingHandler->displayIncomingMessage(receivedMessage);
 
         // Execute a FSM transition
@@ -451,6 +250,10 @@ namespace IPK25ChatClient::Client::FSM
 
         logger("/bye command processed successfully.");
     } // TcpClientFsm::onServerBye
+
+    void TcpClientFsm::activateReplyDeadline() {
+        // Not implemented in TCP
+    } // TcpClientFsm::activateReplyDeadline
 } // IPK25ChatClien::Client::FSM
 
 /*** end of file TCPClientFSM.cpp ***/

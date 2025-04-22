@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      15.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Declaration of the `ClientFsmBase` base class for the client  *
  *               finite state machine (FSM). It provides common functionality  *
@@ -68,12 +68,13 @@ namespace IPK25ChatClient::Client::FSM
         ~ClientFsmBase() override = default;
 
     protected:
-        bool mReceivedAuthReply;                       /**< Flag indicating if the server replied on the AUTH message.        */
-        std::shared_ptr<int> mSocketFd;                /**< Socket file descriptor shared with the MessagingHandler.          */
-        Enums::ClientFsmState mCurrentState;           /**< Current state of the FSM.                                         */
-        static constexpr int POLL_FD_COUNT{2};         /**< Number of file descriptors to poll.                               */
-        static constexpr size_t POLL_STDIN_INDEX{0};   /**< Index for the standard input file descriptor in the pollfd array. */
-        static constexpr size_t POLL_SOCKET_INDEX{1};  /**< Index for the socket file descriptor in the pollfd array.         */
+        bool mReceivedAuthReply;                            /**< Flag indicating if the server replied on the AUTH message.        */
+        std::shared_ptr<int> mSocketFd;                     /**< Socket file descriptor shared with the MessagingHandler.          */
+        Enums::ClientFsmState mCurrentState;                /**< Current state of the FSM.                                         */
+        static constexpr int POLL_FD_COUNT{2};              /**< Number of file descriptors to poll.                               */
+        static constexpr size_t POLL_STDIN_INDEX{0};        /**< Index for the standard input file descriptor in the pollfd array. */
+        static constexpr size_t POLL_SOCKET_INDEX{1};       /**< Index for the socket file descriptor in the pollfd array.         */
+        static constexpr int POLL_INFINITE_TIMEOUT_MS{-1};  /**< Timeout value for the `poll()` system call (`-1` means infinite). */
         std::shared_ptr<CommandParser::DisplayNameProvider> mDisplayNameProvider;  /**< Display name provider of the user for logging purposes. */
         std::unique_ptr<CommandParser::IUserCommandParser> mUserCommandParser;     /**< User command parser for handling user input.            */
         std::unique_ptr<Messaging::Handler::IMessagingHandler> mMessagingHandler;  /**< Messaging handler for sending and receiving messages.   */
@@ -110,11 +111,12 @@ namespace IPK25ChatClient::Client::FSM
          *
          * @param fdWatcher Pointer to an array of pollfd structures that specify
          *                  the file descriptors and events to monitor.
+         * @param pollTimeoutMs Timeout value for the poll operation in milliseconds.
          *
          * @return The number of file descriptors with events, or throws
          *         an exception if an error occurs.
          */
-        static int pollEvents(pollfd *fdWatcher);
+        static int pollEvents(pollfd *fdWatcher, int pollTimeoutMs);
 
         /**
          * @brief Executes a user command based on the current state of the FSM.
@@ -126,7 +128,7 @@ namespace IPK25ChatClient::Client::FSM
          * @param userCommand The user command to be executed, containing its
          *                    type and any associated data.
          */
-        virtual void executeUserCommand(const Common::UserCommand &userCommand) = 0;
+        void executeUserCommand(const Common::UserCommand &userCommand);
 
         /**
          * @brief Processes a server message based on its type.
@@ -136,7 +138,7 @@ namespace IPK25ChatClient::Client::FSM
          *
          * @param receivedMessage The parsed message received from the server.
          */
-        virtual void processServerMessage(const Common::ParsedMessage &receivedMessage) = 0;
+        void processServerMessage(const Common::ParsedMessage &receivedMessage);
 
         /**
          * @brief Handles the `/auth` command from the user.
@@ -147,7 +149,7 @@ namespace IPK25ChatClient::Client::FSM
          *
          * @param userCommand The user command containing the authentication details.
          */
-        virtual void onUserAuthRequested(const Common::UserCommand &userCommand) = 0;
+        void onUserAuthRequested(const Common::UserCommand &userCommand);
 
         /**
          * @brief Handles the `/join` command from the user.
@@ -158,7 +160,7 @@ namespace IPK25ChatClient::Client::FSM
          *
          * @param userCommand The user command containing the channel information.
          */
-        virtual void onUserJoinRequested(const Common::UserCommand &userCommand) = 0;
+        void onUserJoinRequested(const Common::UserCommand &userCommand);
 
         /**
          * @brief Handles the `/msg` command from the user.
@@ -169,7 +171,7 @@ namespace IPK25ChatClient::Client::FSM
          *
          * @param userCommand The user command containing the message content.
          */
-        virtual void onUserMsgRequested(const Common::UserCommand &userCommand) = 0;
+        void onUserMsgRequested(const Common::UserCommand &userCommand) const;
 
         /**
          * @brief Handles the `/bye` command from the user.
@@ -186,7 +188,7 @@ namespace IPK25ChatClient::Client::FSM
          *          to the user. It provides information about available commands
          *          and their usage in the chat client.
          */
-        virtual void onUserHelpRequested() = 0;
+        static void onUserHelpRequested();
 
         /**
          * @brief Handles the sending error message to the server and graceful termination.
@@ -197,7 +199,7 @@ namespace IPK25ChatClient::Client::FSM
          * @param e The exception containing the error details to be sent to the server.
          * @param sendErrMessage Indicates whether to send the error message to the server.
          */
-        virtual void onUserErrRequested(const Exceptions::ChatBaseException &e, bool sendErrMessage) = 0;
+        void onUserErrRequested(const Exceptions::ChatBaseException &e, bool sendErrMessage) const;
 
         /**
          * @brief Handles a REPLY message from the server.
@@ -218,7 +220,7 @@ namespace IPK25ChatClient::Client::FSM
          *
          * @param receivedMessage The parsed message containing all details.
          */
-        virtual void onServerMsg(const Common::ParsedMessage &receivedMessage) = 0;
+        void onServerMsg(const Common::ParsedMessage &receivedMessage) const;
 
         /**
          * @brief Handles an ERR message from the server.
@@ -233,14 +235,22 @@ namespace IPK25ChatClient::Client::FSM
          * @brief Handles a BYE message from the server.
          * @details Transitions the FSM from any state (`auth`, `open`, `join`,
          *          or `start`)  to the `end` state upon receiving a BYE message.
-         *
-         * @return The next state of the FSM after processing the message.
          */
         virtual void onServerBye() = 0;
 
+        /**
+         * @brief Activates the reply deadline timer.
+         * @details This method sets the reply deadline to 5 seconds from the
+         *          current time and activates the timer. It is used to ensure
+         *          that the client receives a response from the server within
+         *          the specified time frame.
+
+         * @note Only for UDP.
+         */
+        virtual void activateReplyDeadline() = 0;
+
     private:
-        static constexpr int STDIN_FD{0};              /**< File descriptor for standard input.                               */
-        static constexpr int POLL_TIMEOUT_MS{-1};      /**< Timeout value for the `poll()` system call (`-1` means infinite). */
+        static constexpr int STDIN_FD{0};  /**< File descriptor for standard input. */
     }; // ClientFsmBase
 } // IPK25ChatClient::Client::FSM
 
