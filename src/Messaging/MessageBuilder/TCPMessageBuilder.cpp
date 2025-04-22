@@ -38,7 +38,7 @@ using namespace std;
 
 namespace IPK25ChatClient::Messaging::Builder
 {
-    MessageContent TcpMessageBuilder::buildMessage(MessageType messageType, uint16_t refMessageId) {
+    MessageContent TcpMessageBuilder::buildMessage([[maybe_unused]] MessageType messageType, [[maybe_unused]] uint16_t refMessageId) {
         throw InternalErrorException(
                 "buildMessage(MessageType messageType, uint16_t refMessageId) is not supported for TcpMessageBuilder.",
                 ClientInternalErrorMessage::CLIENT_INTERNAL_ERROR
