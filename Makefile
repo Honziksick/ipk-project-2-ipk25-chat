@@ -8,7 +8,7 @@
 # Author:       Jan Kalina <xkalinj00>                                         #
 #                                                                              #
 # Created:      02.04.2025                                                     #
-# Last edit:    14.04.2025                                                     #
+# Last edit:    20.04.2025                                                     #
 #                                                                              #
 # Description:  This Makefile is used for compiling the project IPK25 Chat     #
 #               Client for the IPK course. Besides building, the Makefile      #
@@ -131,9 +131,8 @@ MAIN_OBJ_DEBUG = $(patsubst $(SRC_DIR)/%, $(DEBUG_BUILD_DIR)/%, $(MAIN_SRC:.cpp=
 ################################################################################
 
 # The '.PHONY' command indicates that the following commands are never considered as files
-.PHONY: all build clean debug doc help pack run test clean-all clean-build clean-debug-exec \
-        clean-exec clean-doc clean-pack test-argument-parser test-exception-handler \
-		test-chat-exceptions pack-prepare install-dev-dep install-help-dep \
+.PHONY: all build clean doc help pack run clean-all clean-build clean-exec \
+        clean-doc clean-pack pack-prepare install-dev-dep install-help-dep \
 		install-test-dep install-doc-dep install-pack-dep update-dep
 
 ### MC # all: # Builds the 'ipk25chat-client'
@@ -148,29 +147,8 @@ else
 build: $(EXECUTABLE)
 endif
 
-### MC # run: # Runs the executable with print help argument
-run:
-	@if [ ! -f "$(EXECUTABLE)" ]; then \
-		$(MAKE) build; \
-	fi
-	./$(EXECUTABLE) -h
-
-### MC # test: # Builds and runs the test executable 'ipk25chat-client-test' (not allowed for submission)
-ifndef SUBMISSION_MODE
-test:
-	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
-	@cmake --build build --config Test --target ipk25chat-client-test
-	./$(TEST_BIN_DIR)/ipk25chat-client-test
-else
-test:
-	@echo "$(COLOR_RED)The 'test' target is disabled for project submission.$(COLOR_RESET)"
-endif
-
-### MC # debug: # Builds the application in debug mode with more strict warnings
-debug: $(EXECUTABLE)-debug
-
 # Definition of shortcuts for command categories
-CATEGORIES := MC C T P DEV
+CATEGORIES := MC C P DEV
 
 ### MC # help: # Prints help for using the Makefile
 help:
@@ -181,7 +159,6 @@ endif
 	for CATEGORY in $(CATEGORIES); do \
 		case $$CATEGORY in \
 		"MC") FULL_CAT="Main Commands";; \
-		"T") FULL_CAT="Test";; \
 		"C") FULL_CAT="Clean (special)";; \
 		"P") FULL_CAT="Pack (special)";; \
 		"DEV") FULL_CAT="Install Dependencies";; \
@@ -206,7 +183,7 @@ endif
 ifndef SUBMISSION_MODE
 clean: clean-all
 else
-clean: clean-build clean-test clean-doc clean-debug-exec
+clean: clean-build clean-doc
 endif
 
 ### MC # doc: # Generates project documentation into the `doc` directory (different versions)
@@ -282,28 +259,6 @@ $(RELEASE_BUILD_DIR)/%.o: src/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 
-###                                                                          ###
-#                       COMPILATION OF DEBUG APP VERSION                       #
-###                                                                          ###
-
-# Build static library 'libipk25chat-client-debug.a'
-$(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG): $(LIB_OBJS_DEBUG)
-	@mkdir -p $(DEBUG_BUILD_DIR)
-	@echo "$(COLOR_MAGENTA)Creating static library '$(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)' for debug...$(COLOR_RESET)"
-	ar rcs $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG) $(LIB_OBJS_DEBUG)
-
-# Build the executable 'ipk25chat-client-debug'
-$(EXECUTABLE)-debug: $(MAIN_OBJ_DEBUG) $(DEBUG_BUILD_DIR)/$(IPK_LIB_DEBUG)
-	@echo "$(COLOR_MAGENTA)Linking executable '$(EXECUTABLE)-debug' for debug...$(COLOR_RESET)"
-	$(CXX) $(CXXFLAGS_DEBUG) -o $(EXECUTABLE)-debug $(MAIN_OBJ_DEBUG) -L$(DEBUG_BUILD_DIR) -lipk25chat-client-debug
-
-# Compile all object files into the 'build' directory
-$(DEBUG_BUILD_DIR)/%.o: src/%.cpp
-	@mkdir -p $(dir $@)
-	@echo "$(COLOR_MAGENTA)Compiling $< for debug...$(COLOR_RESET)"
-	$(CXX) $(CXXFLAGS_DEBUG) $(INCLUDES) -c $< -o $@
-
-
 ################################################################################
 #                                                                              #
 #                        SPECIALIZED 'CLEAN' COMMANDS                          #
@@ -311,7 +266,7 @@ $(DEBUG_BUILD_DIR)/%.o: src/%.cpp
 ################################################################################
 
 ### C # clean-all: # Removes all created files (build, doc, executable, archive, ...)
-clean-all: clean-build clean-exec clean-test clean-doc clean-pack clean-debug-exec
+clean-all: clean-build clean-exec clean-doc clean-pack
 
 ### C # clean-build: # Removes the 'build' directory
 clean-build:
@@ -320,14 +275,6 @@ clean-build:
 ### C # clean-exec: # Removes the executable
 clean-exec:
 	rm -f $(EXECUTABLE)
-
-### C # clean-debug-exec: # Removes the debug executable
-clean-debug-exec:
-	rm -f $(EXECUTABLE)-debug
-
-### C # clean-test: # Removes 'test/bin' folder with test executables
-clean-test:
-	rm -rf $(TEST_BIN_DIR)
 
 ### C # clean-doc: # Removes generated content of the 'doc' directory
 clean-doc:
@@ -341,47 +288,6 @@ else
 clean-pack:
 	@echo "$(COLOR_RED)The 'clean-pack' target is disabled for project submission.$(COLOR_RESET)"
 endif
-
-
-################################################################################
-#                                                                              #
-#                               'TEST' COMMANDS                                #
-#                                                                              #
-################################################################################
-
-### T # test-chat-exceptions: # Builds and runs the 'ChatExceptions' test (not allowed for submission)
-ifndef SUBMISSION_MODE
-test-chat-exceptions:
-	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
-	@cmake --build build --config Test --target ChatExceptionsTests
-	./$(TEST_BIN_DIR)/ChatExceptionsTests
-else
-test-chat-exceptions:
-	@echo "$(COLOR_RED)The 'test-chat-exceptions' target is disabled for project submission.$(COLOR_RESET)"
-endif
-
-### T # test-exception-handler: # Builds and runs the 'ExceptionHandler' test (not allowed for submission)
-ifndef SUBMISSION_MODE
-test-exception-handler:
-	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
-	@cmake --build build --config Test --target ExceptionHandlerTests
-	./$(TEST_BIN_DIR)/ExceptionHandlerTests
-else
-test-exception-handler:
-	@echo "$(COLOR_RED)The 'test-exception-handler' target is disabled for project submission.$(COLOR_RESET)"
-endif
-
-### T # test-argument-parser: # Builds and runs the 'ArgumentParser' test (not allowed for submission)
-ifndef SUBMISSION_MODE
-test-argument-parser:
-	@cmake -S . -B build -DCMAKE_BUILD_TYPE=Test
-	@cmake --build build --config Test --target ArgumentParserTests
-	./$(TEST_BIN_DIR)/ArgumentParserTests
-else
-test-argument-parser:
-	@echo "$(COLOR_RED)The 'test-argument-parser' target is disabled for project submission.$(COLOR_RESET)"
-endif
-
 
 ################################################################################
 #                                                                              #

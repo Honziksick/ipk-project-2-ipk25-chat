@@ -8,7 +8,7 @@
 # Author:       Jan Kalina <xkalinj00>                                         #
 #                                                                              #
 # Created:      02.04.2025                                                     #
-# Last edit:    14.04.2025                                                     #
+# Last edit:    20.04.2025                                                     #
 #                                                                              #
 # Description:  This file contains the CMake configuration for the IPK25 Chat  #
 #               Client project. It sets up the project, specifies the C++20    #
@@ -36,9 +36,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Add compile options based on build type
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_compile_options(-g -Wall -Werror -Wextra -pedantic)
-elseif(CMAKE_BUILD_TYPE STREQUAL "Test")
+if(CMAKE_BUILD_TYPE STREQUAL "Test")
     add_compile_options(-g -fsanitize=address -Wall -Werror -Wextra -pedantic)
     add_link_options(-fsanitize=address)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
@@ -92,70 +90,5 @@ target_link_libraries(ipk25chat-client
                       )
 
 target_include_directories(ipk25chat-client PRIVATE ipk25chat-client-lib)
-
-
-################################################################################
-#                                                                              #
-#                              TEST CONFIGURATION                              #
-#                                                                              #
-################################################################################
-
-enable_testing()
-
-# Fetch Google Test framework
-include(FetchContent)
-FetchContent_Declare(
-        googletest
-        GIT_REPOSITORY https://github.com/google/googletest.git
-        GIT_TAG        main
-        )
-FetchContent_MakeAvailable(googletest)
-
-# Find all test source files
-file(GLOB TEST_SOURCES CONFIGURE_DEPENDS test/*.cpp test/*.hpp)
-
-
-###                                 ###
-#  Build individual test executables  #
-###                                 ###
-
-foreach(TEST_SOURCE ${TEST_SOURCES})
-    get_filename_component(TEST_NAME ${TEST_SOURCE} NAME_WE)
-    add_executable(${TEST_NAME} ${TEST_SOURCE})
-    target_link_libraries(${TEST_NAME}
-                          PRIVATE
-                          ipk25chat-client-lib
-                          gtest
-                          gtest_main
-                          )
-    target_link_options(${TEST_NAME} PRIVATE
-                        -Wl,--wrap=getifaddrs
-                        -Wl,--wrap=freeifaddrs
-                        )
-    set_target_properties(${TEST_NAME} PROPERTIES
-                          RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test/bin"
-                          )
-    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
-endforeach()
-
-###                              ###
-#  Build combined test executable  #
-###                              ###
-
-add_executable(ipk25chat-client-test ${TEST_SOURCES})
-target_link_libraries(ipk25chat-client-test
-                      PRIVATE
-                      ipk25chat-client-lib
-                      gtest
-                      gtest_main
-                      )
-target_link_options(ipk25chat-client-test PRIVATE
-                    -Wl,--wrap=getifaddrs
-                    -Wl,--wrap=freeifaddrs
-                    )
-set_target_properties(ipk25chat-client-test PROPERTIES
-                      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/test/bin"
-                      )
-add_test(NAME ipk25chat-client-test COMMAND ipk25chat-client-test)
 
 ### end of file CMakeLists.txt ###
