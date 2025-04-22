@@ -38,9 +38,8 @@
 #include <string>    // std::string, std::getline(), std::to_string()
 #include <vector>    // std::vector
 #include <memory>    // std::make_unique
-#include <iostream>  // std::cin
-#include <unistd.h>  // read()
-#include <cstring>   // strerror
+#include <iostream>  // std::cin, std::getline()
+#include <cstring>   // std::strerror
 
 using namespace IPK25ChatClient::Exceptions;
 using namespace IPK25ChatClient::Client::Output;
