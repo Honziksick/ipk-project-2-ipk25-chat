@@ -153,7 +153,15 @@ namespace IPK25ChatClient::Enums
          */
         static constexpr auto MSG_IN_AUTH = "The client received an unexpected message from the server while in AUTH state. ";
 
+        /**
+         * @brief Phrase indicating a reply message didn't arrive within 5 seconds from the server.
+         */
+        static constexpr auto REPLY_LOST = "No REPLY message arrived within 5 seconds even though it was expected. ";
 
+        /**
+         * @brief Phrase indicating a message was lost during transmission, e.g., due to a max retransmissions reached.
+         */
+        static constexpr auto MESSAGE_LOST = "Confirmation of a sent UDP message timed out, maximum number of retransmissions reached. The connection is understood to be finalized, so no further messages will be sent. ";
     }; // ClientInternalErrorPhrases
 } // IPK25ChatClient::Enums
 

@@ -8,7 +8,7 @@
  * Author:       Jan Kalina <xkalinj00>                                        *
  *                                                                             *
  * Created:      09.04.2025                                                    *
- * Last edit:    18.04.2025                                                    *
+ * Last edit:    20.04.2025                                                    *
  *                                                                             *
  * Description:  Implementation of the `EnumMaps` class, which provides static *
  *               mapping utilities for converting enum values to their         *
@@ -23,7 +23,7 @@
 
 #include "Enums/Mapping/EnumMaps.hpp"
 #include "Enums/UserCommandTypes.hpp"
-#include "Enums/ClientFsmStates.hpp"
+#include "Enums/ClientFSMStates.hpp"
 #include "Enums/ClientInternalErrorMessages.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/MessageParameters.hpp"
@@ -55,11 +55,11 @@ namespace IPK25ChatClient::Enums::Mapping
 
     const unordered_map<ClientFsmState, string> &EnumMaps::getClientFsmStateMap() {
         static const unordered_map<ClientFsmState, string> cMap = {
-            {ClientFsmState::START, "Start"},
-            {ClientFsmState::AUTH, "Auth"},
-            {ClientFsmState::JOIN, "Join"},
-            {ClientFsmState::OPEN, "Open"},
-            {ClientFsmState::END, "End"}
+            {ClientFsmState::START, "START"},
+            {ClientFsmState::AUTH, "AUTH"},
+            {ClientFsmState::JOIN, "JOIN"},
+            {ClientFsmState::OPEN, "OPEN"},
+            {ClientFsmState::END, "END"}
         };
         return cMap;
     } // EnumMaps::getClientFsmStateMap
@@ -71,9 +71,10 @@ namespace IPK25ChatClient::Enums::Mapping
             {ExitCode::HOSTNAME_RESOLUTION_ERROR, "Hostname Resolution Error"},
             {ExitCode::INTERNAL_ERROR, "Internal Error"},
             {ExitCode::CONNECTION_ERROR, "Socket Error"},
-            {ExitCode::UNESTABLISHED_ERROR, "Unestablished connection"},
             {ExitCode::PROTOCOL_ERROR, "Protocol Error"},
             {ExitCode::UNKNOWN_ERROR, "Unknown Error"},
+            {ExitCode::UNESTABLISHED_ERROR, "Unestablished connection"},
+            {ExitCode::MESSAGE_LOST_ERROR, "Message lost"},
             {ExitCode::TIMEOUT_ERROR, "Timeout Error"}
         };
         return cMap;
@@ -147,7 +148,9 @@ namespace IPK25ChatClient::Enums::Mapping
             {ClientInternalErrorMessage::CLIENT_AUTH_AGAIN, string(AUTH_AGAIN)},
             {ClientInternalErrorMessage::CLIENT_NOT_AUTH, string(NOT_AUTH)},
             {ClientInternalErrorMessage::CLIENT_REPLY_IN_OPEN, string(REPLY_IN_OPEN) + string(NOT_PROPER_BEHAVIOUR) + string(SEND_ERROR_TERMINATE)},
-            {ClientInternalErrorMessage::CLIENT_MSG_IN_AUTH, string(MSG_IN_AUTH) + string(NOT_PROPER_BEHAVIOUR) + string(SEND_ERROR_TERMINATE)}
+            {ClientInternalErrorMessage::CLIENT_MSG_IN_AUTH, string(MSG_IN_AUTH) + string(NOT_PROPER_BEHAVIOUR) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_REPLY_LOST, string(REPLY_LOST) + string(SEND_ERROR_TERMINATE)},
+            {ClientInternalErrorMessage::CLIENT_MESSAGE_LOST, string(MESSAGE_LOST) + string(JUST_TERMINATE)}
         };
         return cMap;
     } // EnumMaps::getClientInternalErrorMessagesMap

@@ -25,7 +25,7 @@
 #define ENUM_MAPS_HPP
 
 #include "Enums/UserCommandTypes.hpp"
-#include "Enums/ClientFsmStates.hpp"
+#include "Enums/ClientFSMStates.hpp"
 #include "Enums/ClientInternalErrorMessages.hpp"
 #include "Enums/ExitCodes.hpp"
 #include "Enums/TransportProtocolTypes.hpp"

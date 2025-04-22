@@ -53,7 +53,9 @@ namespace IPK25ChatClient::Enums
         CLIENT_AUTH_NO_REPLY,            /**< Sends: AUTH_NO_REPLY                                                */
         CLIENT_NOT_AUTH,                 /**< Sends: NOT_AUTH                                                     */
         CLIENT_REPLY_IN_OPEN,            /**< Sends: REPLY_IN_OPEN + NOT_PROPER_BEHAVIOUR + SEND_ERROR_TERMINATE  */
-        CLIENT_MSG_IN_AUTH               /**< Sends: MSG_IN_AUTH + NOT_PROPER_BEHAVIOUR + SEND_ERROR_TERMINATE    */
+        CLIENT_MSG_IN_AUTH,              /**< Sends: MSG_IN_AUTH + NOT_PROPER_BEHAVIOUR + SEND_ERROR_TERMINATE    */
+        CLIENT_REPLY_LOST,               /**< Sends: REPLY_LOST + SEND_ERROR_TERMINATE                            */
+        CLIENT_MESSAGE_LOST              /**< Sends: MESSAGE_LOST + JUST_TERMINATE                                */
     }; // ClientInternalErrorMessage
 } // IPK25ChatClient::Enums
 
