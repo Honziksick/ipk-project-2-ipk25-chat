@@ -22,7 +22,8 @@
  *        message IDs.
  */
 
-#include "Messaging/MessageBuilder/MessageIdProvider.hpp"
+#include "Messaging/MessageBuilder/MessageIDProvider.hpp"
+#include "Utilities/Logger.hpp"
 #include <mutex>    // std::mutex
 #include <cstdint>  // uint16_t
 
@@ -34,11 +35,14 @@ namespace IPK25ChatClient::Messaging::Builder
 
     uint16_t MessageIdProvider::getCurrentMessageId() {
         lock_guard<mutex> lock{mMutex};  // Automatically unlocks when exiting scope
+
+        logger("Check that the current messageID counter is: %u", mCurrentIdCounter);
         return mCurrentIdCounter;
     } // MessageIdProvider::getCurrentMessageId
 
     uint16_t MessageIdProvider::getNextMessageId() {
         lock_guard<mutex> lock{mMutex};  // Automatically unlocks when exiting scope
+        logger("Provided messageID: %u", mCurrentIdCounter);
 
         // Get the next message ID
         const uint16_t nextMessageId = mCurrentIdCounter;
