@@ -106,10 +106,12 @@ namespace IPK25ChatClient::Client::Output
         static constexpr auto CLIENT_HELP_MESSAGE = R"(
 Usage:
 /auth <username> <secret> <displayName>
-    Authenticate with the chat server using your account name, password (secret) and the display name you wish to use.
+    Authenticate with the chat server using your account name, password (secret)
+    and the display name you wish to use.
 
 /join <channelId>
-    Join or switch to the specified channel. If you omit this, you stay in the default channel assigned after AUTH.
+    Join or switch to the specified channel. If you omit this, you stay in the
+    default channel assigned after AUTH.
 
 /rename <newDisplayName>
     Change your display name for subsequent messages.
@@ -121,22 +123,27 @@ Usage:
     Exit the chat client gracefully (sends BYE to server and closes connection).
 
 Chatting:
-    To send a message to the current channel, just type your text without a leading slash and press Enter. Messages longer than the protocol‐allowed maximum will be truncated, and you will see a local warning. Maximum length of a message is 60000 characters and only these characters are allowed: Printable characters with space and new line (enter).
+    To send a message to the current channel, just type your text without a leading
+    slash and press Enter. Messages longer than the protocol‐allowed maximum will be
+    truncated, and you will see a local warning. Maximum length of a message is 60000
+    characters and only these characters are allowed: Printable characters with space
+    and new line (enter).
 
 Parameter Limits:
     - <username>: Max. length 20, allowed characters: [a-zA-Z0-9_-] (e.g., Abc_00-7)
     - <channelId>: Max. length 20, allowed characters: [a-zA-Z0-9_-] (e.g., Abc_00-7)
     - <secret>: Max. length 128, allowed characters: [a-zA-Z0-9_-] (e.g., Abc_00-7)
     - <displayName>: Max. length 20, allowed characters: Printable characters (0x21-7E)
-    - MessageContent: Max. length 60000, allowed characters: Printable characters with space and line feed (0x0A, 0x20-7E)
-
+    - MessageContent: Max. length 60000, allowed characters: Printable characters with
+                      space and line feed (0x0A, 0x20-7E)
 
 Examples:
     /help
     /auth myNameIsJohn password John_TheIPKMaster00
     /join general
     /rename let-the-points-rain
-    Hello world!)"; // CLIENT_HELP_MESSAGE
+    Hello world!
+    )"; // CLIENT_HELP_MESSAGE
 
         /**
          * @brief Prints an internal error message.
