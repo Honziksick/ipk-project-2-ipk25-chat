@@ -29,7 +29,7 @@
 #include "Exceptions/ChatExceptions.hpp"
 #include "Utilities/Logger.hpp"
 #include <string>   // std::string
-#include <cstring>  // memset
+#include <cstring>  // std::memset
 #include <netdb.h>  // addrinfo, getaddrinfo(), gai_strerror(), freeaddrinfo()
 
 using namespace IPK25ChatClient::Client::Output;
