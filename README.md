@@ -1,4 +1,4 @@
-<style>
+﻿<style>
 .smallcaps { font-variant: small-caps; }
 </style>
 
@@ -14,17 +14,18 @@
 ## Obsah
 
 - [Obsah](#obsah)
-- [1 Úvod](#1-úvod)
-- [2 Teoretický základ a účel aplikace](#2-teoretický-základ-a-účel-aplikace)
-  - [2.1 **UDP** varianta - datagramový protokol](#21-udp-varianta---datagramový-protokol)
-  - [2.2 **TCP** varianta - textový protokol](#22-tcp-varianta---textový-protokol)
-- [3 Sestavení a spuštění programu](#3-sestavení-a-spuštění-programu)
+- [Hodnocení](#hodnocení)
+- [1. Úvod](#1-úvod)
+- [2. Teoretický základ a účel aplikace](#2-teoretický-základ-a-účel-aplikace)
+  - [2.1 UDP varianta - datagramový protokol](#21-udp-varianta---datagramový-protokol)
+  - [2.2 TCP varianta - textový protokol](#22-tcp-varianta---textový-protokol)
+- [3. Sestavení a spuštění programu](#3-sestavení-a-spuštění-programu)
   - [3.1 Sestavení programu pomocí `Makefile`](#31-sestavení-programu-pomocí-makefile)
   - [3.2 Spuštění programu](#32-spuštění-programu)
-- [4 Přehled architektury a struktura projektu](#4-přehled-architektury-a-struktura-projektu)
+- [4. Přehled architektury a struktura projektu](#4-přehled-architektury-a-struktura-projektu)
   - [4.1 Modul `Arguments`](#41-modul-arguments)
   - [4.2 Modul `Client`](#42-modul-client)
-    - [4.2.1 Submodul `ClientFSM` – Specializované konečné automaty pro **TCP** a **UDP** variantu](#421-sumbodul-clientfsm--specializované-konečné-automaty-pro-tcp-a-udp-variantu)
+    - [4.2.1 Sumbodul `ClientFSM` – Specializované konečné automaty pro TCP a UDP variantu](#421-sumbodul-clientfsm--specializované-konečné-automaty-pro-tcp-a-udp-variantu)
     - [4.2.2 Submodul `ClientOutput` – Zpracování výstupu klienta](#422-submodul-clientoutput--zpracování-výstupu-klienta)
     - [4.2.3 Submodul `CommandParser` – Zpracování uživatelských příkazů](#423-submodul-commandparser--zpracování-uživatelských-příkazů)
   - [4.3 Modul `Common`](#43-modul-common)
@@ -38,20 +39,116 @@
     - [4.7.1 Submodul `TCPCommunicationHandler`](#471-submodul-tcpcommunicationhandler)
     - [4.7.2 Submodul `UDPCommunicationHandler`](#472-submodul-udpcommunicationhandler)
   - [4.8 Modul `App`](#48-modul-app)
-- [5 Testování a verifikace funkčnosti](#5-testování-a-verifikace-funkčnosti)
-  - [5.1 Interaktivní testovací konverzace mezi více instancemi klienta](#51-testování-funkčnosti-skenování)
+- [5. Testování a verifikace funkčnosti](#5-testování-a-verifikace-funkčnosti)
+  - [5.1 Interaktivní testovací konverzace mezi více instancemi klienta](#51-interaktivní-testovací-konverzace-mezi-více-instancemi-klienta)
     - [5.1.1 Testovací prostředí](#511-testovací-prostředí)
     - [5.1.2 Testovací scénář](#512-testovací-scénář)
-  - [5.2 Testování pomocí testů od `Vlad6422`](#52-testování-pomocí-testů-od-vlad6422)
+  - [5.2 Testování pomocí testů od *Vlad6422*](#52-testování-pomocí-testů-od-vlad6422)
     - [5.2.1 Testovací prostředí](#521-testovací-prostředí)
     - [5.2.2 Testovací scénář](#522-testovací-scénář)
-- [6 Závěr](#6-závěr)
-- [7 Bibliografie](#7-bibliografie)
-- [8 Přílohy](#8-přílohy)
-  - [8.1 Adresářový strom projektu ](#81-adresářový-strom-projektu)
+- [6. Závěr](#6-závěr)
+- [7. Bibliografie](#7-bibliografie)
+- [8. Přílohy](#8-přílohy)
+  - [8.1 Adresářový strom projektu](#81-adresářový-strom-projektu)
   - [8.2 Výstup příkazu `make help`](#82-výstup-příkazu-make-help)
   - [8.3 Ukázka spuštění programu s parametrem `-h` pro výpis nápovědy](#83-ukázka-spuštění-programu-s-parametrem--h-pro-výpis-nápovědy)
   - [8.4 Ukázka použití příkazu `/help` pro zobrazení nápovědy v průběhu chatování](#84-ukázka-použití-příkazu-help-pro-zobrazení-nápovědy-v-průběhu-chatování)
+
+## Hodnocení
+
+**Hodnocení:** 25.49/30.00 b.
+
+- **Implementace:** 13.50/18.00 b.
+- **Dokumentace:** 6.00/6.00 b.
+- **Code quality:** 4.00/4.00 b.
+- **Git:** 2.00/2.00 b.
+
+```plaintext
+GradingSection.IMPLEMENTATION
+=============================
+executable (1 tests,  0.4% weight,  1 /  1 = 100.00% =  0.06 /  0.06 b):
+	tests/features-client/client-exe-behaviour.feature          : 100.00%  =   0.1 /  0.1 b  (count =  1 /  1)
+tcp (49 tests, 39.4% weight, 32 / 49 =  70.61% =  5.01 /  7.10 b):
+	tests/features-client/tcp/auth.g.feature                    : 100.00%  =   0.3 /  0.3 b  (count =  3 /  3)
+	tests/features-client/tcp/bye.g.feature                     : 100.00%  =   0.2 /  0.2 b  (count =  3 /  3)
+	tests/features-client/tcp/client-exe-behaviour.g.feature    : 100.00%  =   0.2 /  0.2 b  (count =  1 /  1)
+	tests/features-client/tcp/client-exe-commands.g.feature     : 100.00%  =   0.2 /  0.2 b  (count =  3 /  3)
+	tests/features-client/tcp/edge-cases.g.feature              :  33.33%  =   0.1 /  0.2 b  (count =  2 /  6)
+		[TCP] receive message with too long display name (BehaveReportStatus.FAILED)
+		[TCP] receive message with unprintable display name (BehaveReportStatus.FAILED)
+		[TCP] receive message with invalid content (BehaveReportStatus.FAILED)
+		[TCP] receive error with invalid content (BehaveReportStatus.FAILED)
+	tests/features-client/tcp/err.g.feature                     :   0.00%  =   0.0 /  0.2 b  (count =  0 /  1)
+		[TCP] correctly terminates upon receiving ERR (BehaveReportStatus.FAILED)
+	tests/features-client/tcp/join.g.feature                    : 100.00%  =   0.2 /  0.2 b  (count =  4 /  4)
+	tests/features-client/tcp/msg.g.feature                     : 100.00%  =   0.6 /  0.6 b  (count =  5 /  5)
+	tests/features-client/tcp/specific-invalid-advanced.feature :  50.00%  =   0.2 /  0.3 b  (count =  1 /  2)
+		[TCP] handles received error in auth state (BehaveReportStatus.FAILED)
+	tests/features-client/tcp/specific-invalid.feature          :  26.67%  =   0.6 /  2.3 b  (count =  4 / 15)
+		sends an error message when receives an unacceptable message (AUTH) -- @1.1  (BehaveReportStatus.FAILED)
+		sends an error message when receives an unacceptable message (JOIN) -- @1.2  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (extra spaces 1) -- @1.1  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (extra spaces 2) -- @1.2  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (extra spaces 3) -- @1.3  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (MSG - FROM keyword malformed) -- @1.4  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (MSG - IS keyword malformed) -- @1.5  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (ERR - FROM keyword malformed) -- @1.6  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (ERR - IS keyword malformed) -- @1.7  (BehaveReportStatus.FAILED)
+		sends an error message when malformed message (BYE - FROM keyword malformed) -- @1.8  (BehaveReportStatus.FAILED)
+		sends an error message when receives message with invalid characters (BehaveReportStatus.FAILED)
+	tests/features-client/tcp/specific-valid.feature            : 100.00%  =   2.6 /  2.6 b  (count =  6 /  6)
+udp (40 tests, 60.2% weight, 27 / 40 =  77.67% =  8.42 / 10.84 b):
+	tests/features-client/udp/auth.g.feature                    : 100.00%  =   0.7 /  0.7 b  (count =  3 /  3)
+	tests/features-client/udp/bye.g.feature                     : 100.00%  =   0.3 /  0.3 b  (count =  3 /  3)
+	tests/features-client/udp/client-exe-behaviour.g.feature    : 100.00%  =   0.3 /  0.3 b  (count =  1 /  1)
+	tests/features-client/udp/client-exe-commands.g.feature     :  66.67%  =   0.2 /  0.3 b  (count =  2 /  3)
+		[UDP] can rename multiple times and correctly send messages with the new name (BehaveReportStatus.FAILED)
+	tests/features-client/udp/edge-cases.g.feature              :  33.33%  =   0.1 /  0.3 b  (count =  2 /  6)
+		[UDP] receive message with too long display name (BehaveReportStatus.FAILED)
+		[UDP] receive message with unprintable display name (BehaveReportStatus.FAILED)
+		[UDP] receive message with invalid content (BehaveReportStatus.FAILED)
+		[UDP] receive error with invalid content (BehaveReportStatus.FAILED)
+	tests/features-client/udp/err.g.feature                     :   0.00%  =   0.0 /  0.3 b  (count =  0 /  1)
+		[UDP] correctly terminates upon receiving ERR (BehaveReportStatus.FAILED)
+	tests/features-client/udp/join.g.feature                    :  75.00%  =   0.3 /  0.3 b  (count =  3 /  4)
+		[UDP] joins multiple provided channels and reports success (BehaveReportStatus.FAILED)
+	tests/features-client/udp/msg.g.feature                     :  80.00%  =   1.1 /  1.4 b  (count =  4 /  5)
+		[UDP] send and receive multiple messages (BehaveReportStatus.FAILED)
+	tests/features-client/udp/specific-invalid-advanced.feature :  66.67%  =   0.5 /  0.7 b  (count =  2 /  3)
+		[UDP] handles received error in auth state (BehaveReportStatus.FAILED)
+	tests/features-client/udp/specific-invalid.feature          :  42.86%  =   0.9 /  2.0 b  (count =  3 /  7)
+		sends an error message when receives a MSG without content (BehaveReportStatus.FAILED)
+		sends an error message when receives a MSG without valid display name termination (BehaveReportStatus.FAILED)
+		sends an error message when receives an unacceptable message (AUTH) -- @1.1  (BehaveReportStatus.FAILED)
+		sends an error message when receives an unacceptable message (JOIN) -- @1.2  (BehaveReportStatus.FAILED)
+	tests/features-client/udp/specific-valid.feature            : 100.00%  =   4.1 /  4.1 b  (count =  4 /  4)
+Graded xkalinj00:  74.97%  =  13.5 / 18.0 b
+
+GradingSection.DOCUMENTATION
+============================
+Komentar hodnoceni: 
+doc     :  6.0 /  6.0
+ +0.00  : Teorie OK
+ +0.00  : Implementace OK
+ +0.00  : Pěkné/dostatečné testování.
+ +0.00  : Bibliografie OK
+
+GradingSection.CODE_QUALITY
+===========================
+code    :  4.0 /  4.0
+ +0.00  : Adekvátní použití konceptů OOP
+
+GradingSection.GIT
+==================
+git     :  2.0 /  2.0
+ +0.00  : Dostatečné popisy commitů
+ +0.00  : Adresářová struktura repozitáře je v pořádku.
+
+
+Další chyby či opravy:
+
+Žádné další penalizace
+```
 
 ## 1. Úvod
 

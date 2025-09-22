@@ -53,7 +53,7 @@ COLOR_MAGENTA = \033[0;35m
 $(VERBOSE)SILENTOPT = -s
 
 # Definition of a constant to disable selected targets (for submission)
-SUBMISSION_MODE ?= true
+#SUBMISSION_MODE ?= true
 
 
 ###                   ###
